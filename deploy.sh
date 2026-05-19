@@ -10,10 +10,6 @@ sudo chown -R 1000:1000 /www/server/nodejs/cache
 echo "==> Installing pnpm if not present..."
 which pnpm || sudo npm install -g pnpm
 
-echo "==> Pulling latest changes..."
-cd "$PROJECT_DIR"
-git pull
-
 echo "==> Installing and building API..."
 cd "$PROJECT_DIR/api"
 rm -rf node_modules
