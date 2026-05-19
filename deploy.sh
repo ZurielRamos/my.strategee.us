@@ -7,25 +7,24 @@ echo "==> Fixing permissions..."
 sudo chown -R administrator:administrator "$PROJECT_DIR"
 sudo chown -R 1000:1000 /www/server/nodejs/cache
 
+echo "==> Installing pnpm if not present..."
+which pnpm || sudo npm install -g pnpm
+
 echo "==> Pulling latest changes..."
 cd "$PROJECT_DIR"
 git pull
 
-echo "==> Installing API dependencies..."
+echo "==> Installing and building API..."
 cd "$PROJECT_DIR/api"
 rm -rf node_modules
-npm install --legacy-peer-deps
-
-echo "==> Building API..."
 rm -f tsconfig.build.tsbuildinfo
-npm run build
+pnpm install
+pnpm run build
 
-echo "==> Installing App dependencies..."
+echo "==> Installing and building App..."
 cd "$PROJECT_DIR/app"
 rm -rf node_modules
 npm install
-
-echo "==> Building App..."
 npm run build
 
 echo "==> Starting server..."
