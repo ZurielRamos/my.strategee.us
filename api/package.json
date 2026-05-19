@@ -33,7 +33,7 @@
     "@nestjs/serve-static": "^5.0.5",
     "@nestjs/swagger": "^11.2.3",
     "@nestjs/typeorm": "^11.0.0",
-    "@scalar/nestjs-api-reference": "^1.0.23",
+    "@scalar/nestjs-api-reference": "1.0.23",
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
