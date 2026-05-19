@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.strategee.us',
+  apiUrl: '/api/v1',
   firebase: {
     apiKey: 'AIzaSyDPvplJ0Z1KaYMa9krgAUTCkSUFAHOd3ls', // TODO: Reemplazar con la API Key real de Firebase Console
     authDomain: 'mystrategee.firebaseapp.com',

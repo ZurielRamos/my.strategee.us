@@ -8,6 +8,7 @@
     "build:api": "npm run build --prefix api",
     "start": "node api/dist/main",
     "start:dev:api": "npm run start:dev --prefix api",
-    "start:dev:app": "npm run start --prefix app"
+    "start:dev:app": "npm run start --prefix app",
+    "install:all": "npm install --prefix app && npm install --prefix api"
   }
 }
