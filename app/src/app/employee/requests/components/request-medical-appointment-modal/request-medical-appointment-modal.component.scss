@@ -1,0 +1,121 @@
+// Títulos de sección
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--app-text-primary);
+    margin: 24px 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--app-border-light);
+}
+
+// Grid para campos en fila
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    @media (max-width: 576px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// Indicador de duración
+.duration-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #e3f2fd;
+    border-radius: 8px;
+    margin: -8px 0 16px 0;
+    border-left: 3px solid #2196f3;
+
+    ion-icon {
+        font-size: 20px;
+        color: #2196f3;
+        flex-shrink: 0;
+    }
+
+    span {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1976d2;
+    }
+}
+
+// Sección de subida de archivos
+.upload-section {
+    width: 100%;
+
+    ion-button[expand="block"] {
+        --background: transparent;
+        --background-hover: var(--app-hover-bg);
+        --border-color: var(--app-text-primary);
+        --border-width: 2px;
+        --border-style: dashed;
+        --color: var(--app-text-primary);
+        --border-radius: 12px;
+        height: 56px;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: none;
+        margin: 0 0 16px 0;
+
+        ion-icon {
+            font-size: 20px;
+        }
+    }
+}
+
+.uploaded-file {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--app-hover-bg);
+    border-radius: 12px;
+    border: 2px solid var(--app-text-primary);
+    margin-bottom: 16px;
+
+    ion-icon:first-child {
+        font-size: 24px;
+        color: var(--app-text-primary);
+        flex-shrink: 0;
+    }
+
+    span {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--app-text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    ion-button {
+        --padding-start: 8px;
+        --padding-end: 8px;
+        margin: 0;
+
+        ion-icon {
+            font-size: 24px;
+        }
+    }
+}
+
+.field-note {
+    font-size: 12px;
+    color: var(--app-text-secondary);
+    margin: -8px 0 0 0;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+ion-progress-bar {
+    margin: 8px 0 16px 0;
+    height: 4px;
+    border-radius: 2px;
+}

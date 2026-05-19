@@ -1,0 +1,91 @@
+@import '../../../../theme/admin-standards.scss';
+
+.admin-page-content {
+  @include admin-page-background;
+}
+
+.admin-container {
+  @include admin-page-container;
+}
+
+.title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 32px;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.title-actions {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.create-button {
+  @include admin-button-primary;
+}
+
+.desktop-only {
+  @media (max-width: 767px) {
+    display: none !important;
+  }
+}
+
+.mobile-only {
+  @media (min-width: 768px) {
+    display: none !important;
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+
+  ion-spinner {
+    --color: var(--app-text-primary);
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.parameters-grid {
+  @include admin-grid(1, 2, 3);
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  text-align: center;
+
+  ion-icon {
+    font-size: 80px;
+    color: #e8eaed;
+    margin-bottom: 24px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--app-text-primary);
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--app-text-secondary);
+    margin: 0;
+    max-width: 400px;
+  }
+}

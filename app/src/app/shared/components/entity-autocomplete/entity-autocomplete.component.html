@@ -1,0 +1,27 @@
+<div class="autocomplete-wrapper">
+  <div class="input-container" #anchor>
+    <ion-icon [name]="icon" class="search-icon"></ion-icon>
+    <input
+      type="text"
+      class="search-input"
+      [placeholder]="placeholder"
+      autocomplete="off"
+      [value]="searchTerm"
+      (input)="onInput($any($event).target.value)"
+      (blur)="onBlur()"
+    />
+  </div>
+
+  <!-- Chips -->
+  <div class="chips" *ngIf="selected.length > 0">
+    <div class="chip" *ngFor="let item of selected">
+      <span>{{ item.name }}</span>
+      @if (item.subtitle) {
+        <span class="chip-subtitle">· {{ item.subtitle }}</span>
+      }
+      <button type="button" class="chip-remove" (click)="remove(item)">
+        <ion-icon name="close-circle"></ion-icon>
+      </button>
+    </div>
+  </div>
+</div>

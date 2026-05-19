@@ -1,0 +1,112 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Historial de Compensaciones</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()" fill="clear">
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="history-container">
+        <div class="employee-info">
+            <h3>{{ employeeName }}</h3>
+            <p>Historial completo de compensaciones e ingresos adicionales</p>
+        </div>
+
+        @if (isLoading) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        @if (!isLoading && compensations.length > 0) {
+        <div class="compensations-list">
+            @for (compensation of compensations; track compensation.id) {
+            <ion-card class="compensation-card">
+                <ion-card-header>
+                    <div class="card-header-content">
+                        <ion-card-title>{{ compensation.concept }}</ion-card-title>
+                        <div class="header-actions">
+                            @if (canCancel(compensation)) {
+                            <ion-button (click)="confirmCancel(compensation)" fill="clear" color="danger" size="small">
+                                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                            </ion-button>
+                            }
+                        </div>
+                    </div>
+                </ion-card-header>
+                <ion-card-content>
+                    <div class="compensation-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Monto:</span>
+                            <span class="detail-value amount">{{ formatCurrency(compensation.currentValue || compensation.amount) }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Frecuencia:</span>
+                            <span class="detail-value">{{ getFrequencyLabel(compensation.frequency) }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Estado:</span>
+                            <ion-badge [color]="getStatusColor(compensation.status)">
+                                {{ getStatusLabel(compensation.status) }}
+                            </ion-badge>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Período:</span>
+                            <span class="detail-value">
+                                {{ formatDate(compensation.startDate) }} 
+                                @if (compensation.endDate) {
+                                - {{ formatDate(compensation.endDate) }}
+                                } @else {
+                                - Presente
+                                }
+                            </span>
+                        </div>
+                        @if (compensation.paymentDate) {
+                        <div class="detail-row">
+                            <span class="detail-label">Fecha de Pago:</span>
+                            <span class="detail-value">{{ formatDate(compensation.paymentDate) }}</span>
+                        </div>
+                        }
+                        @if (compensation.paymentDay) {
+                        <div class="detail-row">
+                            <span class="detail-label">Día(s) de Pago:</span>
+                            <span class="detail-value">
+                                {{ compensation.paymentDay }}
+                                @if (compensation.secondPaymentDay) {
+                                y {{ compensation.secondPaymentDay }}
+                                }
+                            </span>
+                        </div>
+                        }
+                        <div class="chips-row">
+                            @if (compensation.isLinkedGlobalParameter && compensation.linkedGlobalParameter) {
+                            <ion-chip color="primary">
+                                <ion-label>{{ compensation.linkedGlobalParameter }}</ion-label>
+                            </ion-chip>
+                            }
+                            @if (hasCondition(compensation)) {
+                            <ion-chip color="success">
+                                <ion-label>{{ getConditionLabel(compensation.condition) }}</ion-label>
+                            </ion-chip>
+                            }
+                        </div>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+            }
+        </div>
+        }
+
+        @if (!isLoading && compensations.length === 0) {
+        <div class="empty-state">
+            <ion-icon name="cash-outline"></ion-icon>
+            <h3>No hay compensaciones registradas</h3>
+            <p>Este empleado no tiene compensaciones en su historial</p>
+        </div>
+        }
+    </div>
+</ion-content>

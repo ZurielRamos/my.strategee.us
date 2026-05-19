@@ -1,0 +1,106 @@
+<app-base-modal 
+    title="Solicitar Cita Médica"
+    subtitle="Solicita permiso para asistir a una cita médica"
+    confirmText="Enviar Solicitud"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <!-- Información importante -->
+        <app-alert-box type="info">
+            Solicita permiso para asistir a una cita médica. Puedes adjuntar el comprobante ahora o después.
+        </app-alert-box>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Información de la Cita</h4>
+
+        <!-- Fecha de la cita -->
+        <app-date-input
+            formControlName="date"
+            label="Fecha de la Cita"
+            placeholder="Selecciona fecha"
+            mode="single"
+            [required]="true"
+            [minDate]="minDate"
+            [maxDate]="maxDate">
+        </app-date-input>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Horarios</h4>
+
+        <!-- Campos de hora en fila -->
+        <div class="form-row">
+            <app-time-input
+                formControlName="exitTime"
+                label="Hora de Salida"
+                [required]="true">
+            </app-time-input>
+
+            <app-time-input
+                formControlName="returnTime"
+                label="Hora de Regreso"
+                [required]="true">
+            </app-time-input>
+        </div>
+
+        <!-- Duración calculada -->
+        @if (getDuration()) {
+            <div class="duration-info">
+                <ion-icon name="time-outline"></ion-icon>
+                <span>Duración: {{ getDuration() }}</span>
+            </div>
+        }
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Comprobante (Opcional)</h4>
+
+        <!-- Subir comprobante -->
+        <div class="upload-section">
+            <!-- Hidden file input -->
+            <input 
+                type="file" 
+                id="file-input" 
+                accept=".pdf,.jpg,.jpeg,.png"
+                (change)="onFileSelected($event)"
+                style="display: none;">
+            
+            <!-- Upload button or uploaded file display -->
+            @if (!uploadedFileUrl) {
+                <ion-button 
+                    expand="block" 
+                    fill="outline" 
+                    (click)="triggerFileInput()"
+                    [disabled]="isUploading">
+                    <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+                    @if (isUploading) {
+                        Subiendo...
+                    } @else {
+                        Subir Comprobante
+                    }
+                </ion-button>
+            } @else {
+                <div class="uploaded-file">
+                    <ion-icon name="document-attach-outline"></ion-icon>
+                    <span>{{ uploadedFileName }}</span>
+                    <ion-button 
+                        fill="clear" 
+                        color="danger" 
+                        (click)="removeUploadedFile()">
+                        <ion-icon name="close-circle-outline"></ion-icon>
+                    </ion-button>
+                </div>
+            }
+            
+            <!-- Upload progress -->
+            @if (isUploading) {
+                <ion-progress-bar [value]="uploadProgress / 100"></ion-progress-bar>
+            }
+            
+            <div class="field-note">
+                Formatos permitidos: PDF, JPG, PNG (máx. 5MB). Puedes adjuntar el comprobante ahora o después.
+            </div>
+        </div>
+    </form>
+</app-base-modal>

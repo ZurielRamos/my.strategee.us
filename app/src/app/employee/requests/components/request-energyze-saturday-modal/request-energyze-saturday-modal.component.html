@@ -1,0 +1,42 @@
+<app-base-modal 
+    title="Solicitar Sábado Energyze"
+    subtitle="Solicita trabajar un sábado con bono adicional"
+    confirmText="Enviar Solicitud"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <!-- Información importante -->
+        <app-alert-box type="info">
+            Solo puedes seleccionar días sábados. Este beneficio te permite trabajar un sábado con un bono adicional.
+        </app-alert-box>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Selecciona el Sábado</h4>
+
+        <!-- Campo de fecha -->
+        <app-date-input
+            formControlName="date"
+            label="Fecha del Sábado"
+            placeholder="dd/mm/yyyy"
+            mode="single"
+            [required]="true"
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+            [disabledDaysOfWeek]="[0, 1, 2, 3, 4, 5]">
+        </app-date-input>
+
+        <!-- Información adicional sobre el beneficio -->
+        <div class="benefit-info">
+            <div class="info-item">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <div class="info-content">
+                    <span class="info-label">Duración</span>
+                    <span class="info-value">1 día completo</span>
+                </div>
+            </div>
+        </div>
+    </form>
+</app-base-modal>

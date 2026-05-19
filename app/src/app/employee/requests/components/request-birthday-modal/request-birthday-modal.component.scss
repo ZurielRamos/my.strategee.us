@@ -1,0 +1,55 @@
+// Títulos de sección
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--app-text-primary);
+    margin: 24px 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--app-border-light);
+}
+
+// Información del beneficio
+.benefit-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--app-hover-bg);
+    border-radius: 12px;
+    border: 1px solid var(--app-border-light);
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        ion-icon {
+            font-size: 24px;
+            color: #2196f3;
+            flex-shrink: 0;
+        }
+
+        .info-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .info-label {
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--app-text-secondary);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .info-value {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--app-text-primary);
+            }
+        }
+    }
+}

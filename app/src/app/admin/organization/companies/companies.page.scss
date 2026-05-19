@@ -1,0 +1,126 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.companies-content {
+    --background: transparent;
+}
+
+.page-container {
+    padding: 16px 32px 32px 32px;
+    max-width: 1400px;
+    margin: 0;
+
+    @media (max-width: 768px) {
+        padding: 16px 16px 32px 16px;
+    }
+}
+
+.page-title-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 32px;
+
+    @media (max-width: 576px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .title-text {
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--app-text-primary);
+            margin: 0 0 8px 0;
+            letter-spacing: -1px;
+
+            @media (max-width: 576px) {
+                font-size: 28px;
+            }
+        }
+
+        p {
+            margin: 0;
+            color: var(--app-text-secondary);
+            font-size: 14px;
+        }
+    }
+
+    .title-controls {
+        .add-button {
+            --background: var(--app-text-primary);
+            --background-hover: var(--app-hover-bg);
+            --color: #ffffff;
+            --border-radius: 12px;
+            height: 44px;
+            font-weight: 600;
+            text-transform: none;
+        }
+    }
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+
+    ion-spinner {
+        --color: var(--app-text-primary);
+        transform: scale(1.5);
+    }
+}
+
+.companies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    text-align: center;
+    padding: 40px 20px;
+
+    ion-icon {
+        font-size: 80px;
+        color: var(--app-text-secondary);
+        opacity: 0.3;
+        margin-bottom: 24px;
+    }
+
+    h2 {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        margin: 0 0 8px 0;
+    }
+
+    p {
+        font-size: 14px;
+        color: var(--app-text-secondary);
+        margin: 0 0 24px 0;
+    }
+
+    ion-button {
+        --background: var(--app-text-primary);
+        --background-hover: var(--app-hover-bg);
+        --color: #ffffff;
+        --border-radius: 12px;
+        height: 44px;
+        font-weight: 600;
+        text-transform: none;
+    }
+}

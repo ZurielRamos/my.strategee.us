@@ -1,0 +1,56 @@
+<app-base-modal 
+    title="Solicitar Medio Día de Cumpleaños"
+    subtitle="Solicita tu beneficio de cumpleaños"
+    confirmText="Enviar Solicitud"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <!-- Información importante -->
+        <app-alert-box type="info">
+            Solicita tu medio día de cumpleaños. Puedes tomarlo el día de tu cumpleaños o hasta 1 mes después. Solo puedes solicitarlo una vez por año.
+        </app-alert-box>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Información del Beneficio</h4>
+
+        <!-- Campo de fecha -->
+        <app-date-input
+            formControlName="date"
+            label="Fecha en que tomarás el beneficio"
+            placeholder="dd/mm/yyyy"
+            mode="single"
+            [required]="true"
+            [minDate]="minDate"
+            [maxDate]="maxDate">
+        </app-date-input>
+
+        <!-- Selección de turno -->
+        <app-shift-selector
+            formControlName="shift"
+            label="Turno"
+            [options]="shiftOptions"
+            [required]="true">
+        </app-shift-selector>
+
+        <!-- Información adicional sobre el beneficio -->
+        <div class="benefit-info">
+            <div class="info-item">
+                <ion-icon name="time-outline"></ion-icon>
+                <div class="info-content">
+                    <span class="info-label">Duración</span>
+                    <span class="info-value">Medio día (0.5 días)</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <div class="info-content">
+                    <span class="info-label">Frecuencia</span>
+                    <span class="info-value">Una vez por año</span>
+                </div>
+            </div>
+        </div>
+    </form>
+</app-base-modal>

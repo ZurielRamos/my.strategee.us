@@ -1,0 +1,329 @@
+/**
+ * ADMIN DESIGN STANDARDS
+ * 
+ * Este archivo define los estándares de diseño para todas las páginas del panel de administración.
+ * Todos los componentes y páginas deben seguir estas guías para mantener consistencia visual.
+ */
+
+// ============================================
+// COLORES ESTÁNDAR - AHORA USANDO CSS VARIABLES
+// ============================================
+// Nota: Los colores ahora se obtienen de variables.scss para soporte de temas
+
+// ============================================
+// ESPACIADO Y DIMENSIONES
+// ============================================
+
+$admin-container-max-width: 1400px;    // Ancho máximo del contenedor
+$admin-padding-mobile: 16px;           // Padding en móvil
+$admin-padding-desktop: 24px;          // Padding en desktop
+$admin-border-radius-sm: 12px;         // Border radius pequeño
+$admin-border-radius-md: 16px;         // Border radius mediano
+$admin-border-radius-lg: 24px;         // Border radius grande
+
+// ============================================
+// TIPOGRAFÍA
+// ============================================
+
+$admin-title-size-mobile: 24px;        // Tamaño de título en móvil
+$admin-title-size-desktop: 32px;       // Tamaño de título en desktop
+$admin-title-weight: 800;              // Peso de título
+$admin-subtitle-size: 15px;            // Tamaño de subtítulo
+$admin-body-size: 14px;                // Tamaño de texto normal
+
+// ============================================
+// SOMBRAS - AHORA USANDO CSS VARIABLES
+// ============================================
+// Nota: Las sombras ahora usan variables CSS para soporte de temas
+
+// ============================================
+// BREAKPOINTS
+// ============================================
+
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+
+// ============================================
+// MIXINS ESTÁNDAR
+// ============================================
+
+// Contenedor de página estándar
+@mixin admin-page-container {
+    max-width: $admin-container-max-width;
+    margin: 0 auto;
+    padding: 24px $admin-padding-mobile;
+
+    @media (min-width: $breakpoint-md) {
+        padding: 32px $admin-padding-desktop;
+    }
+}
+
+// Fondo de página estándar
+@mixin admin-page-background {
+    --background: var(--app-background);
+}
+
+// Card estándar
+@mixin admin-card {
+    --background: var(--app-card-bg);
+    border-radius: $admin-border-radius-md;
+    box-shadow: 0 4px 15px var(--app-shadow);
+    margin: 0;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+
+    @media (min-width: $breakpoint-md) {
+        &:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px var(--app-shadow-hover);
+        }
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+// Card con icono estándar (nuevo estándar para módulos/features)
+@mixin admin-card-with-icon {
+    background: var(--app-card-bg);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 4px 15px var(--app-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px var(--app-shadow-hover);
+    }
+
+    .card-icon {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, var(--app-text-primary) 0%, var(--app-text-primary) 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        ion-icon {
+            font-size: 28px;
+            color: var(--app-card-bg);
+        }
+    }
+
+    .card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        margin: 0;
+    }
+
+    .card-description {
+        font-size: 14px;
+        color: var(--app-text-secondary);
+        line-height: 1.6;
+        margin: 0;
+    }
+}
+
+// Botón primario estándar
+@mixin admin-button-primary {
+    --background: var(--app-text-primary);
+    --color: var(--app-card-bg);
+    --border-radius: #{$admin-border-radius-sm};
+    height: 48px;
+    font-weight: 700;
+    font-size: 15px;
+    text-transform: none;
+    padding: 0 24px;
+
+    ion-icon {
+        font-size: 20px;
+    }
+}
+
+// Input/Select estándar
+@mixin admin-input-field {
+    --background: var(--app-input-bg);
+    --border-radius: #{$admin-border-radius-sm};
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --min-height: 48px;
+    border: 1px solid var(--app-input-border);
+    border-radius: $admin-border-radius-sm;
+    transition: border-color 0.2s ease;
+
+    &:focus-within {
+        border-color: var(--app-text-primary);
+    }
+
+    ion-icon {
+        color: var(--app-text-secondary);
+        font-size: 20px;
+        margin-right: 8px;
+    }
+}
+
+// Grid responsivo estándar
+@mixin admin-grid($cols-mobile: 2, $cols-tablet: 3, $cols-desktop: 4, $cols-xl: 5) {
+    display: grid;
+    grid-template-columns: repeat($cols-mobile, 1fr);
+    gap: 12px;
+
+    @media (min-width: $breakpoint-sm) {
+        grid-template-columns: repeat($cols-tablet, 1fr);
+        gap: 16px;
+    }
+
+    @media (min-width: $breakpoint-lg) {
+        grid-template-columns: repeat($cols-desktop, 1fr);
+        gap: 20px;
+    }
+
+    @media (min-width: $breakpoint-xl) {
+        grid-template-columns: repeat($cols-xl, 1fr);
+    }
+}
+
+// Estado vacío estándar
+@mixin admin-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    text-align: center;
+    padding: 48px 24px;
+
+    ion-icon {
+        font-size: 96px;
+        color: var(--app-text-tertiary);
+        margin-bottom: 24px;
+    }
+
+    h2 {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        margin: 0 0 8px 0;
+    }
+
+    p {
+        font-size: 15px;
+        color: var(--app-text-secondary);
+        margin: 0 0 24px 0;
+    }
+}
+
+// Loading spinner estándar
+@mixin admin-loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+
+    ion-spinner {
+        --color: var(--app-text-primary);
+        width: 48px;
+        height: 48px;
+    }
+}
+
+// ============================================
+// CLASES UTILITARIAS ESTÁNDAR
+// ============================================
+
+// Estas clases deben estar disponibles globalmente
+.admin-page-content {
+    @include admin-page-background;
+}
+
+.admin-container {
+    @include admin-page-container;
+}
+
+.desktop-only {
+    display: none;
+
+    @media (min-width: $breakpoint-md) {
+        display: block;
+    }
+}
+
+.mobile-only {
+    display: block;
+
+    @media (min-width: $breakpoint-md) {
+        display: none;
+    }
+}
+
+// ============================================
+// GUÍAS DE USO
+// ============================================
+
+/**
+ * ESTRUCTURA ESTÁNDAR DE PÁGINA:
+ * 
+ * <app-page-header></app-page-header>
+ * 
+ * <ion-content [fullscreen]="true" class="admin-page-content">
+ *   <div class="admin-container">
+ *     <app-page-title 
+ *       title="Título de la Página" 
+ *       subtitle="Descripción breve">
+ *     </app-page-title>
+ *     
+ *     <!-- Contenido de la página -->
+ *   </div>
+ * </ion-content>
+ * 
+ * IMPORTANTE: 
+ * - SIEMPRE usar class="admin-page-content" en ion-content
+ * - SIEMPRE usar class="admin-container" para el contenedor principal
+ * - NO usar nombres personalizados como "media-content", "dashboard-content", etc.
+ */
+
+/**
+ * COLORES DE FONDO:
+ * - Todas las páginas deben usar: --background: #f4f6f8
+ * - Todas las tarjetas/cards deben usar: background: #ffffff
+ * - Esto asegura consistencia visual en toda la aplicación
+ */
+
+/**
+ * ESPACIADO:
+ * - Contenedor principal: max-width 1400px, centrado
+ * - Padding móvil: 24px 16px
+ * - Padding desktop: 32px 24px
+ */
+
+/**
+ * TARJETAS:
+ * - Border radius: 12px-16px
+ * - Sombra: 0 2px 8px rgba(0, 0, 0, 0.08) o 0 4px 15px rgba(0, 0, 0, 0.05)
+ * - Hover: translateY(-4px) + sombra más pronunciada
+ */
+
+/**
+ * BOTONES:
+ * - Primarios: fondo #1a1c1b, texto blanco
+ * - Border radius: 12px
+ * - Altura: 48px
+ * - Font weight: 700
+ */
+
+/**
+ * TIPOGRAFÍA:
+ * - Títulos: 24px móvil / 32px desktop, weight 800
+ * - Subtítulos: 15px, color #7b7f84
+ * - Texto normal: 14-15px
+ */

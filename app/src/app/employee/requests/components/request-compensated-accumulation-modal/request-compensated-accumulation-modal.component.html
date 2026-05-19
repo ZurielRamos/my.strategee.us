@@ -1,0 +1,98 @@
+<app-base-modal 
+    title="Acumular Días Compensados"
+    subtitle="Solicita la acumulación de días compensados por trabajo en días no laborales o certificado de votación"
+    confirmText="Enviar Solicitud"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <!-- Información importante -->
+        <app-alert-box type="info">
+            Solicita la acumulación de días compensados por trabajo en días no laborales o certificado de votación.
+        </app-alert-box>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Información de Acumulación</h4>
+
+        <!-- Fecha del evento -->
+        <app-date-input
+            formControlName="date"
+            label="Fecha del Evento"
+            placeholder="Selecciona la fecha"
+            mode="single"
+            [required]="true"
+            [minDate]="minDate"
+            [maxDate]="maxDate">
+        </app-date-input>
+
+        <!-- Cantidad de días -->
+        <app-form-select
+            label="Cantidad de Días a Acumular"
+            [options]="daysOptions"
+            formControlName="days"
+            placeholder="Selecciona cantidad"
+            [required]="true">
+        </app-form-select>
+
+        <!-- Motivo -->
+        <app-form-select
+            label="Motivo de Acumulación"
+            [options]="reasonOptions"
+            formControlName="reason"
+            placeholder="Selecciona motivo"
+            [required]="true">
+        </app-form-select>
+
+        <!-- Comprobante -->
+        <div class="form-item">
+            <label class="field-label">
+                Comprobante <span class="required">*</span>
+            </label>
+            
+            <div class="upload-section">
+                @if (!form.get('proofUrl')?.value) {
+                    <ion-button expand="block" fill="outline" (click)="uploadProof()">
+                        <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
+                        Subir comprobante
+                    </ion-button>
+                }
+                
+                @if (form.get('proofUrl')?.value) {
+                    <div class="uploaded-file">
+                        <ion-icon name="document-attach-outline"></ion-icon>
+                        <span>{{ uploadedFileName }}</span>
+                        <ion-button fill="clear" color="danger" (click)="removeProof()">
+                            <ion-icon name="close-circle-outline"></ion-icon>
+                        </ion-button>
+                    </div>
+                }
+            </div>
+            <div class="field-note">Formatos permitidos: PDF, JPG, PNG (máx. 5MB)</div>
+        </div>
+
+        <!-- Comentarios -->
+        <app-textarea-input
+            formControlName="comments"
+            label="Comentarios u Observaciones"
+            placeholder="Describe brevemente la situación..."
+            [rows]="3"
+            [maxlength]="500"
+            [showCharCounter]="true">
+        </app-textarea-input>
+
+        <!-- Resumen -->
+        <div class="summary-box">
+            <h4>Resumen</h4>
+            <div class="summary-item">
+                <span class="label">Días a acumular:</span>
+                <span class="value">{{ form.get('days')?.value }} {{ form.get('days')?.value === 1 ? 'día' : 'días' }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Horas equivalentes:</span>
+                <span class="value">{{ calculatedHours }} horas</span>
+            </div>
+        </div>
+    </form>
+</app-base-modal>

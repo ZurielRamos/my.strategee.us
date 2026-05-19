@@ -1,0 +1,119 @@
+<app-base-modal 
+    [title]="title"
+    [subtitle]="subtitle"
+    [confirmText]="mode === 'create' ? 'Crear Empleado' : 'Guardar Cambios'"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    [showFooter]="mode !== 'view'"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <!-- Información Personal -->
+        <h4 class="section-title">Información Personal</h4>
+
+        <app-text-input
+            formControlName="firstName"
+            label="Nombres"
+            placeholder="Ej: Juan Carlos"
+            [required]="true"
+            [readonly]="mode === 'view'">
+        </app-text-input>
+
+        <app-text-input
+            formControlName="lastName"
+            label="Apellidos"
+            placeholder="Ej: García López"
+            [required]="true"
+            [readonly]="mode === 'view'">
+        </app-text-input>
+
+        <div class="form-row">
+            <app-form-select
+                label="Tipo de Documento"
+                [options]="documentTypeOptions"
+                formControlName="documentType"
+                placeholder="Seleccione tipo"
+                [required]="true">
+            </app-form-select>
+
+            <app-text-input
+                formControlName="documentNumber"
+                label="Número de Documento"
+                placeholder="Ej: 12345678"
+                [required]="true"
+                [readonly]="mode === 'view'">
+            </app-text-input>
+        </div>
+
+        <div class="form-row">
+            <app-date-input
+                formControlName="birthDate"
+                label="Fecha de Nacimiento"
+                mode="single"
+                [required]="true">
+            </app-date-input>
+
+            <app-form-select
+                label="Género"
+                [options]="genderOptions"
+                formControlName="gender"
+                placeholder="Seleccione género"
+                [required]="true">
+            </app-form-select>
+        </div>
+
+        <app-textarea-input
+            formControlName="address"
+            label="Dirección"
+            placeholder="Ej: Av. Principal 123, Lima"
+            [required]="true"
+            [readonly]="mode === 'view'"
+            [rows]="2">
+        </app-textarea-input>
+
+        <!-- Información de Contacto -->
+        <h4 class="section-title">Información de Contacto</h4>
+        
+        <app-text-input
+            formControlName="personalPhone"
+            label="Teléfono Personal"
+            placeholder="Ej: +51 999 999 999"
+            type="tel"
+            [required]="true"
+            [readonly]="mode === 'view'">
+        </app-text-input>
+
+        <app-text-input
+            formControlName="personalEmail"
+            label="Email Personal"
+            placeholder="Ej: juan.garcia@email.com"
+            type="email"
+            [required]="true"
+            [readonly]="mode === 'view'">
+        </app-text-input>
+
+        <app-text-input
+            formControlName="corporateEmail"
+            label="Email Corporativo"
+            placeholder="Ej: juan.garcia@empresa.com"
+            type="email"
+            [readonly]="mode === 'view'">
+        </app-text-input>
+
+        <!-- Configuración IDO -->
+        <h4 class="section-title">Configuración IDO</h4>
+
+        <app-text-input
+            formControlName="idoLimit"
+            label="Límite de IDO"
+            placeholder="Ej: 90"
+            type="number"
+            [required]="true"
+            [min]="0"
+            [max]="99"
+            [readonly]="mode === 'view'">
+        </app-text-input>
+        <p class="field-hint">Porcentaje mínimo requerido (0–99). Las solicitudes con validación IDO verificarán que el indicador del empleado supere este valor.</p>
+    </form>
+</app-base-modal>

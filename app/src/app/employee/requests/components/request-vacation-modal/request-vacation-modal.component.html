@@ -1,0 +1,67 @@
+<app-base-modal 
+    title="Solicitar Vacaciones"
+    subtitle="Selecciona el período de vacaciones que deseas solicitar"
+    confirmText="Enviar Solicitud"
+    [confirmDisabled]="requestForm.invalid || isSubmitting || totalBusinessDays === 0"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="requestForm">
+        <h4 class="section-title">Período de Vacaciones</h4>
+        
+        <app-date-input
+            formControlName="dateRange"
+            label="Período de Vacaciones"
+            placeholder="dd/mm/yyyy al dd/mm/yyyy"
+            mode="range"
+            [required]="true"
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+            [disabledDaysOfWeek]="[0]"
+            [customValidator]="isDateExceedingQuota"
+            (dateChange)="onDateChange($event)">
+        </app-date-input>
+
+        @if (dateRangeControl?.invalid && dateRangeControl?.touched) {
+            <div class="error-message">
+                Debes seleccionar un período válido
+            </div>
+        }
+
+        @if (totalBusinessDays > 0) {
+            <div class="selection-summary">
+                <div class="summary-item">
+                    <span class="summary-label">Período seleccionado:</span>
+                    <span class="summary-value">{{ getFormattedDateRange() }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Días hábiles:</span>
+                    <span class="summary-value">{{ totalBusinessDays }} día(s)</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Días disponibles:</span>
+                    <span class="summary-value">{{ vacationBalance.availableBalance }} día(s)</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Saldo restante:</span>
+                    <span class="summary-value" 
+                          [class.available]="totalBusinessDays <= vacationBalance.availableBalance" 
+                          [class.exceeded]="totalBusinessDays > vacationBalance.availableBalance">
+                        {{ vacationBalance.availableBalance - totalBusinessDays }} día(s)
+                    </span>
+                </div>
+            </div>
+        }
+
+        <app-alert-box type="info">
+            Se cuentan días de lunes a sábado. Los domingos están excluidos automáticamente del cálculo. El calendario bloqueará fechas que excedan tus días disponibles.
+        </app-alert-box>
+
+        @if (errorMessage) {
+            <app-alert-box type="danger">
+                {{ errorMessage }}
+            </app-alert-box>
+        }
+    </form>
+</app-base-modal>

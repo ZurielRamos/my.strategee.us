@@ -1,0 +1,62 @@
+<app-base-modal 
+    [title]="title"
+    subtitle="Complete los campos requeridos"
+    confirmText="Guardar"
+    [confirmDisabled]="!locationForm.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="locationForm">
+        <!-- Título de sección -->
+        <h4 class="section-title">Información General</h4>
+
+        <!-- Campo de nombre -->
+        <app-text-input
+            formControlName="name"
+            label="Nombre de la Ubicación"
+            placeholder="Ej: Oficina Principal"
+            [required]="true">
+        </app-text-input>
+
+        <!-- Campo de dirección -->
+        <app-text-input
+            formControlName="address"
+            label="Dirección"
+            placeholder="Ej: Calle 100 # 15-20">
+        </app-text-input>
+
+        <!-- Campos de ciudad y país en fila -->
+        <div class="form-row">
+            <app-text-input
+                formControlName="city"
+                label="Ciudad"
+                placeholder="Ej: Bogotá">
+            </app-text-input>
+
+            <app-text-input
+                formControlName="country"
+                label="País"
+                placeholder="Ej: Colombia">
+            </app-text-input>
+        </div>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Detalles</h4>
+
+        <!-- Campo de descripción -->
+        <app-textarea-input
+            formControlName="description"
+            label="Descripción"
+            placeholder="Ej: Sede central de la empresa"
+            [rows]="3">
+        </app-textarea-input>
+
+        @if (errorMessage) {
+            <app-alert-box type="danger">
+                {{ errorMessage }}
+            </app-alert-box>
+        }
+    </form>
+    
+</app-base-modal>

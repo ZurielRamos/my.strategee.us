@@ -1,0 +1,21 @@
+<ion-card class="global-parameter-card" (click)="cardClick.emit(parameter)" ion-activatable>
+  <ion-ripple-effect></ion-ripple-effect>
+  
+  <div class="card-header">
+    <div class="icon-container">
+      <ion-icon name="globe-outline"></ion-icon>
+    </div>
+  </div>
+
+  <div class="card-content">
+    <h3 class="parameter-key">{{ parameter.key }}</h3>
+    <div class="parameter-value">
+      <span class="currency">$</span>
+      <span class="amount">{{ parameter.value | number:'1.0-0' }}</span>
+    </div>
+    <div class="parameter-date">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <span>Vigente desde: {{ parameter.validFrom | date:'dd/MM/yyyy' }}</span>
+    </div>
+  </div>
+</ion-card>

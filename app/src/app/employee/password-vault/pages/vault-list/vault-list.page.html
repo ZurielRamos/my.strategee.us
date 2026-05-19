@@ -1,0 +1,53 @@
+<app-page-header pageTitle="Password Vault"></app-page-header>
+
+<ion-content>
+  <div class="page-container">
+    <div class="page-header">
+      <app-page-title 
+        title="Mis Vaults" 
+        subtitle="Organiza tus credenciales en contenedores">
+      </app-page-title>
+
+      <ion-button class="desktop-create-btn" (click)="openCreateModal()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Crear Vault
+      </ion-button>
+    </div>
+
+    @if (loading) {
+      <div class="loading-container">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Cargando vaults...</p>
+      </div>
+    } @else if (vaults.length === 0) {
+      <div class="empty-state">
+        <ion-icon name="folder-outline"></ion-icon>
+        <h3>No tienes vaults</h3>
+        <p>Crea tu primer vault para comenzar a organizar tus credenciales</p>
+        <ion-button (click)="openCreateModal()">
+          <ion-icon slot="start" name="add-outline"></ion-icon>
+          Crear Vault
+        </ion-button>
+      </div>
+    } @else {
+      <div class="vaults-grid">
+        @for (vault of vaults; track vault.id) {
+          <app-vault-card
+            [vault]="vault"
+            [isOwner]="isOwner(vault)"
+            (cardClick)="navigateToCredentials(vault.id)"
+            (editClick)="openEditModal(vault)"
+            (deleteClick)="deleteVault(vault)">
+          </app-vault-card>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- FAB for mobile -->
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end" class="mobile-fab">
+    <ion-fab-button (click)="openCreateModal()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

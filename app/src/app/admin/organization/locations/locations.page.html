@@ -1,0 +1,67 @@
+<app-page-header 
+    [showSearch]="true" 
+    [useCustomSearch]="true"
+    (searchChange)="onSearchChange($event)"
+></app-page-header>
+
+<ion-content [fullscreen]="true" class="locations-content">
+    <div class="page-container">
+        <!-- Page Title & Controls -->
+        <div class="page-title-section">
+            <div class="title-text">
+                <h1>Ubicaciones</h1>
+                <p>Gestiona las ubicaciones y sedes de tu organización</p>
+            </div>
+            <div class="title-controls desktop-only">
+                <ion-button (click)="openCreateModal()" class="add-button">
+                    <ion-icon slot="start" name="add-outline"></ion-icon>
+                    Nueva Ubicación
+                </ion-button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        <!-- Locations Grid -->
+        @if (!isLoading && filteredLocations.length > 0) {
+        <div class="locations-grid">
+            @for (location of filteredLocations; track location.id) {
+            <app-location-card 
+                [location]="location" 
+                (cardClick)="openEditModal($event)">
+            </app-location-card>
+            }
+        </div>
+        }
+
+        <!-- Empty State -->
+        @if (!isLoading && filteredLocations.length === 0 && !searchTerm) {
+        <div class="empty-state">
+            <ion-icon name="location-outline"></ion-icon>
+            <h2>No hay ubicaciones registradas</h2>
+            <p>Comienza agregando tu primera ubicación o sede</p>
+        </div>
+        }
+
+        <!-- No Results State -->
+        @if (!isLoading && filteredLocations.length === 0 && searchTerm) {
+        <div class="empty-state">
+            <ion-icon name="location-outline"></ion-icon>
+            <h2>No se encontraron resultados</h2>
+            <p>No hay ubicaciones que coincidan con "{{ searchTerm }}"</p>
+        </div>
+        }
+    </div>
+
+    <!-- Mobile FAB -->
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end" class="mobile-only">
+        <ion-fab-button (click)="openCreateModal()" color="dark">
+            <ion-icon name="add-outline"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+</ion-content>

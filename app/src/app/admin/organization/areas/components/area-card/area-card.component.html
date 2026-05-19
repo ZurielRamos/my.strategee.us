@@ -1,0 +1,22 @@
+<ion-card class="area-card" (click)="onCardClick()">
+    <ion-card-header>
+        <ion-card-title>{{ area.name }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+        <div class="area-info">
+            @if (area.costCenterCode) {
+            <div class="info-row">
+                <span class="label">Centro de Costos:</span>
+                <span class="value">{{ area.costCenterCode }}</span>
+            </div>
+            }
+            @if (area.company) {
+            <div class="info-row">
+                <span class="label">Empresa:</span>
+                <span class="value">{{ area.company.name }}</span>
+            </div>
+            }
+        </div>
+    </ion-card-content>
+</ion-card>

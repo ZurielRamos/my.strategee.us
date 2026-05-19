@@ -1,0 +1,15 @@
+import { IsDateString, IsNotEmpty, IsString, IsOptional } from 'class-validator';
+
+export class VacationDetailsDto {
+    @IsDateString()
+    @IsNotEmpty()
+    startDate: string;
+
+    @IsDateString()
+    @IsNotEmpty()
+    endDate: string;
+
+    @IsString()
+    @IsOptional()
+    reason?: string;
+}

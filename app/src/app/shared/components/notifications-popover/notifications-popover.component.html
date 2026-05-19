@@ -1,0 +1,52 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Notificaciones</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="close()">
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    @if (loading) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+    } @else {
+        <div class="notifications-container">
+            @if (notifications.length > 0) {
+                @for (notification of notifications; track notification.id) {
+                    <div class="notification-item" 
+                         [class.unread]="isUnread(notification)" 
+                         (click)="navigateToRequest(notification)">
+                        <div class="notification-icon">
+                            <ion-icon [name]="getNotificationIcon(notification.type)"></ion-icon>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-message">{{ notification.message }}</div>
+                            <div class="notification-time">{{ formatTime(notification.createdAt) }}</div>
+                        </div>
+                        @if (isUnread(notification)) {
+                            <div class="unread-dot"></div>
+                        }
+                    </div>
+                }
+            } @else {
+                <div class="empty-notifications">
+                    <ion-icon name="notifications-off-outline"></ion-icon>
+                    <p>No tienes notificaciones</p>
+                </div>
+            }
+        </div>
+    }
+</ion-content>
+
+<ion-footer class="ion-no-border">
+    <ion-toolbar>
+        <ion-button expand="block" fill="clear" (click)="markAllAsRead()" [disabled]="!hasUnreadNotifications">
+            Marcar todas como leídas
+        </ion-button>
+    </ion-toolbar>
+</ion-footer>

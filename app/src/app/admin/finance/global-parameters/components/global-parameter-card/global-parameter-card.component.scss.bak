@@ -1,0 +1,89 @@
+@import '../../../../../../theme/admin-standards.scss';
+
+.global-parameter-card {
+  @include admin-card;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  .card-header {
+    padding: 24px 24px 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .icon-container {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #1a1c1b 0%, #2a2c2b 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      ion-icon {
+        font-size: 24px;
+        color: #ffffff;
+      }
+    }
+  }
+
+  .card-content {
+    padding: 0 24px 24px 24px;
+
+    .parameter-key {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--app-text-primary);
+      margin: 0 0 12px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .parameter-value {
+      display: flex;
+      align-items: baseline;
+      margin-bottom: 16px;
+
+      .currency {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--app-text-secondary);
+        margin-right: 4px;
+      }
+
+      .amount {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--app-text-primary);
+        line-height: 1;
+      }
+    }
+
+    .parameter-date {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--app-hover-bg);
+      border-radius: 8px;
+
+      ion-icon {
+        font-size: 16px;
+        color: var(--app-text-secondary);
+      }
+
+      span {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--app-text-secondary);
+      }
+    }
+  }
+}

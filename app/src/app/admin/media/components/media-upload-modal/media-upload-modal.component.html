@@ -1,0 +1,98 @@
+<app-base-modal 
+    title="Subir Archivo"
+    subtitle="Seleccione un archivo y complete los campos opcionales"
+    confirmText="Subir Archivo"
+    [confirmDisabled]="!selectedFile"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="uploadForm">
+        <!-- File Upload Area -->
+        <div 
+            class="upload-area"
+            [class.drag-over]="dragOver"
+            [class.has-file]="selectedFile"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+            (click)="fileInput.click()"
+        >
+            @if (!selectedFile) {
+            <div class="upload-placeholder">
+                <ion-icon name="cloud-upload-outline"></ion-icon>
+                <h3>Arrastra tu archivo aquí</h3>
+                <p>o haz clic para seleccionar</p>
+                <span class="file-limit">Tamaño máximo: 10MB</span>
+            </div>
+            } @else {
+            <div class="file-preview">
+                @if (filePreview) {
+                <img [src]="filePreview" [alt]="selectedFile.name" />
+                } @else {
+                <div class="file-icon">
+                    <ion-icon name="document-outline"></ion-icon>
+                </div>
+                }
+                <div class="file-info">
+                    <h4>{{ selectedFile.name }}</h4>
+                    <p>{{ formatFileSize(selectedFile.size) }}</p>
+                </div>
+                <ion-button 
+                    fill="clear" 
+                    size="small" 
+                    color="danger" 
+                    (click)="removeFile(); $event.stopPropagation()"
+                    class="remove-button"
+                >
+                    <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+            </div>
+            }
+            <input 
+                #fileInput
+                type="file" 
+                (change)="onFileSelected($event)"
+                style="display: none"
+            />
+        </div>
+
+        <!-- Upload Progress -->
+        @if (isSubmitting) {
+        <ion-progress-bar type="indeterminate"></ion-progress-bar>
+        }
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Información del Archivo</h4>
+
+        <!-- Campo de título -->
+        <app-text-input
+            formControlName="title"
+            label="Título"
+            placeholder="Título del archivo">
+        </app-text-input>
+
+        <!-- Campo de carpeta/tipo -->
+        <app-form-select
+            label="Carpeta"
+            [options]="mediaTypeOptions"
+            formControlName="folder"
+            placeholder="Seleccione una carpeta">
+        </app-form-select>
+
+        <!-- Campo de descripción -->
+        <app-text-input
+            formControlName="description"
+            label="Descripción"
+            placeholder="Describe el archivo">
+        </app-text-input>
+
+        <!-- Campo de texto alternativo -->
+        <app-text-input
+            formControlName="alt"
+            label="Texto Alternativo"
+            placeholder="Para accesibilidad">
+        </app-text-input>
+    </form>
+    
+</app-base-modal>

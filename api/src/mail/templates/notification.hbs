@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualización de Solicitud</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 32px 30px; text-align: center; color: #ffffff; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 600; }
+        .header p { margin: 8px 0 0 0; font-size: 15px; opacity: 0.9; }
+        .content { padding: 36px 30px; color: #333333; line-height: 1.6; }
+        .greeting { font-size: 18px; font-weight: 600; color: #333333; margin-bottom: 16px; }
+        .message-box { background-color: #f0f7ff; border-left: 4px solid #3b82f6; padding: 20px; border-radius: 4px; font-size: 15px; color: #1e3a5f; margin-bottom: 24px; }
+        .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin: 24px 0 12px 0; }
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table tr { border-bottom: 1px solid #f0f0f0; }
+        .info-table tr:last-child { border-bottom: none; }
+        .info-table td { padding: 10px 4px; font-size: 14px; vertical-align: top; }
+        .info-table td:first-child { color: #6b7280; width: 45%; font-weight: 500; }
+        .info-table td:last-child { color: #111827; font-weight: 400; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #ffffff; }
+        .reviewer-comment { background-color: #fef9ec; border-left: 4px solid #f59e0b; padding: 14px 16px; border-radius: 4px; font-size: 14px; color: #78350f; margin-top: 16px; }
+        .reviewer-comment strong { display: block; margin-bottom: 4px; color: #92400e; }
+        .divider { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0; }
+        .footer { background-color: #f8f9fa; padding: 24px 30px; text-align: center; color: #888888; font-size: 13px; border-top: 1px solid #e0e0e0; }
+        .footer p { margin: 4px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div style="font-size: 40px; margin-bottom: 8px;">🔔</div>
+            <h1>Actualización de Solicitud</h1>
+            <p>{{title}}</p>
+        </div>
+        <div class="content">
+            <div class="greeting">Hola {{employeeName}},</div>
+            <div class="message-box">{{message}}</div>
+
+            {{#if requestDetails}}
+            <div class="section-title">Información de la Solicitud</div>
+            <table class="info-table">
+                {{#if requestDetails.requestId}}
+                <tr>
+                    <td>N° de Solicitud</td>
+                    <td>#{{requestDetails.requestId}}</td>
+                </tr>
+                {{/if}}
+                {{#if requestDetails.requestType}}
+                <tr>
+                    <td>Tipo</td>
+                    <td>{{requestDetails.requestType}}</td>
+                </tr>
+                {{/if}}
+                {{#if requestDetails.createdAt}}
+                <tr>
+                    <td>Fecha de creación</td>
+                    <td>{{requestDetails.createdAt}}</td>
+                </tr>
+                {{/if}}
+                {{#if requestDetails.previousStatus}}
+                <tr>
+                    <td>Estado anterior</td>
+                    <td>{{requestDetails.previousStatus}}</td>
+                </tr>
+                {{/if}}
+                {{#if requestDetails.newStatus}}
+                <tr>
+                    <td>Estado actual</td>
+                    <td>
+                        <span class="status-badge" style="background-color: {{requestDetails.newStatusColor}};">
+                            {{requestDetails.newStatus}}
+                        </span>
+                    </td>
+                </tr>
+                {{/if}}
+            </table>
+
+            {{#if requestDetails.details.length}}
+            <hr class="divider">
+            <div class="section-title">Detalles de la Solicitud</div>
+            <table class="info-table">
+                {{#each requestDetails.details}}
+                <tr>
+                    <td>{{this.label}}</td>
+                    <td>{{this.value}}</td>
+                </tr>
+                {{/each}}
+            </table>
+            {{/if}}
+
+            {{#if requestDetails.reviewerComment}}
+            <div class="reviewer-comment">
+                <strong>Comentario del revisor:</strong>
+                {{requestDetails.reviewerComment}}
+            </div>
+            {{/if}}
+            {{/if}}
+        </div>
+        <div class="footer">
+            <p><strong>My Strategee</strong></p>
+            <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
+            <p style="margin-top: 12px; font-size: 11px; color: #bbbbbb;">© 2026 My Strategee. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>

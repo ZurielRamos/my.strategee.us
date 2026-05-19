@@ -1,0 +1,103 @@
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--app-text-primary);
+    margin: 24px 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--app-border-light);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    @media (max-width: 576px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+ion-item {
+    --background: var(--app-hover-bg);
+    --border-radius: 12px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --min-height: 56px;
+    --border-width: 0;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+
+    &:focus-within {
+        --background: var(--app-card-bg);
+        box-shadow: 0 0 0 2px var(--app-text-primary);
+    }
+
+    &.toggle-item {
+        --min-height: 72px;
+        align-items: flex-start;
+        padding-top: 12px;
+        padding-bottom: 12px;
+
+        ion-label {
+            h3 {
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--app-text-primary);
+                margin: 0 0 4px 0;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            p {
+                font-size: 12px;
+                color: var(--app-text-secondary);
+                margin: 0;
+                font-weight: 400;
+                text-transform: none;
+                letter-spacing: 0;
+            }
+        }
+
+        ion-toggle {
+            margin-top: 4px;
+        }
+    }
+
+    ion-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    ion-input {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--app-text-primary);
+        --padding-start: 0;
+        --padding-end: 0;
+
+        &::placeholder {
+            color: var(--app-text-secondary);
+            opacity: 0.7;
+        }
+    }
+
+    ion-note {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--app-text-secondary);
+        margin-top: 8px;
+
+        ion-icon {
+            font-size: 14px;
+        }
+    }
+}

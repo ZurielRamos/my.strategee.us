@@ -1,0 +1,52 @@
+<app-base-modal 
+    [title]="title"
+    subtitle="Complete los campos requeridos"
+    confirmText="Guardar"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    [showFooter]="mode !== 'view'"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <!-- Título de sección -->
+        <h4 class="section-title">Información del Parámetro</h4>
+
+        <!-- Campo de clave -->
+        <app-text-input
+            formControlName="key"
+            label="Clave del Parámetro"
+            placeholder="Ej: MINIMUM_WAGE"
+            [required]="true"
+            [readonly]="isKeyReadonly"
+            helperText="La clave no se puede modificar después de crear el parámetro"
+            helperIcon="lock-closed-outline">
+        </app-text-input>
+
+        <!-- Campo de valor -->
+        <app-text-input
+            formControlName="value"
+            label="Valor"
+            placeholder="Ej: 1300000"
+            type="number"
+            [required]="true"
+            [min]="0">
+        </app-text-input>
+
+        <!-- Campo de fecha de vigencia -->
+        <app-date-input
+            formControlName="validFrom"
+            label="Fecha de Vigencia"
+            placeholder="Selecciona fecha"
+            mode="single"
+            [required]="true"
+            [minDate]="minDate">
+        </app-date-input>
+
+        <!-- Mensaje informativo -->
+        <app-alert-box type="info">
+            Los parámetros globales se utilizan para configurar valores del sistema que pueden cambiar con el tiempo.
+        </app-alert-box>
+    </form>
+    
+</app-base-modal>

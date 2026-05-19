@@ -1,0 +1,198 @@
+:host {
+    --modal-height: 800px;
+}
+
+ion-header {
+    ion-toolbar {
+        --background: var(--app-card-bg);
+        --color: var(--app-text-primary);
+        --border-width: 0;
+        --min-height: 64px;
+        border-radius: 24px 24px 0 0;
+    }
+
+    ion-title {
+        font-weight: 800;
+        font-size: 20px;
+        color: var(--app-text-primary);
+    }
+
+    ion-button {
+        --color: var(--app-text-secondary);
+
+        ion-icon {
+            font-size: 24px;
+        }
+    }
+}
+
+ion-content {
+    --background: var(--app-card-bg);
+    border-radius: 0 0 24px 24px;
+}
+
+.contract-form {
+    padding: 0;
+}
+
+.form-section {
+    padding: 24px;
+
+    @media (min-width: 768px) {
+        padding: 32px;
+    }
+
+    .employee-info {
+        margin-bottom: 24px;
+        padding: 16px;
+        background: var(--app-hover-bg);
+        border-radius: 12px;
+
+        h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin: 0 0 4px 0;
+        }
+
+        p {
+            font-size: 13px;
+            color: var(--app-text-secondary);
+            margin: 0;
+        }
+    }
+
+    .section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        margin: 24px 0 16px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--app-border-light);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+
+        @media (max-width: 576px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    ion-item {
+        --background: var(--app-hover-bg);
+        --border-radius: 12px;
+        --padding-start: 16px;
+        --padding-end: 16px;
+        --min-height: 56px;
+        --border-width: 0;
+        margin-bottom: 16px;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+
+        &:focus-within {
+            --background: var(--app-card-bg);
+            box-shadow: 0 0 0 2px var(--app-text-primary);
+        }
+
+        ion-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        ion-input,
+        ion-select,
+        ion-textarea {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--app-text-primary);
+            --padding-start: 0;
+            --padding-end: 0;
+
+            &::placeholder {
+                color: var(--app-text-secondary);
+                opacity: 0.7;
+            }
+        }
+
+        ion-select {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        ion-note {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--app-text-secondary);
+            margin-top: 8px;
+
+            ion-icon {
+                font-size: 14px;
+            }
+        }
+    }
+
+    .info-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+        background: #e3f2fd;
+        border-radius: 12px;
+        margin-top: 8px;
+
+        ion-icon {
+            font-size: 24px;
+            color: #1976d2;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        p {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #1565c0;
+            margin: 0;
+        }
+    }
+}
+
+.form-actions {
+    padding: 0 24px 24px 24px;
+
+    @media (min-width: 768px) {
+        padding: 0 32px 32px 32px;
+    }
+
+    ion-button {
+        --background: var(--app-text-primary);
+        --background-activated: #000000;
+        --background-hover: var(--app-hover-bg);
+        --color: #ffffff;
+        --border-radius: 12px;
+        height: 52px;
+        font-weight: 700;
+        font-size: 15px;
+        text-transform: none;
+        margin: 0;
+
+        &:disabled {
+            --background: var(--app-border);
+            --color: var(--app-text-tertiary);
+        }
+
+        ion-spinner {
+            --color: #ffffff;
+        }
+    }
+}

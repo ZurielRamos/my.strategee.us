@@ -1,0 +1,12 @@
+<div class="alert-box" [class]="'alert-' + type">
+    <ion-icon [name]="iconName"></ion-icon>
+    <div class="alert-content">
+        <p>
+            @if (message) {
+                <p>{{ message }}</p>
+            } @else {
+                <ng-content></ng-content>
+            }
+        </p>
+    </div>
+</div>

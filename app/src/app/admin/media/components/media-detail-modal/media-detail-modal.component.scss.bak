@@ -1,0 +1,281 @@
+ion-header {
+    ion-toolbar {
+        --background: var(--app-card-bg);
+        --border-width: 0;
+        --padding-top: 8px;
+        --padding-bottom: 8px;
+
+        ion-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+        }
+
+        ion-button {
+            --color: var(--app-text-secondary);
+
+            ion-icon {
+                font-size: 24px;
+            }
+        }
+    }
+}
+
+ion-content {
+    --background: var(--app-hover-bg);
+}
+
+.detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+
+    @media (min-width: 768px) {
+        padding: 24px;
+        gap: 20px;
+    }
+}
+
+.preview-section {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    flex-shrink: 0;
+
+    @media (min-width: 768px) {
+        padding: 24px;
+    }
+
+    .image-preview {
+        width: 100%;
+        max-height: 300px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--app-hover-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+
+        @media (min-width: 768px) {
+            max-height: 400px;
+        }
+
+        ion-img {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            object-fit: contain;
+
+            @media (min-width: 768px) {
+                max-height: 400px;
+            }
+        }
+    }
+
+    .file-preview {
+        width: 100%;
+        min-height: 180px;
+        border-radius: 12px;
+        background: var(--app-hover-bg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        margin-bottom: 16px;
+
+        @media (min-width: 768px) {
+            min-height: 220px;
+            padding: 32px;
+        }
+
+        ion-icon {
+            font-size: 64px;
+            color: var(--app-text-secondary);
+            margin-bottom: 12px;
+
+            @media (min-width: 768px) {
+                font-size: 80px;
+                margin-bottom: 16px;
+            }
+        }
+
+        .file-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--app-text-primary);
+            text-align: center;
+            word-break: break-word;
+            margin: 0;
+
+            @media (min-width: 768px) {
+                font-size: 16px;
+            }
+        }
+    }
+
+    .file-info {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 12px;
+
+        .info-chip {
+            --background: var(--app-border);
+            --color: var(--app-text-primary);
+            height: 26px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0;
+
+            @media (min-width: 768px) {
+                height: 28px;
+                font-size: 13px;
+            }
+        }
+    }
+
+    .upload-date {
+        text-align: center;
+        font-size: 12px;
+        color: var(--app-text-secondary);
+        margin: 0;
+
+        @media (min-width: 768px) {
+            font-size: 13px;
+        }
+    }
+}
+
+.edit-form {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    flex-shrink: 0;
+
+    @media (min-width: 768px) {
+        padding: 24px;
+    }
+
+    ion-item {
+        --background: transparent;
+        --border-radius: 0;
+        --padding-start: 0;
+        --padding-end: 0;
+        --inner-padding-end: 0;
+        --min-height: auto;
+        margin-bottom: 20px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        ion-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+
+            @media (min-width: 768px) {
+                font-size: 14px;
+            }
+        }
+
+        ion-input,
+        ion-textarea {
+            --background: var(--app-hover-bg);
+            --padding-start: 12px;
+            --padding-end: 12px;
+            --padding-top: 10px;
+            --padding-bottom: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 4px;
+
+            @media (min-width: 768px) {
+                font-size: 15px;
+                --padding-start: 16px;
+                --padding-end: 16px;
+                --padding-top: 12px;
+                --padding-bottom: 12px;
+            }
+        }
+    }
+}
+
+.actions-section {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    flex-shrink: 0;
+
+    @media (min-width: 768px) {
+        padding: 24px;
+    }
+
+    .save-button {
+        --background: var(--app-text-primary);
+        --background-activated: #000000;
+        --background-hover: var(--app-hover-bg);
+        --color: #ffffff;
+        --border-radius: 12px;
+        height: 48px;
+        font-weight: 700;
+        font-size: 15px;
+        text-transform: none;
+        margin-bottom: 12px;
+
+        ion-icon {
+            font-size: 20px;
+        }
+
+        ion-spinner {
+            --color: #ffffff;
+        }
+    }
+
+    .secondary-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+
+        ion-button {
+            --border-radius: 12px;
+            --border-width: 2px;
+            height: 44px;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: none;
+            margin: 0;
+
+            ion-icon {
+                font-size: 18px;
+            }
+        }
+
+        .download-button {
+            --border-color: var(--app-text-primary);
+            --color: var(--app-text-primary);
+            --background-activated: #f4f6f8;
+            --background-hover: #f4f6f8;
+        }
+
+        .delete-button {
+            --border-color: #dc3545;
+            --color: #dc3545;
+            --background-activated: #fff5f5;
+            --background-hover: #fff5f5;
+        }
+    }
+}

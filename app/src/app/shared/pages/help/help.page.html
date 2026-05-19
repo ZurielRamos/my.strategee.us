@@ -1,0 +1,84 @@
+<app-page-header></app-page-header>
+
+<ion-content [fullscreen]="true" class="help-content">
+    <div class="page-container">
+        <!-- Header -->
+        <div class="help-header">
+            <ion-icon name="help-circle-outline" class="header-icon"></ion-icon>
+            <h1>Centro de Ayuda</h1>
+            <p>Encuentra respuestas a las preguntas más frecuentes</p>
+        </div>
+
+        <!-- Contact Cards -->
+        <div class="contact-cards">
+            <ion-card class="contact-card">
+                <ion-card-content>
+                    <ion-icon name="mail-outline"></ion-icon>
+                    <div class="contact-info">
+                        <h3>Email</h3>
+                        <p>soporte@empresa.com</p>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+
+            <ion-card class="contact-card">
+                <ion-card-content>
+                    <ion-icon name="call-outline"></ion-icon>
+                    <div class="contact-info">
+                        <h3>Teléfono</h3>
+                        <p>+1 (555) 123-4567</p>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+
+            <ion-card class="contact-card">
+                <ion-card-content>
+                    <ion-icon name="time-outline"></ion-icon>
+                    <div class="contact-info">
+                        <h3>Horario</h3>
+                        <p>Lun - Vie: 9:00 - 18:00</p>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2>Preguntas Frecuentes</h2>
+
+            <div class="faq-categories">
+                <ion-card *ngFor="let category of faqCategories" class="faq-category-card">
+                    <ion-card-header>
+                        <ion-card-title>
+                            <ion-icon [name]="category.icon"></ion-icon>
+                            {{ category.title }}
+                        </ion-card-title>
+                    </ion-card-header>
+                    <ion-card-content>
+                        <ion-accordion-group>
+                            <ion-accordion *ngFor="let item of category.items; let i = index" [value]="i.toString()">
+                                <ion-item slot="header" class="faq-question">
+                                    <ion-label>{{ item.question }}</ion-label>
+                                </ion-item>
+                                <div slot="content" class="faq-answer">
+                                    {{ item.answer }}
+                                </div>
+                            </ion-accordion>
+                        </ion-accordion-group>
+                    </ion-card-content>
+                </ion-card>
+            </div>
+        </div>
+
+        <!-- Additional Help -->
+        <ion-card class="additional-help-card">
+            <ion-card-content>
+                <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+                <div class="help-text">
+                    <h3>¿No encontraste lo que buscabas?</h3>
+                    <p>Nuestro equipo de soporte está disponible para ayudarte. Contáctanos por correo o teléfono y te responderemos lo antes posible.</p>
+                </div>
+            </ion-card-content>
+        </ion-card>
+    </div>
+</ion-content>

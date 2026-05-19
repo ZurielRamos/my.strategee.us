@@ -1,0 +1,124 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>{{ title }}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()" fill="clear">
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="selector-container">
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <ion-searchbar 
+                [(ngModel)]="searchTitle" 
+                (ionInput)="onSearchChange()"
+                placeholder="Buscar por título..."
+                debounce="500">
+            </ion-searchbar>
+
+            <div class="filter-row">
+                <ion-item lines="none" class="folder-select">
+                    <ion-label>Carpeta</ion-label>
+                    <ion-select 
+                        [(ngModel)]="selectedFolder" 
+                        (ionChange)="onFilterChange()"
+                        placeholder="Todas"
+                        interface="popover">
+                        <ion-select-option [value]="undefined">Todas</ion-select-option>
+                        <ion-select-option [value]="AttachmentFolder.GENERAL">General</ion-select-option>
+                        <ion-select-option [value]="AttachmentFolder.EMPLOYEES">Empleados</ion-select-option>
+                        <ion-select-option [value]="AttachmentFolder.CONTRACTS">Contratos</ion-select-option>
+                        <ion-select-option [value]="AttachmentFolder.REQUESTS">Solicitudes</ion-select-option>
+                        <ion-select-option [value]="AttachmentFolder.LOGOS">Logos</ion-select-option>
+                    </ion-select>
+                </ion-item>
+
+                @if (allowUpload) {
+                <ion-button 
+                    (click)="openUploadModal()" 
+                    class="upload-button"
+                    fill="outline">
+                    <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
+                    {{ uploadButtonText }}
+                </ion-button>
+                }
+            </div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="content-section">
+            <!-- Loading State -->
+            @if (isLoading) {
+            <div class="loading-container">
+                <ion-spinner name="crescent"></ion-spinner>
+                <p>Cargando {{ getTypeLabel() }}...</p>
+            </div>
+            }
+
+            <!-- Attachments Grid -->
+            @if (!isLoading && attachments.length > 0) {
+            <div class="attachments-grid">
+                @for (attachment of attachments; track attachment.id) {
+                <ion-card 
+                    class="attachment-card"
+                    [class.selected]="selectedAttachment?.id === attachment.id"
+                    (click)="selectAttachment(attachment)">
+                    <div class="media-preview">
+                        <ion-img [src]="getImageUrl(attachment)" [alt]="attachment.alt || attachment.name"></ion-img>
+                        @if (selectedAttachment?.id === attachment.id) {
+                        <div class="selected-overlay">
+                            <ion-icon name="checkmark-circle"></ion-icon>
+                        </div>
+                        }
+                    </div>
+                    <ion-card-content>
+                        <div class="attachment-info">
+                            <p class="attachment-title">{{ attachment.title || attachment.name }}</p>
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+                }
+            </div>
+            }
+
+            <!-- Empty State -->
+            @if (!isLoading && attachments.length === 0) {
+            <div class="empty-state">
+                <ion-icon name="image-outline"></ion-icon>
+                <h2>No hay {{ getTypeLabel() }} disponibles</h2>
+                @if (allowUpload) {
+                <p>Sube un nuevo archivo para comenzar</p>
+                <ion-button (click)="openUploadModal()" class="empty-upload-button">
+                    <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
+                    {{ uploadButtonText }}
+                </ion-button>
+                } @else {
+                <p>No se encontraron archivos</p>
+                }
+            </div>
+            }
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <ion-button 
+                expand="block" 
+                (click)="dismiss()" 
+                fill="outline"
+                class="cancel-button">
+                Cancelar
+            </ion-button>
+            <ion-button 
+                expand="block" 
+                (click)="confirm()" 
+                [disabled]="!selectedAttachment"
+                class="confirm-button">
+                Seleccionar
+            </ion-button>
+        </div>
+    </div>
+</ion-content>

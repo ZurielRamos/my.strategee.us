@@ -1,0 +1,188 @@
+ion-header {
+  ion-toolbar {
+    --background: var(--app-card-bg);
+    --color: var(--app-text-primary);
+    --border-width: 0;
+    --min-height: 64px;
+    border-radius: 24px 24px 0 0;
+  }
+
+  ion-title {
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--app-text-primary);
+  }
+
+  ion-button {
+    --color: var(--app-text-secondary);
+
+    ion-icon {
+      font-size: 24px;
+    }
+  }
+}
+
+ion-content {
+  --background: var(--app-card-bg);
+  border-radius: 0 0 24px 24px;
+}
+
+.role-selection-container {
+  padding: 24px;
+  max-width: 700px;
+  margin: 0 auto;
+
+  @media (min-width: 768px) {
+    padding: 32px;
+  }
+}
+
+.description {
+  font-size: 15px;
+  color: var(--app-text-secondary);
+  line-height: 1.6;
+  margin: 0 0 32px 0;
+  text-align: center;
+  font-weight: 500;
+}
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 32px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+ion-card {
+  margin: 0;
+  border-radius: 16px;
+  border: 2px solid #e8eaed;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: var(--app-text-primary);
+  }
+
+  &.selected {
+    border-color: var(--app-text-primary);
+    border-width: 3px;
+    box-shadow: 0 8px 24px rgba(26, 28, 27, 0.2);
+    transform: translateY(-4px);
+
+    .role-icon {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.selection-indicator {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 32px;
+  height: 32px;
+  background: #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  z-index: 10;
+  animation: scaleIn 0.3s ease;
+
+  ion-icon {
+    font-size: 20px;
+    color: white;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+ion-card-header {
+  padding: 24px 20px 16px;
+  text-align: center;
+}
+
+.role-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+
+  ion-icon {
+    font-size: 32px;
+    color: white;
+  }
+
+  &[data-color="primary"] {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  }
+
+  &[data-color="danger"] {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  }
+}
+
+ion-card-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--app-text-primary);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+ion-card-content {
+  padding: 0 20px 24px;
+  text-align: center;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--app-text-secondary);
+    line-height: 1.6;
+    font-weight: 500;
+  }
+}
+
+.actions {
+  margin-top: 32px;
+
+  ion-button {
+    --background: var(--app-text-primary);
+    --background-activated: #000000;
+    --background-hover: var(--app-hover-bg);
+    --border-radius: 12px;
+    height: 52px;
+    font-weight: 700;
+    font-size: 15px;
+    text-transform: none;
+    margin: 0;
+
+    &:disabled {
+      --background: var(--app-border);
+      --color: var(--app-text-tertiary);
+    }
+  }
+}

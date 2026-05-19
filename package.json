@@ -1,0 +1,13 @@
+{
+  "name": "my-strategee",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "npm run build:app && npm run build:api",
+    "build:app": "npm run build --prefix app",
+    "build:api": "npm run build --prefix api",
+    "start": "node api/dist/main",
+    "start:dev:api": "npm run start:dev --prefix api",
+    "start:dev:app": "npm run start --prefix app"
+  }
+}

@@ -1,0 +1,56 @@
+<app-base-modal 
+    [title]="'Solicitar ' + benefitName"
+    subtitle="Completa los detalles de tu solicitud"
+    confirmText="Enviar Solicitud"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <h4 class="section-title">Detalles de la Solicitud</h4>
+
+        <!-- Campo de fecha -->
+        <app-date-input
+            formControlName="date"
+            label="Fecha"
+            placeholder="Selecciona fecha"
+            mode="single"
+            [required]="true"
+            [minDate]="minDate"
+            [maxDate]="maxDate">
+        </app-date-input>
+
+        <!-- Campo de cantidad -->
+        <ion-item lines="none">
+            <ion-label position="stacked">Cantidad de Días *</ion-label>
+            <ion-input
+                type="number"
+                formControlName="amount"
+                placeholder="Ej: 1"
+                [min]="0.5"
+                [max]="benefit.monthlyQuota"
+                step="0.5">
+            </ion-input>
+        </ion-item>
+
+        @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
+            <div class="error-message">
+                @if (form.get('amount')?.errors?.['required']) {
+                    Campo requerido
+                }
+                @if (form.get('amount')?.errors?.['min']) {
+                    La cantidad mínima es 0.5 días
+                }
+                @if (form.get('amount')?.errors?.['max']) {
+                    La cantidad máxima es {{ benefit.monthlyQuota }} días
+                }
+            </div>
+        }
+
+        <!-- Mensaje informativo -->
+        <app-alert-box type="info">
+            Tienes {{ availableDays }} días disponibles por mes para este beneficio.
+        </app-alert-box>
+    </form>
+</app-base-modal>

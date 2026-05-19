@@ -1,0 +1,105 @@
+<app-base-modal 
+    title="Solicitar Incapacidad"
+    subtitle="Solicita incapacidad médica con comprobante de EPS/ARL"
+    confirmText="Enviar Solicitud"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <!-- Información importante -->
+        <app-alert-box type="info">
+            Solicita incapacidad médica. Debes adjuntar el comprobante de la EPS/ARL (puedes hacerlo ahora o después).
+        </app-alert-box>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Período de Incapacidad</h4>
+
+        <!-- Campos de fecha en fila -->
+        <div class="form-row">
+            <app-date-input
+                formControlName="startDate"
+                label="Fecha de Inicio"
+                placeholder="dd/mm/yyyy"
+                mode="single"
+                [required]="true"
+                [minDate]="minDate"
+                [maxDate]="maxDate">
+            </app-date-input>
+
+            <app-date-input
+                formControlName="endDate"
+                label="Fecha de Fin"
+                placeholder="dd/mm/yyyy"
+                mode="single"
+                [required]="true"
+                [minDate]="minDate"
+                [maxDate]="maxDate">
+            </app-date-input>
+        </div>
+
+        <!-- Duración calculada -->
+        @if (getDaysCount() > 0) {
+            <div class="duration-info">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <span>Duración: {{ getDaysCount() }} {{ getDaysCount() === 1 ? 'día' : 'días' }}</span>
+            </div>
+        }
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Comprobante</h4>
+
+        <!-- Subir comprobante (opcional) -->
+        <div class="upload-section">
+            <label class="field-label">
+                Comprobante EPS/ARL <span class="optional-label">(Opcional)</span>
+            </label>
+            
+            <!-- Hidden file input -->
+            <input 
+                type="file" 
+                id="file-input" 
+                accept=".pdf,.jpg,.jpeg,.png"
+                (change)="onFileSelected($event)"
+                style="display: none;">
+            
+            <!-- Upload button or uploaded file display -->
+            @if (!uploadedFileUrl) {
+                <ion-button 
+                    expand="block" 
+                    fill="outline" 
+                    (click)="triggerFileInput()"
+                    [disabled]="isUploading"
+                    class="upload-button">
+                    <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+                    @if (isUploading) {
+                        Subiendo...
+                    } @else {
+                        Subir Comprobante
+                    }
+                </ion-button>
+            } @else {
+                <div class="uploaded-file">
+                    <ion-icon name="document-attach-outline"></ion-icon>
+                    <span>{{ uploadedFileName }}</span>
+                    <ion-button 
+                        fill="clear" 
+                        color="danger" 
+                        (click)="removeUploadedFile()">
+                        <ion-icon name="close-circle-outline"></ion-icon>
+                    </ion-button>
+                </div>
+            }
+            
+            <!-- Upload progress -->
+            @if (isUploading) {
+                <ion-progress-bar [value]="uploadProgress / 100"></ion-progress-bar>
+            }
+            
+            <div class="field-note">
+                Formatos permitidos: PDF, JPG, PNG (máx. 5MB). Puedes adjuntar el comprobante ahora o después.
+            </div>
+        </div>
+    </form>
+</app-base-modal>

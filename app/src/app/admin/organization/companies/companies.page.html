@@ -1,0 +1,51 @@
+<app-page-header></app-page-header>
+
+<ion-content [fullscreen]="true" class="companies-content">
+    <div class="page-container">
+        <!-- Page Title & Controls -->
+        <div class="page-title-section">
+            <div class="title-text">
+                <h1>Empresas</h1>
+                <p>Gestiona las empresas de tu organización</p>
+            </div>
+            <div class="title-controls">
+                <ion-button (click)="openCreateModal()" class="add-button">
+                    <ion-icon slot="start" name="add-outline"></ion-icon>
+                    Nueva Empresa
+                </ion-button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        <!-- Companies Grid -->
+        @if (!isLoading && companies.length > 0) {
+        <div class="companies-grid">
+            @for (company of companies; track company.id) {
+            <app-company-card 
+                [company]="company" 
+                (cardClick)="openEditModal($event)">
+            </app-company-card>
+            }
+        </div>
+        }
+
+        <!-- Empty State -->
+        @if (!isLoading && companies.length === 0) {
+        <div class="empty-state">
+            <ion-icon name="business-outline"></ion-icon>
+            <h2>No hay empresas registradas</h2>
+            <p>Comienza agregando tu primera empresa</p>
+            <ion-button (click)="openCreateModal()">
+                <ion-icon slot="start" name="add-outline"></ion-icon>
+                Crear Empresa
+            </ion-button>
+        </div>
+        }
+    </div>
+</ion-content>

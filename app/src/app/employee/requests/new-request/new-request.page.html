@@ -1,0 +1,67 @@
+<app-page-header [backUrl]="'/employee/requests'"></app-page-header>
+
+<ion-content [fullscreen]="true" class="new-request-content">
+    <div class="page-container">
+        <!-- Page Title -->
+        <div class="page-title-section">
+            <div class="title-text">
+                <h1>¿Qué deseas solicitar?</h1>
+                <p>Selecciona el tipo de solicitud que necesitas</p>
+            </div>
+        </div>
+
+        <!-- Beneficios Asignados -->
+        @if (benefits.length > 0) {
+            <div class="section">
+                <h2 class="section-title">
+                    <ion-icon name="gift-outline"></ion-icon>
+                    Mis Beneficios
+                </h2>
+                
+                @if (isLoadingBenefits) {
+                    <div class="loading-state">
+                        <ion-spinner name="crescent"></ion-spinner>
+                    </div>
+                } @else {
+                    <div class="cards-grid">
+                        @for (benefit of benefits; track benefit.id) {
+                            <app-card-button
+                                [title]="getBenefitLabel(benefit.benefitType)"
+                                [description]="getBenefitStatusMessage(benefit)"
+                                [icon]="getBenefitIcon(benefit.benefitType)"
+                                [disabled]="!hasDaysAvailable(benefit)"
+                                [badge]="!hasDaysAvailable(benefit) ? { text: 'No disponible', type: 'unavailable' } : undefined"
+                                (cardClick)="requestBenefit(benefit)">
+                            </app-card-button>
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- Otros Tipos de Solicitudes -->
+        <div class="section">
+            <h2 class="section-title">
+                <ion-icon name="document-text-outline"></ion-icon>
+                Otras Solicitudes
+            </h2>
+            
+            <div class="cards-grid">
+                @for (requestType of requestTypes; track requestType.id) {
+                    @if (isRequestTypeVisible(requestType)) {
+                    <app-card-button
+                        [title]="requestType.title"
+                        [description]="getRequestDescription(requestType)"
+                        [icon]="requestType.icon"
+                        [disabled]="isRequestTypeDisabled(requestType)"
+                        [loading]="isRequestTypeLoading(requestType.type)"
+                        [badge]="getRequestBadge(requestType)"
+                        [colorClass]="'color-' + requestType.color"
+                        (cardClick)="selectRequestType(requestType)">
+                    </app-card-button>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</ion-content>

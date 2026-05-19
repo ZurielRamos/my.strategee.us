@@ -1,0 +1,44 @@
+<app-base-modal 
+    [title]="title"
+    subtitle="Complete los campos requeridos"
+    confirmText="Guardar"
+    [confirmDisabled]="!positionForm.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="positionForm">
+        <!-- Título de sección -->
+        <h4 class="section-title">Información General</h4>
+
+        <!-- Campo de nombre -->
+        <app-text-input
+            formControlName="name"
+            label="Nombre del Cargo"
+            placeholder="Ej: Desarrollador Backend Senior"
+            [required]="true">
+        </app-text-input>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Clasificación</h4>
+
+        <!-- Campo de nivel de riesgo -->
+        <app-form-select
+            label="Nivel de Riesgo ARL"
+            [options]="riskLevelOptions"
+            formControlName="riskLevel"
+            placeholder="Seleccione el nivel de riesgo"
+            [required]="true">
+        </app-form-select>
+
+        <!-- Campo de área -->
+        <app-form-select
+            label="Área"
+            [options]="departmentOptions"
+            formControlName="departmentId"
+            placeholder="Seleccione un área"
+            [required]="true">
+        </app-form-select>
+    </form>
+    
+</app-base-modal>

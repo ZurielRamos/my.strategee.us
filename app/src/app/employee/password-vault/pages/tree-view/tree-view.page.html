@@ -1,0 +1,121 @@
+<app-page-header 
+    [showSearch]="true" 
+    [useCustomSearch]="true"
+    (searchChange)="onSearchChange($event)"
+></app-page-header>
+
+<ion-content [fullscreen]="true" class="password-vault-content">
+  <div class="page-container">
+    <!-- Page Title & Controls -->
+    <div class="page-title-section">
+      <div class="title-text">
+        <h1>Password Vault</h1>
+        <p>Gestiona tus credenciales organizadas en carpetas</p>
+      </div>
+      <div class="title-controls">
+        <ion-button (click)="openCreateVaultModal()" class="add-button">
+          <ion-icon slot="start" name="folder-outline"></ion-icon>
+          Nueva Carpeta
+        </ion-button>
+      </div>
+    </div>
+
+    @if (loading) {
+      <div class="loading-container">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Cargando...</p>
+      </div>
+    } @else if (filteredNodes.length === 0 && !searchTerm) {
+      <div class="empty-state">
+        <ion-icon name="folder-outline"></ion-icon>
+        <h3>No tienes carpetas</h3>
+        <p>Crea tu primera carpeta para comenzar a organizar tus credenciales</p>
+        <ion-button (click)="openCreateVaultModal()">
+          <ion-icon slot="start" name="folder-outline"></ion-icon>
+          Crear Carpeta
+        </ion-button>
+      </div>
+    } @else if (filteredNodes.length === 0) {
+      <div class="empty-state">
+        <ion-icon name="search-outline"></ion-icon>
+        <h3>No se encontraron resultados</h3>
+        <p>No hay carpetas o credenciales que coincidan con tu búsqueda</p>
+        <ion-button fill="outline" (click)="searchTerm = ''; applyFilter()">
+          Limpiar búsqueda
+        </ion-button>
+      </div>
+    } @else {
+      <div class="tree-view">
+        <ion-list class="tree-list">
+          @for (vaultNode of filteredNodes; track vaultNode.id) {
+            <!-- Vault Node -->
+            <ion-item 
+              class="tree-node vault-node"
+              [class.expanded]="vaultNode.expanded"
+              button
+              detail="false">
+              
+              <div class="node-content" (click)="toggleNode(vaultNode)">
+                <ion-icon 
+                  class="chevron-icon" 
+                  [name]="getChevronIcon(vaultNode)">
+                </ion-icon>
+                <ion-icon 
+                  class="node-icon" 
+                  [name]="getNodeIcon(vaultNode)">
+                </ion-icon>
+                <ion-label>{{ vaultNode.name }}</ion-label>
+                <span class="credential-count">{{ vaultNode.children?.length || 0 }}</span>
+              </div>
+
+              @if (vaultNode.isOwner) {
+                <div class="node-actions" slot="end">
+                  <ion-button 
+                    fill="clear" 
+                    size="small"
+                    (click)="openCreateCredentialModal(vaultNode); $event.stopPropagation()">
+                    <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+                  </ion-button>
+                  <ion-button 
+                    fill="clear" 
+                    size="small"
+                    (click)="openEditVaultModal(vaultNode); $event.stopPropagation()">
+                    <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+                  </ion-button>
+                  <ion-button 
+                    fill="clear" 
+                    size="small" 
+                    color="danger"
+                    (click)="deleteVault(vaultNode); $event.stopPropagation()">
+                    <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                  </ion-button>
+                </div>
+              }
+            </ion-item>
+
+            <!-- Credential Nodes (children) -->
+            @if (vaultNode.expanded && vaultNode.children) {
+              @for (credNode of vaultNode.children; track credNode.id) {
+                <ion-item 
+                  class="tree-node credential-node"
+                  button
+                  detail="false"
+                  (click)="toggleNode(credNode)">
+                  
+                  <div class="node-content">
+                    <div class="indent"></div>
+                    <ion-icon 
+                      class="node-icon" 
+                      [name]="getNodeIcon(credNode)">
+                    </ion-icon>
+                    <ion-label>{{ credNode.name }}</ion-label>
+                  </div>
+                </ion-item>
+              }
+            }
+          }
+        </ion-list>
+      </div>
+    }
+  </div>
+</ion-content>

@@ -1,0 +1,48 @@
+<app-base-modal
+    title="Parafiscales"
+    [subtitle]="modalSubtitle"
+    confirmText="Guardar"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+
+    <form [formGroup]="form">
+        <h4 class="section-title">Entidades de Seguridad Social</h4>
+
+        <app-text-input
+            formControlName="eps"
+            label="EPS"
+            placeholder="Ej: Sura EPS, Nueva EPS..."
+            helperText="Entidad Promotora de Salud"
+            helperIcon="medkit-outline">
+        </app-text-input>
+
+        <app-text-input
+            formControlName="arl"
+            label="ARL"
+            placeholder="Ej: Sura ARL, Positiva..."
+            helperText="Administradora de Riesgos Laborales"
+            helperIcon="shield-checkmark-outline">
+        </app-text-input>
+
+        <app-text-input
+            formControlName="fondoPension"
+            label="Fondo de Pensión"
+            placeholder="Ej: Porvenir, Protección, Colpensiones..."
+            helperText="Fondo de Pensión y Cesantías"
+            helperIcon="wallet-outline">
+        </app-text-input>
+
+        <app-text-input
+            formControlName="cajaCompensacion"
+            label="Caja de Compensación"
+            placeholder="Ej: Compensar, Cafam, Colsubsidio..."
+            helperText="Caja de Compensación Familiar"
+            helperIcon="people-outline">
+        </app-text-input>
+
+        <app-alert-box type="info">
+            Los campos vacíos se guardarán como sin información. Puedes actualizar esta configuración en cualquier momento.
+        </app-alert-box>
+    </form>
+</app-base-modal>

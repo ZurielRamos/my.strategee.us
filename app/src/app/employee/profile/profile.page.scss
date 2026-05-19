@@ -1,0 +1,548 @@
+@import '../../../theme/variables.scss';
+
+.profile-content {
+    --background: var(--app-background);
+}
+
+.page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+
+    ion-spinner {
+        --color: var(--ion-color-primary);
+        width: 48px;
+        height: 48px;
+    }
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 24px;
+
+    @media (max-width: 992px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.left-column,
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+// Profile Card
+.profile-card {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    padding: 32px 24px;
+    text-align: center;
+    margin: 0;
+}
+
+.profile-avatar {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+
+    .avatar-image {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid var(--app-border-light);
+        box-shadow: 0 4px 12px var(--app-shadow);
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            ion-icon {
+                font-size: 64px;
+                color: var(--app-card-bg);
+            }
+        }
+    }
+
+    .photo-fab {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        
+        ion-icon {
+            font-size: 18px;
+        }
+    }
+}
+
+.profile-info {
+    h1 {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        margin: 0 0 8px 0;
+    }
+
+    .profile-location {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 14px;
+        color: var(--app-text-secondary);
+        margin: 0 0 12px 0;
+
+        ion-icon {
+            font-size: 16px;
+        }
+    }
+
+    .profile-status {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 16px;
+
+        ion-badge {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 20px;
+        }
+    }
+}
+
+// Info Card
+.info-card {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    margin: 0;
+
+    ion-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--app-border);
+
+        ion-card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin: 0;
+
+            ion-icon {
+                font-size: 22px;
+                color: var(--ion-color-primary);
+            }
+        }
+    }
+
+    ion-card-content {
+        padding: 24px;
+    }
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--app-border-light);
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--app-text-secondary);
+        flex-shrink: 0;
+        margin-right: 16px;
+    }
+
+    .info-value {
+        font-size: 14px;
+        color: var(--app-text-primary);
+        text-align: right;
+        word-break: break-word;
+
+        &.highlight {
+            font-weight: 700;
+            color: var(--ion-color-primary);
+        }
+    }
+}
+
+// Relation Cards
+.relation-card {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    margin: 0;
+
+    ion-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--app-border);
+
+        ion-card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin: 0;
+
+            ion-icon {
+                font-size: 22px;
+                color: var(--ion-color-primary);
+            }
+        }
+    }
+
+    ion-card-content {
+        padding: 24px;
+    }
+}
+
+.contract-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.empty-state-small {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+
+    ion-icon {
+        font-size: 48px;
+        color: var(--app-text-tertiary);
+        margin-bottom: 12px;
+    }
+
+    p {
+        font-size: 14px;
+        color: var(--app-text-tertiary);
+        margin: 0;
+    }
+}
+
+// Memorandums History
+.memorandums-history {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid var(--app-border-light);
+}
+
+.memorandums-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--app-hover-bg);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+        background: var(--app-input-bg);
+    }
+
+    .header-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--app-text-primary);
+    }
+
+    ion-icon {
+        font-size: 20px;
+        color: var(--app-text-secondary);
+    }
+}
+
+.memorandums-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.memorandum-item {
+    padding: 16px;
+    background: var(--app-hover-bg);
+    border-radius: 8px;
+    border-left: 3px solid var(--app-border);
+    transition: all 0.2s ease;
+
+    &.active {
+        background: var(--app-hover-bg);
+        border-left-color: var(--ion-color-primary);
+    }
+
+    .memo-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+        gap: 12px;
+
+        .memo-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+
+            .memo-position {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--app-text-primary);
+            }
+        }
+
+        .memo-dates {
+            font-size: 12px;
+            color: var(--app-text-secondary);
+            white-space: nowrap;
+        }
+    }
+
+    .memo-details {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        .memo-detail-row {
+            display: flex;
+            gap: 8px;
+            font-size: 13px;
+
+            .label {
+                font-weight: 600;
+                color: var(--app-text-secondary);
+            }
+
+            .value {
+                color: var(--app-text-primary);
+            }
+        }
+    }
+}
+
+// ─── Emergency Contacts Card ──────────────────────────────────────────────────
+
+.emergency-contacts-card {
+    .card-header-with-action {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .loading-small {
+        display: flex;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .contacts-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 12px;
+        background: var(--app-hover-bg, #f8f9fa);
+        border-radius: 10px;
+        gap: 8px;
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1;
+            min-width: 0;
+
+            .contact-name {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--app-text-primary);
+            }
+
+            .contact-relationship {
+                font-size: 12px;
+                font-weight: 500;
+                color: var(--ion-color-primary);
+            }
+
+            .contact-phone,
+            .contact-email {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                font-size: 13px;
+                color: var(--app-text-secondary);
+
+                ion-icon {
+                    font-size: 14px;
+                    flex-shrink: 0;
+                }
+            }
+        }
+    }
+}
+
+// ─── Contact Info Edit & Logs ─────────────────────────────────────────────────
+
+.card-header-with-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.editable-field {
+    position: relative;
+}
+
+.contact-logs-section {
+    margin-top: 16px;
+    border-top: 1px solid var(--app-border, #e5e7eb);
+    padding-top: 12px;
+
+    .logs-toggle {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--app-text-secondary);
+        padding: 4px 0;
+        width: 100%;
+
+        span { flex: 1; text-align: left; }
+
+        ion-icon { font-size: 16px; }
+
+        &:hover { color: var(--ion-color-primary); }
+    }
+
+    .logs-loading {
+        display: flex;
+        justify-content: center;
+        padding: 12px;
+    }
+
+    .logs-empty {
+        font-size: 12px;
+        color: var(--app-text-secondary);
+        text-align: center;
+        padding: 8px 0;
+        margin: 0;
+    }
+
+    .logs-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .log-entry {
+        background: var(--app-hover-bg, #f8f9fa);
+        border-radius: 8px;
+        padding: 10px 12px;
+
+        .log-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+            gap: 4px;
+
+            .log-date {
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--app-text-secondary);
+            }
+
+            .log-author {
+                font-size: 11px;
+                color: var(--ion-color-primary);
+                font-weight: 500;
+            }
+        }
+
+        .log-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .log-field-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            flex-wrap: wrap;
+
+            .log-field-label {
+                font-weight: 600;
+                color: var(--app-text-primary);
+                min-width: 80px;
+            }
+
+            .log-field-from {
+                color: var(--ion-color-danger);
+                text-decoration: line-through;
+                opacity: 0.8;
+            }
+
+            .log-arrow {
+                font-size: 12px;
+                color: var(--app-text-secondary);
+                transform: rotate(-90deg);
+            }
+
+            .log-field-to {
+                color: var(--ion-color-success);
+                font-weight: 500;
+            }
+        }
+    }
+}

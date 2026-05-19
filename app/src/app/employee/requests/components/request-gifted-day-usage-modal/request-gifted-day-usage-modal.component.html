@@ -1,0 +1,82 @@
+<app-base-modal 
+    title="Solicitar Días Obsequiados"
+    subtitle="Selecciona el período que deseas disfrutar con tus días obsequiados por servicios"
+    confirmText="Enviar Solicitud"
+    [confirmDisabled]="requestForm.invalid || isSubmitting || totalBusinessDays === 0"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="requestForm">
+        <h4 class="section-title">Período de Disfrute</h4>
+        
+        <app-date-input
+            formControlName="dateRange"
+            label="Período de Disfrute"
+            placeholder="dd/mm/yyyy al dd/mm/yyyy"
+            mode="range"
+            [required]="true"
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+            [disabledDaysOfWeek]="[0]"
+            [customValidator]="isDateExceedingQuota"
+            (dateChange)="onDateChange($event)">
+        </app-date-input>
+
+        @if (dateRangeControl?.invalid && dateRangeControl?.touched) {
+            <div class="error-message">
+                Debes seleccionar un período válido
+            </div>
+        }
+
+        @if (totalBusinessDays > 0) {
+            <div class="selection-summary">
+                <div class="summary-item">
+                    <span class="summary-label">Período seleccionado:</span>
+                    <span class="summary-value">{{ getFormattedDateRange() }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Días hábiles:</span>
+                    <span class="summary-value">{{ totalBusinessDays }} día(s)</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Días disponibles:</span>
+                    <span class="summary-value">{{ giftedDaysBalance.availableDays }} día(s)</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Saldo restante:</span>
+                    <span class="summary-value" 
+                          [class.available]="totalBusinessDays <= giftedDaysBalance.availableDays" 
+                          [class.exceeded]="totalBusinessDays > giftedDaysBalance.availableDays">
+                        {{ giftedDaysBalance.availableDays - totalBusinessDays }} día(s)
+                    </span>
+                </div>
+            </div>
+        }
+
+        <h4 class="section-title">Motivo</h4>
+
+        <div class="form-group">
+            <label class="form-label">Razón del disfrute <span class="required">*</span></label>
+            <textarea
+                formControlName="reason"
+                class="form-textarea"
+                placeholder="Describe brevemente el motivo de tu solicitud..."
+                rows="3">
+            </textarea>
+            @if (requestForm.get('reason')?.invalid && requestForm.get('reason')?.touched) {
+                <div class="error-message">El motivo es requerido (mínimo 5 caracteres)</div>
+            }
+        </div>
+
+        <app-alert-box type="info">
+            Se cuentan días de lunes a sábado. Los domingos están excluidos automáticamente del cálculo.
+        </app-alert-box>
+
+        @if (errorMessage) {
+            <app-alert-box type="danger">
+                {{ errorMessage }}
+            </app-alert-box>
+        }
+    </form>
+</app-base-modal>

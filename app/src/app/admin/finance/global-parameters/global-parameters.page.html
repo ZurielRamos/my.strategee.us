@@ -1,0 +1,46 @@
+<app-page-header [showSearch]="true" [useCustomSearch]="true" (searchChange)="onSearchChange($event)"></app-page-header>
+
+<ion-content [fullscreen]="true" class="admin-page-content">
+  <div class="admin-container">
+    <div class="title-section">
+      <app-page-title
+        title="Valores Globales"
+        subtitle="Gestión de parámetros financieros globales del sistema"
+      ></app-page-title>
+      <div class="title-actions desktop-only">
+        <ion-button (click)="openCreateModal()" class="create-button">
+          <ion-icon slot="start" name="add-outline"></ion-icon>
+          Crear Parámetro
+        </ion-button>
+      </div>
+    </div>
+
+    @if (isLoading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+    } @else {
+    <div class="parameters-grid">
+      @for (parameter of filteredParameters; track parameter.id) {
+      <app-global-parameter-card
+        [parameter]="parameter"
+        (cardClick)="openViewModal($event)"
+      ></app-global-parameter-card>
+      } @empty {
+      <div class="empty-state">
+        <ion-icon name="globe-outline"></ion-icon>
+        <h3>No hay parámetros</h3>
+        <p>{{ searchTerm ? 'No se encontraron parámetros con ese criterio' : 'Comienza creando tu primer parámetro global' }}</p>
+      </div>
+      }
+    </div>
+    }
+  </div>
+  
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end" class="mobile-only">
+    <ion-fab-button (click)="openCreateModal()" color="dark">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

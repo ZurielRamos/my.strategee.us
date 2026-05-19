@@ -1,0 +1,39 @@
+<ion-card class="employee-card" (click)="onCardClick()">
+    <ion-card-header>
+        <div class="card-header-content">
+            <div class="employee-avatar">
+                @if (employee.profilePhoto?.url) {
+                <img [src]="employee.profilePhoto?.url" [alt]="fullName" />
+                } @else {
+                <ion-icon name="person-outline"></ion-icon>
+                }
+            </div>
+            <div class="employee-info">
+                <ion-card-title>{{ fullName }}</ion-card-title>
+                <div class="employee-badges">
+                    <ion-badge [color]="userRoleBadgeColor">
+                        {{ userRoleLabel }}
+                    </ion-badge>
+                    <ion-badge [color]="contractStatusBadgeColor">
+                        {{ contractStatusLabel }}
+                    </ion-badge>
+                </div>
+            </div>
+        </div>
+    </ion-card-header>
+
+    <ion-card-content>
+        <div class="info-row">
+            <ion-icon name="card-outline"></ion-icon>
+            <span>{{ employee.documentType }}: {{ employee.documentNumber }}</span>
+        </div>
+        <div class="info-row">
+            <ion-icon name="mail-outline"></ion-icon>
+            <span>{{ employee.corporateEmail || employee.personalEmail }}</span>
+        </div>
+        <div class="info-row">
+            <ion-icon name="call-outline"></ion-icon>
+            <span>{{ employee.personalPhone }}</span>
+        </div>
+    </ion-card-content>
+</ion-card>

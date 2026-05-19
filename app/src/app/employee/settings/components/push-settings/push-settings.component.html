@@ -1,0 +1,13 @@
+<ion-item class="settings-item">
+  <ion-icon name="notifications-outline" slot="start"></ion-icon>
+  <ion-label>
+    <h3>Notificaciones Push</h3>
+    <p>Recibe alertas incluso cuando no estés usando la app</p>
+  </ion-label>
+  <ion-toggle
+    slot="end"
+    [(ngModel)]="pushEnabled"
+    (ionChange)="togglePushNotifications($event)"
+    [disabled]="loading">
+  </ion-toggle>
+</ion-item>

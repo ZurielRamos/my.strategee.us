@@ -1,0 +1,50 @@
+:host {
+    display: contents;
+}
+
+.settings-item {
+    --background: transparent;
+    --padding-start: 24px;
+    --padding-end: 24px;
+    --min-height: 72px;
+    --inner-padding-end: 0;
+    --color: var(--app-text-primary);
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+        --background: var(--app-hover-bg);
+    }
+
+    ion-icon[slot="start"] {
+        font-size: 24px;
+        color: var(--app-text-secondary);
+        margin-right: 16px;
+    }
+
+    ion-label {
+        h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--app-text-primary);
+            margin: 0 0 4px 0;
+        }
+
+        p {
+            font-size: 13px;
+            color: var(--app-text-secondary);
+            margin: 0;
+        }
+    }
+
+    ion-toggle {
+        --handle-width: 24px;
+        --handle-height: 24px;
+        --handle-spacing: 2px;
+
+        &::part(track) {
+            height: 28px;
+            width: 52px;
+        }
+    }
+}

@@ -1,0 +1,38 @@
+<div class="autocomplete-wrapper">
+  <div class="input-container" #anchor>
+    <ion-icon name="search-outline" class="search-icon"></ion-icon>
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Buscar empleado..."
+      autocomplete="off"
+      [value]="searchTerm"
+      (input)="onInput($any($event).target.value)"
+      (blur)="onBlur()"
+    />
+    <span class="loading-dot" *ngIf="isLoading"></span>
+  </div>
+
+  <!-- Dropdown rendered as portal inside ion-modal via ngAfterViewInit -->
+
+  <!-- Selected chips -->
+  <div class="chips" *ngIf="selectedEmployees.length > 0">
+    <div class="chip" *ngFor="let emp of selectedEmployees">
+      <img
+        *ngIf="emp.profilePhoto?.url"
+        [src]="emp.profilePhoto!.url"
+        class="chip-avatar"
+        alt=""
+      />
+      <ion-icon
+        *ngIf="!emp.profilePhoto?.url"
+        name="person-circle-outline"
+        class="chip-avatar-icon">
+      </ion-icon>
+      <span>{{ fullName(emp) }}</span>
+      <button type="button" class="chip-remove" (click)="remove(emp)">
+        <ion-icon name="close-circle"></ion-icon>
+      </button>
+    </div>
+  </div>
+</div>

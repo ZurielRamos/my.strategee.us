@@ -1,0 +1,147 @@
+/*
+ * App Global CSS
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/* Ionic Dark Mode */
+@import "@ionic/angular/css/palettes/dark.system.css";
+
+/* Estilos globales para modales con bordes redondeados */
+ion-modal {
+    --border-radius: 16px !important;
+    
+    &::part(content) {
+        border-radius: 16px !important;
+    }
+}
+
+ion-modal .ion-page {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+}
+
+ion-modal .modal-wrapper {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+}
+
+
+/* Confirmation Modal */
+.confirmation-modal {
+    --height: auto;
+    --border-radius: 16px;
+    
+    @media (min-width: 768px) {
+        --width: 600px;
+    }
+    
+    .ion-page {
+        border-radius: 16px !important;
+        overflow: hidden !important;
+    }
+}
+
+/* Standard Modal - Clase única para todos los modales */
+.standard-modal {
+    --height: auto;
+    --border-radius: 16px;
+    
+    @media (min-width: 768px) {
+        --width: 600px;
+    }
+    
+    .ion-page {
+        border-radius: 16px !important;
+        overflow: hidden !important;
+    }
+}
+
+/* Aplicar border-radius directamente a TODOS los modales */
+ion-modal {
+    --border-radius: 16px;
+    
+    &::part(content) {
+        border-radius: 16px;
+    }
+    
+    .ion-page {
+        border-radius:  var(--border-radius)!important;
+        overflow: hidden !important;
+    }
+    
+    .modal-wrapper {
+        border-radius: var(--border-radius) !important;
+        overflow: hidden !important;
+    }
+    
+    @media (min-width: 768px) {
+        .ion-page {
+            border-radius: var(--border-radius) !important;
+        }
+    }
+}
+
+/* Forzar border-radius en mobile también */
+@media (max-width: 767px) {
+    ion-modal {
+        --border-radius: 16px;
+        
+        .ion-page {
+            border-radius: 16px !important;
+            overflow: hidden !important;
+        }
+    }
+}
+
+/* Popovers - Bordes redondeados */
+ion-popover {
+    --border-radius: var(--app-border-radius, 12px);
+    
+    &::part(content) {
+        border-radius: var(--app-border-radius, 12px);
+        overflow: hidden;
+    }
+    
+    .popover-content {
+        border-radius: var(--app-border-radius, 12px);
+        overflow: hidden;
+    }
+}
+
+/* Wrapper específico para popovers de acciones */
+.benefit-actions-popover-wrapper,
+.employee-actions-popover-wrapper {
+    --border-radius: var(--app-border-radius, 12px);
+    
+    &::part(content) {
+        border-radius: var(--app-border-radius, 12px);
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+}
+
+/* Notifications popover */
+.notifications-popover {
+    --width: 380px;
+
+    &::part(content) {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px var(--app-shadow);
+    }
+}

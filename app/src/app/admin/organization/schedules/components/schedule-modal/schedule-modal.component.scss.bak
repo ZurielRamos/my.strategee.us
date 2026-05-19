@@ -1,0 +1,302 @@
+:host {
+    --modal-height: 600px;
+}
+
+ion-header {
+    ion-toolbar {
+        --background: var(--app-card-bg);
+        --color: var(--app-text-primary);
+        --border-width: 0;
+        --min-height: 64px;
+        border-radius: 24px 24px 0 0;
+    }
+
+    ion-title {
+        font-weight: 800;
+        font-size: 20px;
+        color: var(--app-text-primary);
+    }
+
+    ion-button {
+        --color: var(--app-text-secondary);
+
+        &[color="danger"] {
+            --color: #eb445a;
+        }
+
+        ion-icon {
+            font-size: 24px;
+        }
+    }
+}
+
+ion-content {
+    --background: var(--app-card-bg);
+    border-radius: 0 0 24px 24px;
+}
+
+// View Mode Styles
+.schedule-detail {
+    padding: 24px;
+
+    @media (min-width: 768px) {
+        padding: 32px;
+    }
+
+    .schedule-header {
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--app-border);
+
+        h2 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--app-text-primary);
+            margin: 0 0 8px 0;
+        }
+
+        .description {
+            font-size: 14px;
+            color: var(--app-text-secondary);
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+        }
+
+        .toggle-button {
+            --border-radius: 12px;
+            height: 40px;
+            font-weight: 600;
+            text-transform: none;
+        }
+    }
+
+    .days-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .day-card {
+            background: var(--app-hover-bg);
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.2s ease;
+
+            &.non-work-day {
+                background: #fafafa;
+                opacity: 0.7;
+            }
+
+            .day-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+
+                h3 {
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: var(--app-text-primary);
+                    margin: 0;
+                }
+
+                .rest-chip {
+                    --background: var(--app-border);
+                    --color: var(--app-text-secondary);
+                    height: 24px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+            }
+
+            .day-times {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+
+                .time-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 8px 12px;
+                    background: var(--app-card-bg);
+                    border-radius: 8px;
+
+                    &.main-time {
+                        background: var(--app-text-primary);
+
+                        .time-label,
+                        .time-value {
+                            color: #ffffff;
+                        }
+                    }
+
+                    .time-label {
+                        font-size: 13px;
+                        font-weight: 600;
+                        color: var(--app-text-secondary);
+                    }
+
+                    .time-value {
+                        font-size: 14px;
+                        font-weight: 700;
+                        color: var(--app-text-primary);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Form Mode Styles
+.form-container {
+    padding: 24px;
+
+    @media (min-width: 768px) {
+        padding: 32px;
+    }
+
+    ion-item {
+        --background: var(--app-hover-bg);
+        --border-radius: 12px;
+        --padding-start: 16px;
+        --padding-end: 16px;
+        --min-height: 56px;
+        --border-width: 0;
+        margin-bottom: 16px;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+
+        &:focus-within {
+            --background: var(--app-card-bg);
+            box-shadow: 0 0 0 2px var(--app-text-primary);
+        }
+
+        ion-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        ion-input,
+        ion-textarea {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--app-text-primary);
+            --padding-start: 0;
+            --padding-end: 0;
+
+            &::placeholder {
+                color: var(--app-text-secondary);
+                opacity: 0.7;
+            }
+        }
+    }
+
+    .days-section {
+        margin-top: 24px;
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--app-text-primary);
+            margin: 0 0 16px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .day-form-card {
+            background: var(--app-hover-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+
+            .day-form-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
+
+                h4 {
+                    font-size: 15px;
+                    font-weight: 700;
+                    color: var(--app-text-primary);
+                    margin: 0;
+                }
+
+                .work-day-toggle {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+
+                    ion-checkbox {
+                        --size: 20px;
+                        --checkbox-background-checked: #1a1c1b;
+                    }
+
+                    span {
+                        font-size: 13px;
+                        font-weight: 600;
+                        color: var(--app-text-secondary);
+                    }
+                }
+            }
+
+            .time-inputs {
+                .time-row-input {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 12px;
+                    margin-bottom: 12px;
+
+                    ion-item {
+                        margin-bottom: 0;
+                    }
+                }
+
+                .breaks-section {
+                    margin-top: 16px;
+                    padding-top: 16px;
+                    border-top: 1px solid var(--app-border);
+
+                    .breaks-label {
+                        font-size: 12px;
+                        font-weight: 700;
+                        color: var(--app-text-secondary);
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                        margin: 0 0 12px 0;
+                    }
+                }
+            }
+        }
+    }
+
+    .form-actions {
+        margin-top: 32px;
+
+        ion-button {
+            --background: var(--app-text-primary);
+            --background-activated: #000000;
+            --background-hover: var(--app-hover-bg);
+            --color: #ffffff;
+            --border-radius: 12px;
+            height: 52px;
+            font-weight: 700;
+            font-size: 15px;
+            text-transform: none;
+            margin: 0;
+
+            &:disabled {
+                --background: var(--app-border);
+                --color: var(--app-text-tertiary);
+            }
+
+            ion-spinner {
+                --color: #ffffff;
+            }
+        }
+    }
+}

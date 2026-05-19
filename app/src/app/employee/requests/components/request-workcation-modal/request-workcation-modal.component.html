@@ -1,0 +1,53 @@
+<app-base-modal 
+    title="Solicitar Workcation"
+    subtitle="Trabaja desde cualquier ubicación"
+    confirmText="Enviar Solicitud"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <h4 class="section-title">Información del Workcation</h4>
+
+        <app-alert-box type="info">
+            Workcation te permite trabajar desde cualquier ubicación por un período continuo de días. Tienes <strong>{{ availableDays }} día(s) disponible(s)</strong> de tu cuota mensual de {{ benefit.monthlyQuota }} día(s).
+        </app-alert-box>
+
+        <app-date-input
+            formControlName="workcationPeriod"
+            label="Período del Workcation"
+            placeholder="dd/mm/yyyy al dd/mm/yyyy"
+            mode="range"
+            [required]="true"
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+            [customValidator]="validateQuota">
+        </app-date-input>
+
+        @if (selectedDays > 0) {
+            <div class="selection-summary">
+                <div class="summary-item">
+                    <span class="summary-label">Días seleccionados:</span>
+                    <span class="summary-value">{{ selectedDays }} día(s)</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Cuota mensual:</span>
+                    <span class="summary-value">{{ benefit.monthlyQuota }} día(s)</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Disponible después:</span>
+                    <span class="summary-value" [class.available]="availableDays - selectedDays >= 0" [class.exceeded]="availableDays - selectedDays < 0">
+                        {{ availableDays - selectedDays }} día(s)
+                    </span>
+                </div>
+            </div>
+        }
+
+        @if (form.get('workcationPeriod')?.invalid && form.get('workcationPeriod')?.touched) {
+            <div class="error-message">
+                Debes seleccionar un período válido
+            </div>
+        }
+    </form>
+</app-base-modal>

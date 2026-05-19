@@ -1,0 +1,37 @@
+<ion-header>
+    <ion-toolbar>
+        <div class="header-content">
+            <h2 class="modal-title">{{ title }}</h2>
+            @if (subtitle) {
+                <p class="subtitle">{{ subtitle }}</p>
+            }
+        </div>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()" fill="clear">
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+    <ng-content></ng-content>
+</ion-content>
+
+@if (showFooter) {
+    <ion-footer>
+        <ion-toolbar>
+            <div class="footer-buttons">
+                <ion-button fill="outline" (click)="dismiss()" class="cancel-button">
+                    {{ cancelText }}
+                </ion-button>
+                <ion-button 
+                    (click)="confirm()" 
+                    [disabled]="confirmDisabled || loading"
+                    class="primary-button">
+                    {{ loading ? 'Cargando...' : confirmText }}
+                </ion-button>
+            </div>
+        </ion-toolbar>
+    </ion-footer>
+}

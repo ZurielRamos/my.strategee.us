@@ -1,0 +1,212 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>{{ title }}</ion-title>
+        <ion-buttons slot="end">
+            @if (mode === 'view') {
+            <ion-button (click)="onEdit()" fill="clear">
+                <ion-icon name="create-outline"></ion-icon>
+            </ion-button>
+            <ion-button (click)="onDelete()" fill="clear" color="danger">
+                <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+            }
+            <ion-button (click)="dismiss()" fill="clear">
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    @if (mode === 'view') {
+    <!-- View Mode -->
+    <div class="schedule-detail">
+        <div class="schedule-header">
+            <h2>{{ schedule?.name }}</h2>
+            @if (schedule?.description) {
+            <p class="description">{{ schedule?.description }}</p>
+            }
+            <ion-button 
+                fill="outline" 
+                (click)="onToggleActive()"
+                [color]="schedule?.isActive ? 'danger' : 'success'"
+                class="toggle-button">
+                {{ schedule?.isActive ? 'Desactivar' : 'Activar' }}
+            </ion-button>
+        </div>
+
+        <div class="days-list">
+            @for (day of schedule?.dailySchedules; track day.day) {
+            <div class="day-card" [class.non-work-day]="!day.isWorkDay">
+                <div class="day-header">
+                    <h3>{{ day.day }}</h3>
+                    @if (!day.isWorkDay) {
+                    <ion-chip class="rest-chip">
+                        <ion-label>Descanso</ion-label>
+                    </ion-chip>
+                    }
+                </div>
+                
+                @if (day.isWorkDay) {
+                <div class="day-times">
+                    <div class="time-row main-time">
+                        <span class="time-label">Jornada:</span>
+                        <span class="time-value">{{ day.entryTime?.substring(0, 5) }} - {{ day.exitTime?.substring(0, 5) }}</span>
+                    </div>
+                    
+                    @if (day.morningBreakStart && day.morningBreakEnd) {
+                    <div class="time-row">
+                        <span class="time-label">Pausa AM:</span>
+                        <span class="time-value">{{ day.morningBreakStart.substring(0, 5) }} - {{ day.morningBreakEnd.substring(0, 5) }}</span>
+                    </div>
+                    }
+                    
+                    @if (day.lunchStart && day.lunchEnd) {
+                    <div class="time-row">
+                        <span class="time-label">Almuerzo:</span>
+                        <span class="time-value">{{ day.lunchStart.substring(0, 5) }} - {{ day.lunchEnd.substring(0, 5) }}</span>
+                    </div>
+                    }
+                    
+                    @if (day.afternoonBreakStart && day.afternoonBreakEnd) {
+                    <div class="time-row">
+                        <span class="time-label">Pausa PM:</span>
+                        <span class="time-value">{{ day.afternoonBreakStart.substring(0, 5) }} - {{ day.afternoonBreakEnd.substring(0, 5) }}</span>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+    } @else {
+    <!-- Create/Edit Mode -->
+    <form [formGroup]="form" class="form-container">
+        <ion-item lines="none">
+            <ion-label position="stacked">Nombre *</ion-label>
+            <ion-input 
+                formControlName="name" 
+                placeholder="Ej: Horario Administrativo">
+            </ion-input>
+        </ion-item>
+
+        <ion-item lines="none">
+            <ion-label position="stacked">Descripción</ion-label>
+            <ion-textarea 
+                formControlName="description" 
+                placeholder="Descripción del horario"
+                rows="2">
+            </ion-textarea>
+        </ion-item>
+
+        <div class="days-section">
+            <h3 class="section-title">Horarios por Día</h3>
+            
+            @for (dayControl of dailySchedulesArray.controls; track $index; let i = $index) {
+            <div class="day-form-card" [formGroup]="getDayFormGroup(i)">
+                <div class="day-form-header">
+                    <h4>{{ daysOfWeek[i] }}</h4>
+                    <div class="work-day-toggle">
+                        <ion-checkbox 
+                            formControlName="isWorkDay"
+                            (ionChange)="onWorkDayChange(i, $event.detail.checked)">
+                        </ion-checkbox>
+                        <span>Día laboral</span>
+                    </div>
+                </div>
+
+                @if (getDayFormGroup(i).get('isWorkDay')?.value) {
+                <div class="time-inputs">
+                    <div class="time-row-input">
+                        <ion-item lines="none">
+                            <ion-label position="stacked">Entrada</ion-label>
+                            <ion-input 
+                                type="time" 
+                                formControlName="entryTime">
+                            </ion-input>
+                        </ion-item>
+                        <ion-item lines="none">
+                            <ion-label position="stacked">Salida</ion-label>
+                            <ion-input 
+                                type="time" 
+                                formControlName="exitTime">
+                            </ion-input>
+                        </ion-item>
+                    </div>
+
+                    <div class="breaks-section">
+                        <p class="breaks-label">Pausas (opcional)</p>
+                        
+                        <div class="time-row-input">
+                            <ion-item lines="none">
+                                <ion-label position="stacked">Pausa AM Inicio</ion-label>
+                                <ion-input 
+                                    type="time" 
+                                    formControlName="morningBreakStart">
+                                </ion-input>
+                            </ion-item>
+                            <ion-item lines="none">
+                                <ion-label position="stacked">Pausa AM Fin</ion-label>
+                                <ion-input 
+                                    type="time" 
+                                    formControlName="morningBreakEnd">
+                                </ion-input>
+                            </ion-item>
+                        </div>
+
+                        <div class="time-row-input">
+                            <ion-item lines="none">
+                                <ion-label position="stacked">Almuerzo Inicio</ion-label>
+                                <ion-input 
+                                    type="time" 
+                                    formControlName="lunchStart">
+                                </ion-input>
+                            </ion-item>
+                            <ion-item lines="none">
+                                <ion-label position="stacked">Almuerzo Fin</ion-label>
+                                <ion-input 
+                                    type="time" 
+                                    formControlName="lunchEnd">
+                                </ion-input>
+                            </ion-item>
+                        </div>
+
+                        <div class="time-row-input">
+                            <ion-item lines="none">
+                                <ion-label position="stacked">Pausa PM Inicio</ion-label>
+                                <ion-input 
+                                    type="time" 
+                                    formControlName="afternoonBreakStart">
+                                </ion-input>
+                            </ion-item>
+                            <ion-item lines="none">
+                                <ion-label position="stacked">Pausa PM Fin</ion-label>
+                                <ion-input 
+                                    type="time" 
+                                    formControlName="afternoonBreakEnd">
+                                </ion-input>
+                            </ion-item>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+        <div class="form-actions">
+            <ion-button 
+                expand="block" 
+                (click)="save()"
+                [disabled]="form.invalid || isSubmitting">
+                @if (isSubmitting) {
+                <ion-spinner name="crescent"></ion-spinner>
+                } @else {
+                {{ mode === 'create' ? 'Crear Horario' : 'Guardar Cambios' }}
+                }
+            </ion-button>
+        </div>
+    </form>
+    }
+</ion-content>

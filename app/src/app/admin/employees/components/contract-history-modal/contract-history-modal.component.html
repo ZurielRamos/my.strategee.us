@@ -1,0 +1,170 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Historial de Contratos</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()" fill="clear">
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="history-container">
+        <div class="employee-info">
+            <h3>{{ employeeName }}</h3>
+            <p>Historial completo de contratos laborales</p>
+        </div>
+
+        @if (isLoading) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        @if (!isLoading && contracts.length > 0) {
+        <div class="contracts-list">
+            @for (contract of contracts; track contract.id) {
+            <ion-card class="contract-card">
+                <ion-card-header>
+                    <div class="card-header-content">
+                        <div class="header-info">
+                            <ion-card-title>{{ contract.type }}</ion-card-title>
+                            @if (contract.contractNumber) {
+                            <span class="contract-number">#{{ contract.contractNumber }}</span>
+                            }
+                        </div>
+                        <div class="header-actions">
+                            @if (canActivate(contract)) {
+                            <ion-button (click)="confirmActivate(contract)" fill="clear" color="success" size="small" title="Activar contrato">
+                                <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+                            </ion-button>
+                            }
+                            @if (canSuspend(contract)) {
+                            <ion-button (click)="confirmSuspend(contract)" fill="clear" color="warning" size="small" title="Suspender contrato">
+                                <ion-icon slot="icon-only" name="pause-circle-outline"></ion-icon>
+                            </ion-button>
+                            }
+                            @if (canCancel(contract)) {
+                            <ion-button (click)="confirmCancel(contract)" fill="clear" color="danger" size="small" title="Liquidar contrato">
+                                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                            </ion-button>
+                            }
+                        </div>
+                    </div>
+                </ion-card-header>
+                <ion-card-content>
+                    <div class="contract-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Estado:</span>
+                            <ion-badge [color]="getStatusColor(contract.status)">
+                                {{ getStatusLabel(contract.status) }}
+                            </ion-badge>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Grupo de Nómina:</span>
+                            <span class="detail-value">{{ contract.payrollGroup }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Período:</span>
+                            <span class="detail-value">
+                                {{ formatDate(contract.startDate) }} 
+                                @if (contract.endDate) {
+                                - {{ formatDate(contract.endDate) }}
+                                } @else {
+                                - Presente
+                                }
+                            </span>
+                        </div>
+                        
+                        @if (contract.memorandums && contract.memorandums.length > 0) {
+                        <div class="memorandums-section">
+                            <div class="memorandums-header" (click)="toggleMemorandums(contract.id)">
+                                <h4>
+                                    MEMORANDOS ({{ contract.memorandums.length }})
+                                    @if (hasActiveMemorandum(contract)) {
+                                    <ion-badge color="success">1 Activo</ion-badge>
+                                    }
+                                </h4>
+                                <ion-icon [name]="isMemorandumsExpanded(contract.id) ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+                            </div>
+
+                            @if (isMemorandumsExpanded(contract.id)) {
+                            <div class="memorandums-list">
+                                @for (memo of getSortedMemorandums(contract.memorandums); track memo.id) {
+                                <div class="memorandum-item" [class.active]="isActiveMemorandum(contract, memo)">
+                                    <div class="memo-header">
+                                        <div class="memo-title">
+                                            <span class="memo-position">{{ memo.position?.name || 'Sin cargo' }}</span>
+                                            <ion-badge [color]="getMemorandumStatusColor(getMemorandumDisplayStatus(contract, memo))">
+                                                {{ getMemoStatusLabel(getMemorandumDisplayStatus(contract, memo)) }}
+                                            </ion-badge>
+                                        </div>
+                                        <div class="memo-actions">
+                                            <span class="memo-dates">
+                                                {{ formatDate(memo.startDate) }}
+                                                @if (memo.endDate) {
+                                                - {{ formatDate(memo.endDate) }}
+                                                } @else {
+                                                - Presente
+                                                }
+                                            </span>
+                                            @if (getMemorandumDisplayStatus(contract, memo) === 'PENDING') {
+                                            <ion-button (click)="confirmDeleteMemorandum(memo)" fill="clear" color="danger" size="small" title="Eliminar memorando pendiente">
+                                                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                                            </ion-button>
+                                            }
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="memo-details">
+                                        @if (memo.department) {
+                                        <div class="detail-row">
+                                            <span class="detail-label">Departamento:</span>
+                                            <span class="detail-value">{{ memo.department?.name }}</span>
+                                        </div>
+                                        }
+                                        <div class="detail-row">
+                                            <span class="detail-label">Salario:</span>
+                                            <span class="detail-value amount">{{ formatCurrency(memo.salaryAmount) }}</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="detail-label">Tipo:</span>
+                                            <span class="detail-value">
+                                                {{ memo.salaryType === 'FIXED' ? 'Fijo' : 'Parámetro' }}
+                                                @if (memo.parameterKey) {
+                                                <ion-chip color="primary" size="small">
+                                                    <ion-label>{{ memo.parameterKey }}</ion-label>
+                                                </ion-chip>
+                                                }
+                                            </span>
+                                        </div>
+                                        @if (memo.reason) {
+                                        <div class="detail-row">
+                                            <span class="detail-label">Razón:</span>
+                                            <span class="detail-value">{{ memo.reason }}</span>
+                                        </div>
+                                        }
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                            }
+                        </div>
+                        }
+                    </div>
+                </ion-card-content>
+            </ion-card>
+            }
+        </div>
+        }
+
+        @if (!isLoading && contracts.length === 0) {
+        <div class="empty-state">
+            <ion-icon name="briefcase-outline"></ion-icon>
+            <h3>No hay contratos registrados</h3>
+            <p>Este empleado no tiene contratos en su historial</p>
+        </div>
+        }
+    </div>
+</ion-content>

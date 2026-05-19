@@ -1,0 +1,227 @@
+.help-content {
+    --background: var(--app-background);
+}
+
+.page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px 16px;
+
+    @media (min-width: 768px) {
+        padding: 32px 24px;
+    }
+}
+
+.help-header {
+    text-align: center;
+    margin-bottom: 32px;
+
+    .header-icon {
+        font-size: 64px;
+        color: var(--ion-color-primary);
+        margin-bottom: 16px;
+    }
+
+    h1 {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--app-text-primary);
+        margin: 0 0 8px 0;
+    }
+
+    p {
+        font-size: 16px;
+        color: var(--app-text-secondary);
+        margin: 0;
+    }
+}
+
+.contact-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+
+    .contact-card {
+        background: var(--app-card-bg);
+        border-radius: 16px;
+        box-shadow: 0 2px 8px var(--app-shadow);
+        margin: 0;
+        transition: all 0.2s ease;
+
+        &:hover {
+            box-shadow: 0 4px 12px var(--app-shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        ion-card-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+
+            ion-icon {
+                font-size: 32px;
+                color: var(--ion-color-primary);
+                flex-shrink: 0;
+            }
+
+            .contact-info {
+                flex: 1;
+
+                h3 {
+                    font-size: 14px;
+                    font-weight: 700;
+                    color: var(--app-text-secondary);
+                    margin: 0 0 4px 0;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+
+                p {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: var(--app-text-primary);
+                    margin: 0;
+                }
+            }
+        }
+    }
+}
+
+.faq-section {
+    margin-bottom: 32px;
+
+    h2 {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--app-text-primary);
+        margin: 0 0 24px 0;
+    }
+}
+
+.faq-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.faq-category-card {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    margin: 0;
+
+    ion-card-header {
+        padding: 20px 20px 16px;
+
+        ion-card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+
+            ion-icon {
+                font-size: 24px;
+                color: var(--ion-color-primary);
+            }
+        }
+    }
+
+    ion-card-content {
+        padding: 0 0 12px;
+    }
+
+    ion-accordion-group {
+        ion-accordion {
+            .faq-question {
+                --background: transparent;
+                --color: var(--app-text-primary);
+                --padding-start: 20px;
+                --padding-end: 20px;
+                --min-height: 56px;
+                font-weight: 600;
+                transition: background 0.2s ease;
+
+                &:hover {
+                    --background: var(--app-hover-bg);
+                }
+
+                ion-label {
+                    font-size: 15px;
+                    font-weight: 600;
+                    color: var(--app-text-primary);
+                }
+            }
+
+            .faq-answer {
+                padding: 16px 20px 20px;
+                font-size: 14px;
+                line-height: 1.6;
+                color: var(--app-text-secondary);
+                background: var(--app-hover-bg);
+                border-top: 1px solid var(--app-border);
+            }
+
+            &[aria-expanded="true"] {
+                .faq-question {
+                    --background: var(--app-hover-bg);
+                }
+            }
+        }
+    }
+}
+
+.additional-help-card {
+    background: var(--ion-color-primary);
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin: 0;
+
+    ion-card-content {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 24px;
+
+        ion-icon {
+            font-size: 48px;
+            color: var(--ion-color-primary-contrast);
+            flex-shrink: 0;
+        }
+
+        .help-text {
+            flex: 1;
+
+            h3 {
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--ion-color-primary-contrast);
+                margin: 0 0 8px 0;
+            }
+
+            p {
+                font-size: 14px;
+                line-height: 1.6;
+                color: var(--ion-color-primary-contrast);
+                margin: 0;
+                opacity: 0.9;
+            }
+        }
+    }
+}
+
+// Dark mode adjustments
+body.dark {
+    .additional-help-card {
+        ion-card-content {
+            ion-icon,
+            .help-text h3,
+            .help-text p {
+                color: var(--app-card-bg);
+            }
+        }
+    }
+}

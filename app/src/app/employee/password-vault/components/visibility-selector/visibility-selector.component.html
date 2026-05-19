@@ -1,0 +1,61 @@
+<div class="visibility-selector" [formGroup]="formGroup">
+  <h4 class="section-title">Visibilidad</h4>
+
+  <ion-item lines="none">
+    <ion-label position="stacked">Nivel de Visibilidad *</ion-label>
+    <ion-select formControlName="visibilityLevel" placeholder="Seleccione nivel">
+      @for (level of visibilityLevels; track level.value) {
+        <ion-select-option [value]="level.value">{{ level.label }}</ion-select-option>
+      }
+    </ion-select>
+  </ion-item>
+
+  @if (showCompanySelector()) {
+    <div class="entity-autocomplete-wrapper">
+      <label class="autocomplete-label">Empresas *</label>
+      <app-entity-autocomplete
+        formControlName="companyIds"
+        placeholder="Buscar empresa..."
+        icon="business-outline"
+        [options]="companyOptions"
+        [initialItems]="initialCompanies">
+      </app-entity-autocomplete>
+    </div>
+  }
+
+  @if (showAreaSelector()) {
+    <div class="entity-autocomplete-wrapper">
+      <label class="autocomplete-label">Áreas *</label>
+      <app-entity-autocomplete
+        formControlName="areaIds"
+        placeholder="Buscar área..."
+        icon="layers-outline"
+        [options]="areaOptions"
+        [initialItems]="initialAreas">
+      </app-entity-autocomplete>
+    </div>
+  }
+
+  @if (showPositionSelector()) {
+    <div class="entity-autocomplete-wrapper">
+      <label class="autocomplete-label">Puestos *</label>
+      <app-entity-autocomplete
+        formControlName="positionIds"
+        placeholder="Buscar puesto..."
+        icon="briefcase-outline"
+        [options]="positionOptions"
+        [initialItems]="initialPositions">
+      </app-entity-autocomplete>
+    </div>
+  }
+
+  @if (showEmployeeSelector()) {
+    <div class="employee-autocomplete-wrapper">
+      <label class="autocomplete-label">Empleados *</label>
+      <app-employee-autocomplete 
+        formControlName="employeeIds"
+        [initialEmployees]="initialEmployees">
+      </app-employee-autocomplete>
+    </div>
+  }
+</div>

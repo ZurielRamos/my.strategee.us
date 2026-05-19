@@ -1,0 +1,32 @@
+<div class="textarea-input-container">
+    <ion-item lines="none">
+        <ion-label position="stacked">
+            {{ label }}
+            @if (required) {
+                <span class="required-indicator"> *</span>
+            }
+        </ion-label>
+        <ion-textarea
+            [value]="value"
+            [placeholder]="placeholder"
+            [rows]="rows"
+            [maxlength]="maxlength"
+            [readonly]="readonly"
+            [disabled]="disabled"
+            (ionInput)="onValueChange($event)"
+            (ionBlur)="onBlur()">
+        </ion-textarea>
+        
+        @if (helperText) {
+            <ion-note slot="helper">{{ helperText }}</ion-note>
+        }
+    </ion-item>
+
+    @if (showCharCounter && maxlength) {
+        <div class="char-counter" 
+             [class.near-limit]="isNearLimit"
+             [class.at-limit]="isAtLimit">
+            {{ characterCount }} / {{ maxlength }}
+        </div>
+    }
+</div>

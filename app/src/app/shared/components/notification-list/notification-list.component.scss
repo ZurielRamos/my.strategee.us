@@ -1,0 +1,146 @@
+ion-content {
+    --background: var(--app-background);
+}
+
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 16px 12px;
+    background: var(--app-background);
+    border-bottom: 1px solid var(--app-border);
+
+    h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+    }
+
+    ion-button {
+        --color: var(--ion-color-primary);
+        font-size: 14px;
+        font-weight: 600;
+    }
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+
+    ion-spinner {
+        margin-bottom: 16px;
+        --color: var(--ion-color-primary);
+    }
+
+    p {
+        font-size: 14px;
+        color: var(--app-text-secondary);
+        margin: 0;
+    }
+}
+
+.empty-notifications {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+
+    ion-icon {
+        font-size: 80px;
+        color: var(--app-text-tertiary);
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--app-text-primary);
+        margin: 0 0 8px 0;
+    }
+
+    p {
+        font-size: 14px;
+        color: var(--app-text-secondary);
+        margin: 0;
+    }
+}
+
+.notifications-list {
+    padding: 8px 0;
+    background: transparent;
+}
+
+.notification-item {
+    --background: var(--app-card-bg);
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --inner-padding-end: 0;
+    margin: 8px 16px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+        transform: translateX(-4px);
+        box-shadow: 0 4px 12px var(--app-shadow);
+    }
+
+    &.unread {
+        --background: var(--app-hover-bg);
+        border-left: 3px solid var(--ion-color-primary);
+    }
+
+    .notification-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-primary-shade) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+
+        ion-icon {
+            font-size: 20px;
+            color: white;
+        }
+    }
+
+    .notification-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .notification-message {
+            font-size: 14px;
+            color: var(--app-text-primary);
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: var(--app-text-tertiary);
+        }
+    }
+
+    .unread-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--ion-color-primary);
+        margin-left: 8px;
+    }
+}
+
+ion-infinite-scroll {
+    margin-top: 16px;
+}

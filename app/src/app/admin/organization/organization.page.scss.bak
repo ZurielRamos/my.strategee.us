@@ -1,0 +1,100 @@
+// Importar estándares de admin
+@import '../../../theme/admin-standards.scss';
+
+.admin-page-content {
+    @include admin-page-background;
+}
+
+.admin-container {
+    @include admin-page-container;
+}
+
+.menu-grid {
+    max-width: $admin-container-max-width;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-card {
+    @include admin-card;
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: $admin-shadow-hover;
+    }
+
+    .card-icon-container {
+        height: 90px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, rgba(var(--ion-color-primary-rgb), 0.1) 0%, rgba(var(--ion-color-primary-rgb), 0) 100%);
+
+        ion-icon {
+            font-size: 3rem;
+            color: var(--ion-color-primary);
+        }
+    }
+
+    &.items-company .card-icon-container {
+        background: linear-gradient(135deg, rgba(56, 128, 255, 0.15) 0%, rgba(56, 128, 255, 0.02) 100%);
+
+        ion-icon {
+            color: #3880ff;
+        }
+    }
+
+    &.items-location .card-icon-container {
+        background: linear-gradient(135deg, rgba(45, 211, 111, 0.15) 0%, rgba(45, 211, 111, 0.02) 100%);
+
+        ion-icon {
+            color: #2dd36f;
+        }
+    }
+
+    &.items-schedule .card-icon-container {
+        background: linear-gradient(135deg, rgba(255, 196, 9, 0.15) 0%, rgba(255, 196, 9, 0.02) 100%);
+
+        ion-icon {
+            color: #ffc409;
+        }
+    }
+
+    &.items-position .card-icon-container {
+        background: linear-gradient(135deg, rgba(235, 68, 90, 0.15) 0%, rgba(235, 68, 90, 0.02) 100%);
+
+        ion-icon {
+            color: #eb445a;
+        }
+    }
+
+    &.items-areas .card-icon-container {
+        background: linear-gradient(135deg, rgba(156, 39, 176, 0.15) 0%, rgba(156, 39, 176, 0.02) 100%);
+
+        ion-icon {
+            color: #9c27b0;
+        }
+    }
+
+    ion-card-header {
+        padding-bottom: 0px;
+        padding-top: 10px;
+
+        ion-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+    }
+
+    ion-card-content {
+        padding-top: 0.5rem;
+        flex-grow: 1;
+        font-size: $admin-body-size;
+        color: $admin-text-secondary;
+    }
+}

@@ -1,0 +1,50 @@
+<app-base-modal 
+    [title]="title"
+    subtitle="Complete los campos requeridos"
+    confirmText="Guardar"
+    [confirmDisabled]="!areaForm.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="areaForm">
+        <!-- Título de sección -->
+        <h4 class="section-title">Información General</h4>
+
+        <!-- Campo de nombre -->
+        <app-text-input
+            formControlName="name"
+            label="Nombre del Área"
+            placeholder="Ej: Recursos Humanos"
+            [required]="true">
+        </app-text-input>
+
+        <!-- Campo de código de centro de costos -->
+        <app-text-input
+            formControlName="costCenterCode"
+            label="Código de Centro de Costos"
+            placeholder="Ej: CC-001">
+        </app-text-input>
+
+        <!-- Campo de descripción -->
+        <app-textarea-input
+            formControlName="description"
+            label="Descripción"
+            placeholder="Ej: Área encargada de la gestión del talento humano"
+            [rows]="3">
+        </app-textarea-input>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Asignación</h4>
+
+        <!-- Campo de empresa -->
+        <app-form-select
+            label="Empresa"
+            [options]="companyOptions"
+            formControlName="companyId"
+            placeholder="Seleccione una empresa"
+            [required]="true">
+        </app-form-select>
+    </form>
+    
+</app-base-modal>

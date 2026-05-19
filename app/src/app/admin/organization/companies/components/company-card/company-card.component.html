@@ -1,0 +1,32 @@
+<ion-card class="company-card" (click)="onCardClick()">
+    @if (company.logoUrl) {
+    <div class="company-logo">
+        <img [src]="company.logoUrl" [alt]="company.name" />
+    </div>
+    } @else {
+    <div class="company-logo-placeholder">
+        <ion-icon name="business-outline"></ion-icon>
+    </div>
+    }
+
+    <ion-card-header>
+        <ion-card-title>{{ company.name }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+        <div class="company-info">
+            <div class="info-row">
+                <span class="label">Razón Social:</span>
+                <span class="value">{{ company.legalName }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">NIT:</span>
+                <span class="value">{{ company.nit }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Dirección:</span>
+                <span class="value">{{ company.address }}</span>
+            </div>
+        </div>
+    </ion-card-content>
+</ion-card>

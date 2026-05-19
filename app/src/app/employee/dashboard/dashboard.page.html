@@ -1,0 +1,209 @@
+<app-page-header></app-page-header>
+
+<ion-content [fullscreen]="true" class="dashboard-content">
+    <div class="page-container">
+        <!-- Page Title -->
+        <div class="page-title-section">
+            <div class="title-text">
+                <h1>Bienvenido, {{ firstName }}</h1>
+                <p>Resumen de tu información laboral</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Top Row: Balance Cards -->
+            <div class="balance-cards-row">
+                <!-- Vacation Balance Card — solo para contratos laborales -->
+                @if (vacationBalance?.isEligible) {
+                <div class="grid-card balance-card vacation-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <ion-icon name="calendar-outline" class="title-icon"></ion-icon>
+                            Balance de Vacaciones
+                        </div>
+                    </div>
+
+                    <div class="card-metric">
+                        @if (isLoadingVacations) {
+                            <ion-spinner name="crescent"></ion-spinner>
+                        } @else {
+                            <span class="value">{{ vacationBalance.availableBalance }}</span>
+                            <span class="label">días disponibles</span>
+                        }
+                    </div>
+                </div>
+                }
+
+                <!-- Compensated Time Balance Card -->
+                <div class="grid-card balance-card compensated-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <ion-icon name="time-outline" class="title-icon"></ion-icon>
+                            Horas Compensatorias
+                        </div>
+                    </div>
+
+                    <div class="card-metric">
+                        @if (isLoadingCompensatedTime) {
+                            <ion-spinner name="crescent"></ion-spinner>
+                        } @else if (compensatedTimeBalance) {
+                            <span class="value">{{ compensatedTimeBalance.availableBalance }}</span>
+                            <span class="label">horas disponibles</span>
+                        } @else {
+                            <span class="label">Sin información</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Mi IDO Card (Reemplaza Energyze Days) -->
+                <div class="grid-card balance-card ido-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <ion-icon name="flash-outline" class="title-icon"></ion-icon>
+                            Mi IDO
+                        </div>
+                    </div>
+
+                    <div class="card-metric">
+                        @if (isLoadingIdo) {
+                            <ion-spinner name="crescent"></ion-spinner>
+                        } @else if (idoData) {
+                            <span class="value">{{ idoData.ido }}%</span>
+                            <span class="label">indicador actual</span>
+                            <div class="balance-details">
+                                <span>Límite requerido: {{ idoData.idoLimit }}%</span>
+                                @if (idoData.meetsRequirement) {
+                                    <span class="meets-requirement">✓ Cumple requisito</span>
+                                } @else {
+                                    <span class="not-meets-requirement">✗ No cumple requisito</span>
+                                }
+                            </div>
+                        } @else {
+                            <span class="label">Sin información</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Second Row: Requests and Benefits -->
+            <div class="content-cards-row">
+                <!-- Recent Requests Card -->
+                <div class="grid-card requests-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <ion-icon name="document-text-outline" class="title-icon"></ion-icon>
+                            Mis Solicitudes
+                        </div>
+                    </div>
+
+                    <div class="card-content">
+                        @if (isLoadingRequests) {
+                            <div class="loading-state">
+                                <ion-spinner name="crescent"></ion-spinner>
+                            </div>
+                        } @else if (hasRequests) {
+                            <div class="request-list">
+                                @for (request of recentRequests; track request.id) {
+                                    <div class="request-item">
+                                        <div class="request-header">
+                                            <span class="request-type">{{ getRequestTypeLabel(request.type, request.details) }}</span>
+                                            <ion-chip [color]="getRequestStatusColor(request.status)" class="status-chip">
+                                                <ion-label>{{ getRequestStatusLabel(request.status) }}</ion-label>
+                                            </ion-chip>
+                                        </div>
+                                        <div class="request-date">
+                                            <ion-icon name="time-outline"></ion-icon>
+                                            <span>{{ formatRequestDate(request.createdAt) }}</span>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        } @else {
+                            <div class="empty-state">
+                                <ion-icon name="document-text-outline"></ion-icon>
+                                <p>No tienes solicitudes recientes</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Benefits Container -->
+                <div class="benefits-container">
+                    <!-- Energyze Days Card — solo si tiene días disponibles o está cargando -->
+                    @if (isLoadingEnergyzeDays || (energyzeDaysBalance && energyzeDaysBalance.availableDays > 0)) {
+                    <div class="grid-card benefit-card-square energyze-benefit-card">
+                        <div class="benefit-content">
+                            <div class="benefit-name-square">Días Energyze</div>
+                            @if (isLoadingEnergyzeDays) {
+                                <div class="benefit-loading">
+                                    <ion-spinner name="crescent"></ion-spinner>
+                                </div>
+                            } @else {
+                                <div class="benefit-quota-display">
+                                    <span class="benefit-quota-large">{{ energyzeDaysBalance.availableDays }}</span>
+                                </div>
+                                <div class="benefit-quota-label">días disponibles</div>
+                            }
+                        </div>
+                    </div>
+                    }
+
+                    <!-- Días Obsequiados:
+                         - Contrato laboral → muestra (solo días otorgados manualmente)
+                         - Contrato servicios → muestra (devengado automático)
+                         - Sin contrato → oculta -->
+                    @if (isLoadingGiftedDays) {
+                        <div class="grid-card benefit-card-square gifted-benefit-card">
+                            <div class="benefit-content">
+                                <div class="benefit-name-square">Días Obsequiados</div>
+                                <div class="benefit-loading"><ion-spinner name="crescent"></ion-spinner></div>
+                            </div>
+                        </div>
+                    } @else if (giftedDaysBalance?.isEligible) {
+                    <div class="grid-card benefit-card-square gifted-benefit-card">
+                        <div class="benefit-content">
+                            <div class="benefit-name-square">Días Obsequiados</div>
+                            <div class="benefit-quota-display">
+                                <span class="benefit-quota-large">{{ giftedDaysBalance.availableDays }}</span>
+                            </div>
+                            <div class="benefit-quota-label">días disponibles</div>
+                        </div>
+                    </div>
+                    }
+
+                    @if (isLoadingBenefits) {
+                        <div class="grid-card benefits-loading">
+                            <div class="loading-state">
+                                <ion-spinner name="crescent"></ion-spinner>
+                                <p>Cargando beneficios...</p>
+                            </div>
+                        </div>
+                    } @else if (hasBenefits) {
+                        @for (benefit of benefits; track benefit.id) {
+                            <div class="grid-card benefit-card-square">
+                                <div class="benefit-content">
+                                    <div class="benefit-name-square">{{ getBenefitTypeLabel(benefit.benefitType) }}</div>
+                                    <div class="benefit-quota-display">
+                                        <span class="benefit-quota-large">{{ benefit.availableDays ?? benefit.monthlyQuota }}</span>
+                                        <span class="benefit-quota-separator">/</span>
+                                        <span class="benefit-quota-total">{{ benefit.monthlyQuota }}</span>
+                                    </div>
+                                    <div class="benefit-quota-label">días disponibles</div>
+                                </div>
+                            </div>
+                        }
+                    } @else {
+                        <div class="grid-card benefits-empty">
+                            <div class="empty-state">
+                                <ion-icon name="gift-outline"></ion-icon>
+                                <p>No tienes beneficios asignados</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</ion-content>

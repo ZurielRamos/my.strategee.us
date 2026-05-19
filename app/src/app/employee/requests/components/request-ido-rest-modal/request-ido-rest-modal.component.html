@@ -1,0 +1,30 @@
+<app-base-modal 
+    title="Solicitar Sábado Descanso IDO"
+    subtitle="Selecciona el sábado que deseas descansar"
+    confirmText="Enviar Solicitud"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <h4 class="section-title">Fecha del Sábado</h4>
+
+        <!-- Campo de fecha con validación personalizada para solo sábados -->
+        <app-date-input
+            formControlName="date"
+            label="Fecha del Sábado"
+            placeholder="Selecciona un sábado"
+            mode="single"
+            [required]="true"
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+            [customValidator]="customValidator">
+        </app-date-input>
+
+        <!-- Mensaje informativo -->
+        <app-alert-box type="info">
+            Solo puedes seleccionar días sábados. Este beneficio te permite descansar un sábado completo sin afectar tu salario.
+        </app-alert-box>
+    </form>
+</app-base-modal>

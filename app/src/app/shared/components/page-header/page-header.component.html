@@ -1,0 +1,51 @@
+<ion-header class="dashboard-header" mode="ios">
+    <ion-toolbar>
+        <!-- Normal Header View -->
+        <div class="header-profile-slot" slot="start" [class.fade-out]="isMobileSearchActive">
+            <!-- Back button if backUrl is provided -->
+            <div class="back-btn" *ngIf="backUrl" (click)="onBack()">
+                <ion-icon name="arrow-back-outline"></ion-icon>
+            </div>
+
+            <!-- Menu button if NO backUrl -->
+            <ion-buttons *ngIf="!backUrl">
+                <ion-menu-button></ion-menu-button>
+            </ion-buttons>
+
+            <app-user-profile [hideTextOnMobile]="true"></app-user-profile>
+
+            <div class="header-page-title" *ngIf="pageTitle">{{ pageTitle }}</div>
+        </div>
+
+        <div class="header-actions" slot="end" [class.fade-out]="isMobileSearchActive">
+            <ng-container *ngIf="showSearch">
+                <!-- Desktop Search Bar -->
+                <div class="search-bar desktop-only">
+                    <ion-icon name="search-outline"></ion-icon>
+                    <input type="text" placeholder="Search..." [value]="searchQuery"
+                        (keyup.enter)="onSearchSubmit($event)">
+                    <ion-icon class="clear-icon" name="close-outline" *ngIf="searchQuery"
+                        (click)="clearSearch()"></ion-icon>
+                </div>
+
+                <!-- Mobile Search Button -->
+                <div class="search-btn mobile-only" (click)="toggleMobileSearch()">
+                    <ion-icon name="search-outline"></ion-icon>
+                </div>
+            </ng-container>
+
+            <div class="notification-btn" (click)="openNotifications($event)">
+                <ion-icon name="notifications-outline"></ion-icon>
+                <app-notification-badge></app-notification-badge>
+            </div>
+        </div>
+
+        <!-- Mobile Search Overlay (Animated Position) -->
+        <div class="mobile-search-overlay" [class.active]="isMobileSearchActive">
+            <ion-icon name="search-outline" class="overlay-search-icon"></ion-icon>
+            <input type="text" #mobileSearchInput placeholder="Search..." [value]="searchQuery"
+                (keyup.enter)="onSearchSubmit($event)">
+            <ion-icon name="close-outline" class="overlay-close-btn" (click)="toggleMobileSearch()"></ion-icon>
+        </div>
+    </ion-toolbar>
+</ion-header>

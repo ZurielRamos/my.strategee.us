@@ -1,0 +1,536 @@
+// Importar estándares de admin
+@import '../../../theme/admin-standards.scss';
+
+:host {
+    display: block;
+    height: 100%;
+}
+
+.admin-page-content {
+    @include admin-page-background;
+}
+
+.admin-container {
+    @include admin-page-container;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 240px;
+    gap: 20px;
+
+    @media (max-width: 1200px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 991px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        grid-auto-rows: minmax(240px, auto);
+        gap: 16px;
+    }
+}
+
+.grid-card {
+    background: var(--app-card-bg);
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    position: relative;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    &.col-span-2 {
+        grid-column: span 2;
+
+        @media (max-width: 768px) {
+            grid-column: span 1;
+            padding: 20px;
+        }
+    }
+
+    &.row-span-2 {
+        grid-row: span 2;
+
+        @media (max-width: 768px) {
+            grid-row: auto;
+        }
+    }
+
+    &.bg-dark {
+        background: #252827;
+        color: #ffffff;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--app-text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .title-icon {
+                font-size: 18px;
+                color: var(--app-text-secondary);
+            }
+        }
+
+        .more-icon {
+            color: var(--app-text-secondary);
+            cursor: pointer;
+        }
+
+        &.dark-mode {
+            .card-title {
+                color: #ffffff;
+            }
+
+            .filter-dropdown {
+                background: rgba(255, 255, 255, 0.1);
+                color: #ffffff;
+                padding: 6px 12px;
+                border-radius: 16px;
+                font-size: 12px;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+
+    &.positive {
+        background: var(--ion-color-primary, #bcf36a);
+        color: var(--app-text-primary);
+    }
+}
+
+/* Card: Energy Used */
+.card-energy {
+
+    .card-metric {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        margin-bottom: 30px;
+
+        .value {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -1px;
+            color: var(--app-text-primary);
+        }
+
+        .label {
+            font-size: 14px;
+            color: var(--app-text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .badge {
+            margin-bottom: 6px;
+        }
+    }
+
+    .chart-bubbles {
+        height: 180px;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+
+        .bubble-container {
+            position: relative;
+            width: 320px;
+            height: 180px;
+            transform-origin: center;
+
+            @media (max-width: 576px) {
+                transform: scale(0.65);
+                width: 100%;
+            }
+
+            @media (min-width: 577px) and (max-width: 768px) {
+                transform: scale(0.8);
+            }
+        }
+
+        .bubble {
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            color: var(--app-text-primary);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+
+            .val {
+                font-size: 24px;
+                font-weight: 800;
+                line-height: 1;
+            }
+
+            .lbl {
+                font-size: 12px;
+                opacity: 0.8;
+                font-weight: 500;
+            }
+
+            &-primary {
+                width: 160px;
+                height: 160px;
+                background: #b7a6f6;
+                left: 10px;
+                z-index: 1;
+            }
+
+            &-dark {
+                width: 130px;
+                height: 130px;
+                background: var(--app-text-primary);
+                color: #ffffff;
+                right: 30px;
+                z-index: 2;
+                top: 20px;
+            }
+
+            &-accent {
+                width: 90px;
+                height: 90px;
+                background: var(--ion-color-primary, #bcf36a);
+                bottom: -10px;
+                left: 110px;
+                z-index: 3;
+
+                .val {
+                    font-size: 18px;
+                }
+            }
+        }
+    }
+
+    .progress-list {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .progress-item {
+            .item-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 8px;
+
+                .pct {
+                    font-size: 20px;
+                    font-weight: 700;
+                    color: var(--app-text-primary);
+                    width: 40px;
+
+                    small {
+                        font-size: 12px;
+                        color: var(--app-text-secondary);
+                    }
+                }
+
+                .name {
+                    font-size: 14px;
+                    color: var(--app-text-primary);
+                    font-weight: 600;
+                    flex: 1;
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+                    gap: 6px;
+
+                    .dot {
+                        width: 8px;
+                        height: 8px;
+                        border-radius: 50%;
+
+                        &-primary {
+                            background: #b7a6f6;
+                        }
+
+                        &-dark {
+                            background: var(--app-text-primary);
+                        }
+
+                        &-accent {
+                            background: var(--ion-color-primary, #bcf36a);
+                        }
+                    }
+                }
+            }
+
+            .progress-bar {
+                height: 12px;
+                background: var(--app-hover-bg);
+                border-radius: 6px;
+                overflow: hidden;
+
+                .fill {
+                    height: 100%;
+                    border-radius: 6px;
+
+                    &-primary {
+                        background: #b7a6f6;
+                    }
+
+                    &-dark {
+                        background: var(--app-text-primary);
+                    }
+
+                    &-accent {
+                        background: var(--ion-color-primary, #bcf36a);
+                    }
+                }
+            }
+        }
+    }
+}
+
+.card-metric-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+
+    &.mt-auto {
+        margin-top: auto;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .main-val {
+        font-size: 38px;
+        font-weight: 800;
+        line-height: 1;
+        color: var(--app-text-primary);
+        letter-spacing: -1px;
+
+        small {
+            font-size: 14px;
+            font-weight: 600;
+        }
+    }
+
+    .sub-val {
+        display: flex;
+        flex-direction: column;
+        font-size: 13px;
+
+        span {
+            color: var(--app-text-secondary);
+        }
+
+        strong {
+            color: var(--app-text-primary);
+            font-weight: 700;
+        }
+    }
+}
+
+/* Card: Wellness Index */
+.dots-chart {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    height: 100px;
+
+    @media (max-width: 576px) {
+        margin-top: 20px;
+    }
+
+    .dot-col {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        .c-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #b7a6f6;
+            opacity: 0.3;
+
+            @media (max-width: 576px) {
+                width: 6px;
+                height: 6px;
+            }
+
+            &.h1 {
+                opacity: 0.5;
+            }
+
+            &.h2 {
+                opacity: 0.7;
+            }
+
+            &.h3 {
+                opacity: 1;
+            }
+
+            &.h4 {
+                background: var(--app-text-primary);
+                opacity: 1;
+            }
+
+            &.h5 {
+                background: var(--ion-color-primary, #bcf36a);
+                opacity: 1;
+            }
+        }
+    }
+}
+
+/* Card: Sleep Analysis */
+.card-sleep {
+    position: relative;
+
+    .sleep-metrics {
+        display: flex;
+        gap: 32px;
+        margin-bottom: 30px;
+
+        .s-metric {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            .val {
+                font-size: 28px;
+                font-weight: 700;
+
+                small {
+                    font-size: 14px;
+                }
+            }
+
+            .lbl {
+                font-size: 13px;
+                color: var(--app-text-tertiary);
+            }
+        }
+    }
+
+    .bar-chart-container {
+        width: 100%;
+        overflow-x: auto;
+        margin-top: auto;
+
+        /* Hide scrollbar for cleanlyness */
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .bar-chart {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        height: 120px;
+        min-width: 450px;
+        /* Force minimum width to enable scrolling on small screens */
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+
+            div.b {
+                width: 14px;
+                border-radius: 6px;
+            }
+
+            .b-ghost {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px dashed rgba(255, 255, 255, 0.2);
+                height: 40px;
+
+                &.h1 {
+                    height: 30px;
+                }
+
+                &.h2 {
+                    height: 50px;
+                }
+
+                &.h3 {
+                    height: 70px;
+                }
+
+                &.h4 {
+                    height: 80px;
+                }
+            }
+
+            .b-primary {
+                background: #b7a6f6;
+                height: 80px;
+            }
+
+            .b-accent {
+                background: var(--ion-color-primary, #bcf36a);
+                height: 40px;
+            }
+
+            .x-label {
+                font-size: 12px;
+                color: var(--app-text-tertiary);
+                display: flex;
+                align-items: center;
+                gap: 4px;
+
+                &.active-lbl {
+                    color: #ffffff;
+                    font-weight: 600;
+
+                    ion-icon {
+                        color: #ffffff;
+                    }
+                }
+            }
+
+            &.active {
+                gap: 2px;
+
+                div.b {
+                    border: none;
+                }
+            }
+        }
+    }
+}

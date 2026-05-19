@@ -1,0 +1,33 @@
+<app-base-modal
+    title="Confirmación de Seguridad"
+    subtitle="Esta acción requiere confirmación adicional"
+    cancelText="Cancelar"
+    confirmText="Confirmar y Guardar"
+    [confirmDisabled]="!isConfirmed"
+    (modalDismiss)="dismiss()"
+    (modalConfirm)="confirm()">
+    
+    <div class="warning-section">
+        <div class="warning-icon-container">
+            <ion-icon name="warning-outline"></ion-icon>
+        </div>
+        <h2>¡Atención!</h2>
+        <p>Está a punto de modificar la configuración de solicitudes del sistema.</p>
+        <p class="warning-text">Estos cambios afectarán a todos los empleados y pueden tener un impacto significativo en el funcionamiento del sistema.</p>
+    </div>
+
+    <div class="confirmation-section">
+        <p class="instruction-text">Para confirmar esta acción, escriba el siguiente texto:</p>
+        
+        <div class="required-text-box">
+            CONFIRMAR CAMBIOS
+        </div>
+
+        <ion-input
+            [(ngModel)]="confirmationText"
+            placeholder="Escriba el texto de confirmación"
+            [class.valid]="isConfirmed">
+        </ion-input>
+    </div>
+
+</app-base-modal>

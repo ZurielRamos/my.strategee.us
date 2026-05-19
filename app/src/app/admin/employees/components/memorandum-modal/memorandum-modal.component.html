@@ -1,0 +1,127 @@
+<app-base-modal 
+    title="Agregar Memorando"
+    subtitle="Agrega un nuevo memorando de cambio de cargo o salario"
+    confirmText="Crear Memorando"
+    [confirmDisabled]="!memorandumForm.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="memorandumForm">
+        <div class="employee-info">
+            <h3>{{ employeeName }}</h3>
+        </div>
+
+        <h4 class="section-title">Información del Cargo</h4>
+
+        <app-form-select
+            label="Cargo"
+            [options]="positionOptions"
+            formControlName="positionId"
+            placeholder="Seleccione cargo"
+            [required]="true">
+        </app-form-select>
+
+        <app-form-select
+            label="Departamento/Área"
+            [options]="departmentOptions"
+            formControlName="departmentId"
+            placeholder="Seleccione departamento">
+        </app-form-select>
+
+        <app-form-select
+            label="Horario"
+            [options]="scheduleOptions"
+            formControlName="scheduleId"
+            placeholder="Seleccione horario">
+        </app-form-select>
+
+        <app-form-select
+            label="Ubicación"
+            [options]="locationOptions"
+            formControlName="locationId"
+            placeholder="Seleccione ubicación">
+        </app-form-select>
+
+        <h4 class="section-title">Información Salarial</h4>
+
+        <app-form-select
+            label="Tipo de Salario"
+            [options]="salaryTypeOptions"
+            formControlName="salaryType"
+            placeholder="Seleccione tipo"
+            [required]="true">
+        </app-form-select>
+
+        @if (isFixedSalary) {
+        <ion-item lines="none">
+            <ion-label position="stacked">Monto del Salario (COP) *</ion-label>
+            <ion-input 
+                formControlName="salaryAmount" 
+                type="number"
+                min="0"
+                placeholder="Ej: 2500000">
+            </ion-input>
+        </ion-item>
+        }
+
+        @if (isParameterSalary) {
+        <app-form-select
+            label="Parámetro Global"
+            [options]="parameterOptions"
+            formControlName="parameterKey"
+            placeholder="Seleccione parámetro"
+            helperText="El salario se actualizará automáticamente según el parámetro"
+            helperIcon="information-circle-outline"
+            [required]="true">
+        </app-form-select>
+        }
+
+        <h4 class="section-title">Vigencia</h4>
+
+        <div class="form-row">
+            <app-date-input
+                formControlName="startDate"
+                label="Fecha de Inicio"
+                placeholder="Selecciona fecha"
+                mode="single"
+                [required]="true"
+                [minDate]="minStartDate">
+            </app-date-input>
+
+            @if (!isIndefiniteTerm) {
+            <app-date-input
+                formControlName="endDate"
+                label="Fecha de Fin"
+                placeholder="Selecciona fecha"
+                mode="single"
+                [minDate]="minStartDate">
+            </app-date-input>
+            }
+        </div>
+
+        @if (!isIndefiniteTerm) {
+        <ion-note class="date-note">
+            <ion-icon name="information-circle-outline"></ion-icon>
+            El memorando se activará automáticamente cuando llegue su fecha de inicio
+        </ion-note>
+        } @else {
+        <ion-note class="date-note">
+            <ion-icon name="information-circle-outline"></ion-icon>
+            El memorando se activará automáticamente en esta fecha
+        </ion-note>
+        }
+
+        <app-textarea-input
+            formControlName="reason"
+            label="Razón del Cambio"
+            placeholder="Ej: Promoción, Ajuste salarial, etc."
+            [required]="true"
+            [rows]="3">
+        </app-textarea-input>
+
+        <app-alert-box type="info">
+            El memorando se activará automáticamente cuando llegue su fecha de inicio. Si ya está en vigencia, se activará inmediatamente.
+        </app-alert-box>
+    </form>
+</app-base-modal>

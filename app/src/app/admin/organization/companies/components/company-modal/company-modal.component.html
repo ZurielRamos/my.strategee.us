@@ -1,0 +1,76 @@
+<app-base-modal 
+    [title]="title"
+    subtitle="Complete los campos requeridos"
+    confirmText="Guardar"
+    [confirmDisabled]="!companyForm.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="companyForm">
+        <!-- Título de sección -->
+        <h4 class="section-title">Información General</h4>
+
+        <!-- Campo de nombre comercial -->
+        <app-text-input
+            formControlName="name"
+            label="Nombre Comercial"
+            placeholder="Ej: Strategee Tech"
+            [required]="true">
+        </app-text-input>
+
+        <!-- Campo de razón social -->
+        <app-text-input
+            formControlName="legalName"
+            label="Razón Social"
+            placeholder="Ej: Strategee Technologies S.A.S."
+            [required]="true">
+        </app-text-input>
+
+        <!-- Campo de NIT -->
+        <app-text-input
+            formControlName="nit"
+            label="NIT"
+            placeholder="Ej: 900.123.456-7"
+            [required]="true">
+        </app-text-input>
+
+        <!-- Campo de dirección -->
+        <app-text-input
+            formControlName="address"
+            label="Dirección"
+            placeholder="Ej: Calle 100 # 15-20"
+            [required]="true">
+        </app-text-input>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Logo de la Empresa</h4>
+
+        <!-- Logo section -->
+        <div class="logo-section">
+            @if (logoPreviewUrl) {
+            <div class="logo-preview">
+                <ion-img [src]="logoPreviewUrl" [alt]="company?.name || 'Logo'"></ion-img>
+                <ion-button 
+                    fill="clear" 
+                    size="small" 
+                    color="danger" 
+                    class="remove-logo-btn"
+                    (click)="removeLogo()">
+                    <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                </ion-button>
+            </div>
+            }
+
+            <ion-button 
+                expand="block" 
+                fill="outline" 
+                (click)="openAttachmentSelector()"
+                class="select-logo-btn">
+                <ion-icon slot="start" name="image-outline"></ion-icon>
+                {{ logoPreviewUrl ? 'Cambiar Logo' : 'Seleccionar Logo' }}
+            </ion-button>
+        </div>
+    </form>
+    
+</app-base-modal>

@@ -1,0 +1,55 @@
+import { NgModule } from '@angular/core';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './auth/guards/auth.guard';
+import { RoleGuard } from './auth/guards/role.guard';
+
+import { InitialGuard } from './auth/guards/initial.guard';
+
+const routes: Routes = [
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.routes').then(m => m.routes)
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.routes').then(m => m.routes),
+    canActivate: [RoleGuard],
+    data: { roles: ['ADMIN'] }
+  },
+  {
+    path: 'employee',
+    loadChildren: () => import('./employee/employee.routes').then(m => m.routes),
+    canActivate: [RoleGuard],
+    data: { roles: ['ADMIN', 'EMPLOYEE'] }
+  },
+  {
+    path: 'help',
+    loadComponent: () => import('./shared/pages/help/help.page').then(m => m.HelpPage),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'notifications',
+    loadComponent: () => import('./shared/pages/notifications/notifications.page').then(m => m.NotificationsPage),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: '',
+    canActivate: [InitialGuard],
+    pathMatch: 'full',
+    children: []
+  },
+  {
+    path: '**',
+    canActivate: [InitialGuard],
+    children: []
+  }
+];
+
+@NgModule({
+  imports: [
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+  ],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+

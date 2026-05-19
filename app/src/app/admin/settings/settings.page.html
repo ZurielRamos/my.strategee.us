@@ -1,0 +1,183 @@
+<app-page-header></app-page-header>
+
+<ion-content [fullscreen]="true" class="admin-page-content">
+    <div class="admin-container">
+        <app-page-title 
+            title="Configuraciones Generales" 
+            subtitle="Administra la configuración del sistema">
+        </app-page-title>
+
+        <div class="settings-grid">
+            <!-- Company Information -->
+            <ion-card class="settings-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="business-outline"></ion-icon>
+                        Información de la Empresa
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-list lines="none">
+                        <ion-item class="settings-item">
+                            <ion-label position="stacked">Nombre de la Empresa</ion-label>
+                            <ion-input [(ngModel)]="companyName" placeholder="Ingrese el nombre"></ion-input>
+                        </ion-item>
+
+                        <ion-item class="settings-item">
+                            <ion-label position="stacked">Email Corporativo</ion-label>
+                            <ion-input [(ngModel)]="companyEmail" type="email" placeholder="contacto@empresa.com"></ion-input>
+                        </ion-item>
+
+                        <ion-item class="settings-item">
+                            <ion-label position="stacked">Sitio Web</ion-label>
+                            <ion-input [(ngModel)]="companyWebsite" placeholder="www.empresa.com"></ion-input>
+                        </ion-item>
+                    </ion-list>
+
+                    <ion-button expand="block" (click)="saveCompanySettings()" class="save-btn">
+                        Guardar Cambios
+                    </ion-button>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- System Settings -->
+            <ion-card class="settings-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="notifications-outline"></ion-icon>
+                        Configuración del Sistema
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-list lines="none">
+                        <ion-item class="settings-item">
+                            <ion-label>
+                                <h3>Aprobación Automática de Vacaciones</h3>
+                                <p>Las solicitudes de vacaciones se aprueban automáticamente</p>
+                            </ion-label>
+                            <ion-toggle [(ngModel)]="autoApproveVacations" (ionChange)="saveSystemSettings()"></ion-toggle>
+                        </ion-item>
+
+                        <ion-item class="settings-item">
+                            <ion-label>
+                                <h3>Requiere Aprobación de Supervisor</h3>
+                                <p>Todas las solicitudes requieren aprobación del supervisor</p>
+                            </ion-label>
+                            <ion-toggle [(ngModel)]="requireManagerApproval" (ionChange)="saveSystemSettings()"></ion-toggle>
+                        </ion-item>
+
+                        <ion-item class="settings-item">
+                            <ion-label>
+                                <h3>Notificaciones por Email</h3>
+                                <p>Enviar notificaciones por correo electrónico</p>
+                            </ion-label>
+                            <ion-toggle [(ngModel)]="enableEmailNotifications" (ionChange)="saveSystemSettings()"></ion-toggle>
+                        </ion-item>
+
+                        <ion-item class="settings-item">
+                            <ion-label>
+                                <h3>Notificaciones Push</h3>
+                                <p>Enviar notificaciones push a la aplicación</p>
+                            </ion-label>
+                            <ion-toggle [(ngModel)]="enablePushNotifications" (ionChange)="saveSystemSettings()"></ion-toggle>
+                        </ion-item>
+                    </ion-list>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- Request Settings -->
+            <ion-card class="settings-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="document-text-outline"></ion-icon>
+                        Configuración de Solicitudes
+                    </ion-card-title>
+                    <ion-button fill="clear" (click)="openAuditHistory()" class="history-button">
+                        <ion-icon slot="icon-only" name="time-outline"></ion-icon>
+                    </ion-button>
+                </ion-card-header>
+                <ion-card-content>
+                    <div class="settings-warning">
+                        <ion-icon name="warning-outline"></ion-icon>
+                        <p>Estos cambios afectarán a todos los empleados del sistema. Modifique con precaución.</p>
+                    </div>
+
+                    <ion-list lines="none">
+                        <ion-item class="settings-item">
+                            <ion-label position="stacked">
+                                <h3>Días de Vacaciones para Contrato Laboral</h3>
+                                <p>Días de vacaciones anuales para empleados con contrato laboral</p>
+                            </ion-label>
+                            <ion-input [(ngModel)]="vacationDaysLaborContract" type="number" min="0"></ion-input>
+                        </ion-item>
+
+                        <ion-item class="settings-item">
+                            <ion-label position="stacked">
+                                <h3>Días de Vacaciones para Contrato Prestación de Servicios</h3>
+                                <p>Días de vacaciones anuales para empleados con contrato de prestación de servicios</p>
+                            </ion-label>
+                            <ion-input [(ngModel)]="vacationDaysServiceContract" type="number" min="0"></ion-input>
+                        </ion-item>
+
+                        <ion-item class="settings-item">
+                            <ion-label position="stacked">
+                                <h3>Horas en un Día Laboral</h3>
+                                <p>Número de horas que constituyen un día laboral completo</p>
+                            </ion-label>
+                            <ion-input [(ngModel)]="hoursPerWorkday" type="number" min="1" max="24" step="0.5"></ion-input>
+                        </ion-item>
+                    </ion-list>
+
+                    <ion-button 
+                        expand="block" 
+                        (click)="openRequestSettingsConfirmation()" 
+                        [disabled]="loading" 
+                        class="save-btn">
+                        {{ loading ? 'Guardando...' : 'Guardar Cambios' }}
+                    </ion-button>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- Security Settings -->
+            <ion-card class="settings-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="shield-checkmark-outline"></ion-icon>
+                        Configuración de Seguridad
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-list lines="none">
+                        <ion-item class="settings-item">
+                            <ion-label position="stacked">
+                                <h3>Tiempo de Sesión (minutos)</h3>
+                                <p>Tiempo de inactividad antes de cerrar sesión automáticamente</p>
+                            </ion-label>
+                            <ion-input [(ngModel)]="sessionTimeout" type="number" min="5"></ion-input>
+                        </ion-item>
+
+                        <ion-item class="settings-item">
+                            <ion-label>
+                                <h3>Requerir Cambio de Contraseña</h3>
+                                <p>Forzar cambio de contraseña periódicamente</p>
+                            </ion-label>
+                            <ion-toggle [(ngModel)]="requirePasswordChange" (ionChange)="saveSecuritySettings()"></ion-toggle>
+                        </ion-item>
+
+                        <ion-item class="settings-item" *ngIf="requirePasswordChange">
+                            <ion-label position="stacked">
+                                <h3>Expiración de Contraseña (días)</h3>
+                                <p>Días antes de que expire la contraseña</p>
+                            </ion-label>
+                            <ion-input [(ngModel)]="passwordExpirationDays" type="number" min="30"></ion-input>
+                        </ion-item>
+                    </ion-list>
+
+                    <ion-button expand="block" (click)="saveSecuritySettings()" class="save-btn">
+                        Guardar Cambios
+                    </ion-button>
+                </ion-card-content>
+            </ion-card>
+        </div>
+    </div>
+</ion-content>

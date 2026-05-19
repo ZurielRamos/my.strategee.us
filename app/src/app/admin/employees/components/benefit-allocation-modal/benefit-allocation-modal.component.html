@@ -1,0 +1,67 @@
+<app-base-modal 
+    [title]="modalTitle"
+    [subtitle]="modalSubtitle"
+    [confirmText]="isEditMode ? 'Guardar Cambios' : 'Asignar Beneficio'"
+    [confirmDisabled]="!benefitForm.valid || (!isEditMode && !hasAvailableBenefits)"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="benefitForm">
+        @if (!isEditMode && !hasAvailableBenefits) {
+            <!-- Mensaje cuando no hay beneficios disponibles -->
+            <app-alert-box type="warning">
+                {{ noAvailableBenefitsMessage }}
+            </app-alert-box>
+        } @else {
+            <!-- Título de sección -->
+            <h4 class="section-title">Información del Beneficio</h4>
+
+            <!-- Campo de selección de empleado (solo si no está preseleccionado) -->
+            @if (!isEmployeePreselected) {
+                <app-form-select
+                    label="Empleado"
+                    [options]="employeeOptions"
+                    formControlName="employeeId"
+                    placeholder="Seleccione un empleado"
+                    [required]="true">
+                </app-form-select>
+            }
+
+            <!-- Campo de selección de beneficio (deshabilitado en modo edición) -->
+            @if (!isEditMode) {
+                <app-form-select
+                    label="Tipo de Beneficio"
+                    [options]="benefitOptions"
+                    formControlName="benefitType"
+                    placeholder="Seleccione un beneficio"
+                    helperText="El beneficio se renovará automáticamente cada mes"
+                    helperIcon="information-circle-outline"
+                    [required]="true">
+                </app-form-select>
+            }
+
+            <!-- Campo de cantidad -->
+            <app-text-input
+                formControlName="monthlyQuota"
+                label="Cupo Mensual (días)"
+                type="number"
+                placeholder="Ej: 2 o 0.5"
+                [min]="0.5"
+                [max]="31"
+                helperText="Puedes usar decimales como 0.5 para medio día"
+                helperIcon="calendar-outline"
+                [required]="true">
+            </app-text-input>
+
+            <!-- Alert informativo -->
+            <app-alert-box type="info">
+                @if (isEditMode) {
+                    El cambio en el cupo mensual se aplicará inmediatamente. El cupo se renueva automáticamente cada mes.
+                } @else {
+                    El cupo mensual se renueva automáticamente cada mes. El empleado podrá solicitar este beneficio hasta agotar su cupo disponible.
+                }
+            </app-alert-box>
+        }
+    </form>
+</app-base-modal>

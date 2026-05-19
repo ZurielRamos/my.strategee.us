@@ -1,0 +1,54 @@
+<ion-content>
+    <div class="notifications-header">
+        <h2>Notificaciones</h2>
+        @if (hasUnreadNotifications) {
+            <ion-button fill="clear" size="small" (click)="markAllAsRead()">
+                Marcar todas como leídas
+            </ion-button>
+        }
+    </div>
+
+    @if (loading && notifications.length === 0) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Cargando notificaciones...</p>
+        </div>
+    } @else if (notifications.length === 0) {
+        <div class="empty-notifications">
+            <ion-icon name="notifications-off-outline"></ion-icon>
+            <h3>No tienes notificaciones</h3>
+            <p>Cuando recibas notificaciones, aparecerán aquí</p>
+        </div>
+    } @else {
+        <ion-list class="notifications-list" lines="none">
+            @for (notification of notifications; track notification.id) {
+                <ion-item 
+                    class="notification-item" 
+                    [class.unread]="notification.status === 'UNREAD'"
+                    (click)="navigateToRequest(notification)"
+                    button
+                >
+                    <div class="notification-icon" slot="start">
+                        <ion-icon [name]="getNotificationIcon(notification.type)"></ion-icon>
+                    </div>
+                    <ion-label>
+                        <div class="notification-content">
+                            <p class="notification-message">{{ notification.message }}</p>
+                            <span class="notification-time">{{ formatTime(notification.createdAt) }}</span>
+                        </div>
+                    </ion-label>
+                    @if (notification.status === 'UNREAD') {
+                        <div class="unread-dot" slot="end"></div>
+                    }
+                </ion-item>
+            }
+        </ion-list>
+
+        <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+            <ion-infinite-scroll-content
+                loadingSpinner="crescent"
+                loadingText="Cargando más notificaciones...">
+            </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    }
+</ion-content>

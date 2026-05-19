@@ -1,0 +1,5 @@
+export enum CompensationFrequency {
+    ONE_TIME = 'ONE_TIME',
+    RECURRING_MONTHLY = 'RECURRING_MONTHLY',
+    RECURRING_BIWEEKLY = 'RECURRING_BIWEEKLY',
+}

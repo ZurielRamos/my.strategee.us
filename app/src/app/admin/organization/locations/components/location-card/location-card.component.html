@@ -1,0 +1,23 @@
+<ion-card class="location-card" (click)="onCardClick()">
+    <ion-card-header>
+        <div class="card-header-content">
+            <ion-card-title>{{ location.name }}</ion-card-title>
+            @if (!location.isActive) {
+            <ion-chip class="inactive-chip">
+                <ion-label>Inactiva</ion-label>
+            </ion-chip>
+            }
+        </div>
+    </ion-card-header>
+
+    <ion-card-content>
+        <div class="location-info">
+            @if (location.description) {
+            <div class="info-row">
+                <span class="label">Descripción:</span>
+                <span class="value">{{ location.description }}</span>
+            </div>
+            }
+        </div>
+    </ion-card-content>
+</ion-card>

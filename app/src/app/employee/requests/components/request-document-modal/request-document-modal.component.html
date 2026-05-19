@@ -1,0 +1,51 @@
+<app-base-modal 
+    title="Solicitar Documento"
+    subtitle="Solicita certificados laborales o comprobantes de nómina"
+    confirmText="Enviar Solicitud"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <!-- Información importante -->
+        <app-alert-box type="info">
+            Solicita certificados laborales o comprobantes de nómina. El documento será generado y enviado por el área de Recursos Humanos.
+        </app-alert-box>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Información del Documento</h4>
+
+        <!-- Tipo de Documento -->
+        <app-form-select
+            label="Tipo de Documento"
+            [options]="documentTypeOptions"
+            formControlName="documentType"
+            placeholder="Selecciona el tipo de documento"
+            [required]="true">
+        </app-form-select>
+
+        <!-- Dirigido a -->
+        <ion-item lines="none">
+            <ion-label position="stacked">Dirigido a</ion-label>
+            <ion-input
+                formControlName="addressedTo"
+                placeholder="Por defecto: A quien pueda interesar"
+                type="text">
+            </ion-input>
+        </ion-item>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Notas Adicionales</h4>
+
+        <!-- Notas u Observaciones -->
+        <app-textarea-input
+            formControlName="notes"
+            label="Notas u Observaciones"
+            placeholder="Agrega información adicional si es necesario"
+            [rows]="4"
+            [maxlength]="500"
+            [showCharCounter]="true">
+        </app-textarea-input>
+    </form>
+</app-base-modal>

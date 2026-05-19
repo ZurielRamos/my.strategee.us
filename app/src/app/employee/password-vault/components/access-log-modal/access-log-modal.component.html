@@ -1,0 +1,25 @@
+<app-base-modal 
+  title="Historial de Accesos"
+  [showFooter]="false"
+  (modalDismiss)="onDismiss()">
+  
+  @if (loading) {
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando historial...</p>
+    </div>
+  } @else if (accessLogs.length === 0) {
+    <div class="empty-state">
+      <p>No hay historial de accesos registrado</p>
+    </div>
+  } @else {
+    <div class="access-log-list">
+      @for (log of accessLogs; track log.id) {
+        <div class="access-log-item">
+          <div class="employee-name">{{ getEmployeeName(log) }}</div>
+          <div class="access-date">{{ formatDate(log.accessedAt) }}</div>
+        </div>
+      }
+    </div>
+  }
+</app-base-modal>

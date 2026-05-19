@@ -1,0 +1,67 @@
+<app-page-header 
+    [showSearch]="true" 
+    [useCustomSearch]="true"
+    (searchChange)="onSearchChange($event)"
+></app-page-header>
+
+<ion-content [fullscreen]="true" class="schedules-content">
+    <div class="page-container">
+        <!-- Page Title & Controls -->
+        <div class="page-title-section">
+            <div class="title-text">
+                <h1>Horarios</h1>
+                <p>Gestiona los horarios de trabajo de tu organización</p>
+            </div>
+            <div class="title-actions desktop-only">
+                <ion-button (click)="openCreateModal()" class="create-button">
+                    <ion-icon slot="start" name="add-outline"></ion-icon>
+                    Crear Horario
+                </ion-button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        <!-- Schedules Grid -->
+        @if (!isLoading && filteredSchedules.length > 0) {
+        <div class="schedules-grid">
+            @for (schedule of filteredSchedules; track schedule.id) {
+            <app-schedule-card 
+                [schedule]="schedule" 
+                (cardClick)="openViewModal($event)">
+            </app-schedule-card>
+            }
+        </div>
+        }
+
+        <!-- Empty State -->
+        @if (!isLoading && filteredSchedules.length === 0 && !searchTerm) {
+        <div class="empty-state">
+            <ion-icon name="time-outline"></ion-icon>
+            <h2>No hay horarios registrados</h2>
+            <p>Comienza creando tu primer horario de trabajo</p>
+        </div>
+        }
+
+        <!-- No Results State -->
+        @if (!isLoading && filteredSchedules.length === 0 && searchTerm) {
+        <div class="empty-state">
+            <ion-icon name="time-outline"></ion-icon>
+            <h2>No se encontraron resultados</h2>
+            <p>No hay horarios que coincidan con "{{ searchTerm }}"</p>
+        </div>
+        }
+    </div>
+
+    <!-- Mobile FAB -->
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end" class="mobile-only">
+        <ion-fab-button (click)="openCreateModal()" color="dark">
+            <ion-icon name="add-outline"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+</ion-content>

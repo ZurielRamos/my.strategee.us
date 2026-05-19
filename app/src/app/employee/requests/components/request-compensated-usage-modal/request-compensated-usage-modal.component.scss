@@ -1,0 +1,82 @@
+// Títulos de sección
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--app-text-primary);
+    margin: 24px 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--app-border-light);
+}
+
+// Resumen
+.summary-box {
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    margin-top: 24px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+
+    h4 {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        margin: 0 0 12px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            font-size: 14px;
+            color: var(--app-text-secondary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            ion-icon {
+                font-size: 18px;
+                color: #4caf50;
+            }
+        }
+
+        .value {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+        }
+
+        &.balance-after {
+            margin-top: 8px;
+            padding-top: 12px;
+            border-top: 2px solid rgba(0, 0, 0, 0.1);
+            border-bottom: none;
+
+            &.insufficient {
+                .label {
+                    color: #eb445a;
+
+                    ion-icon {
+                        color: #eb445a;
+                    }
+                }
+
+                .value {
+                    color: #eb445a;
+                }
+            }
+        }
+    }
+}

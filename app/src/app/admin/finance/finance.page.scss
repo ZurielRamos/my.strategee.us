@@ -1,0 +1,67 @@
+@import '../../../theme/admin-standards.scss';
+
+.admin-page-content {
+  @include admin-page-background;
+}
+
+.admin-container {
+  @include admin-page-container;
+}
+
+.modules-grid {
+  padding: 0;
+  margin-top: 32px;
+
+  @media (min-width: 768px) {
+    margin-top: 40px;
+  }
+}
+
+.module-card {
+  @include admin-card;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  ion-card-header {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .card-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #1a1c1b 0%, #2a2c2b 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      ion-icon {
+        font-size: 28px;
+        color: #ffffff;
+      }
+    }
+
+    ion-card-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--app-text-primary);
+      margin: 0;
+    }
+  }
+
+  ion-card-content {
+    padding: 0 24px 24px 24px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--app-text-secondary);
+  }
+}

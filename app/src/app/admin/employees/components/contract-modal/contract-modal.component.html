@@ -1,0 +1,152 @@
+<app-base-modal 
+    title="Crear Contrato"
+    [subtitle]="employeeName"
+    confirmText="Crear Contrato"
+    [confirmDisabled]="!contractForm.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="contractForm">
+        <h4 class="section-title">Datos del Contrato</h4>
+
+        <app-form-select
+            label="Empresa"
+            [options]="companyOptions"
+            formControlName="companyId"
+            placeholder="Seleccione empresa"
+            [required]="true">
+        </app-form-select>
+
+        <ion-item lines="none">
+            <ion-label position="stacked">Número de Contrato</ion-label>
+            <ion-input 
+                formControlName="contractNumber" 
+                placeholder="Ej: 123456789-1">
+            </ion-input>
+            <ion-note slot="helper">Se sugiere: Documento-Número de contrato</ion-note>
+        </ion-item>
+
+        <app-form-select
+            label="Tipo de Contrato"
+            [options]="contractTypeOptions"
+            formControlName="type"
+            placeholder="Seleccione tipo"
+            [required]="true">
+        </app-form-select>
+
+        <app-form-select
+            label="Grupo de Nómina"
+            [options]="payrollGroupOptions"
+            formControlName="payrollGroup"
+            placeholder="Seleccione grupo"
+            [required]="true">
+        </app-form-select>
+
+        <app-form-select
+            label="Estado del Contrato"
+            [options]="contractStatusOptions"
+            formControlName="status"
+            placeholder="Seleccione estado"
+            helperText="Borrador: No liquida contratos anteriores. Activo: Liquida el contrato activo previo."
+            helperIcon="information-circle-outline"
+            [required]="true">
+        </app-form-select>
+
+        <div class="form-row">
+            <app-date-input
+                formControlName="startDate"
+                label="Fecha de Inicio"
+                mode="single"
+                [required]="true">
+            </app-date-input>
+
+            <app-date-input
+                formControlName="endDate"
+                label="Fecha de Fin"
+                mode="single">
+            </app-date-input>
+        </div>
+
+        @if (isIndefiniteTerm) {
+            <app-alert-box type="info">
+                La fecha de fin no aplica para contratos a término indefinido.
+            </app-alert-box>
+        }
+
+        <h4 class="section-title">Memorando Inicial (Cargo y Salario)</h4>
+
+        <app-form-select
+            label="Cargo"
+            [options]="positionOptions"
+            formControlName="positionId"
+            placeholder="Seleccione cargo"
+            [required]="true">
+        </app-form-select>
+
+        <app-form-select
+            label="Horario"
+            [options]="scheduleOptions"
+            formControlName="scheduleId"
+            placeholder="Seleccione horario">
+        </app-form-select>
+
+        <app-form-select
+            label="Ubicación"
+            [options]="locationOptions"
+            formControlName="locationId"
+            placeholder="Seleccione ubicación">
+        </app-form-select>
+
+        <app-form-select
+            label="Departamento/Área"
+            [options]="departmentOptions"
+            formControlName="departmentId"
+            placeholder="Seleccione departamento">
+        </app-form-select>
+
+        <app-form-select
+            label="Tipo de Salario"
+            [options]="salaryTypeOptions"
+            formControlName="salaryType"
+            placeholder="Seleccione tipo"
+            [required]="true">
+        </app-form-select>
+
+        @if (isFixedSalary) {
+            <ion-item lines="none">
+                <ion-label position="stacked">Monto del Salario (COP) *</ion-label>
+                <ion-input 
+                    formControlName="salaryAmount" 
+                    type="number"
+                    min="0"
+                    placeholder="Ej: 2500000">
+                </ion-input>
+            </ion-item>
+        }
+
+        @if (isParameterSalary) {
+            <app-form-select
+                label="Parámetro Global"
+                [options]="parameterOptions"
+                formControlName="parameterKey"
+                placeholder="Seleccione parámetro"
+                helperText="El salario se actualizará automáticamente según el parámetro"
+                helperIcon="information-circle-outline"
+                [required]="true">
+            </app-form-select>
+        }
+
+        <app-textarea-input
+            formControlName="reason"
+            label="Razón del Cambio"
+            placeholder="Ej: Ingreso inicial"
+            [required]="true"
+            [rows]="2">
+        </app-textarea-input>
+
+        <app-alert-box type="info">
+            Si crea el contrato como ACTIVO, se liquidará automáticamente cualquier contrato activo previo. Use BORRADOR para preparar contratos sin afectar el contrato actual.
+        </app-alert-box>
+    </form>
+</app-base-modal>

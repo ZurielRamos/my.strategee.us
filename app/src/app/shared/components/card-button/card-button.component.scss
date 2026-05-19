@@ -1,0 +1,113 @@
+.card-button {
+    margin: 0;
+    border-radius: 16px;
+    background: var(--app-card-bg);
+    box-shadow: 0 1px 3px var(--app-shadow);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    overflow: hidden;
+
+    &:hover:not(.disabled) {
+        box-shadow: 0 4px 12px var(--app-shadow-hover);
+        transform: translateY(-2px);
+    }
+
+    &.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background: var(--app-hover-bg);
+
+        .card-icon {
+            background: var(--app-border);
+
+            ion-icon {
+                color: var(--app-text-secondary);
+            }
+        }
+
+        ion-card-title {
+            color: var(--app-text-secondary);
+        }
+    }
+
+    ion-card-header {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 12px;
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--app-hover-bg);
+            transition: all 0.2s ease;
+
+            ion-icon {
+                font-size: 28px;
+                color: var(--app-text-primary);
+            }
+        }
+
+        ion-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--app-text-primary);
+            margin: 0;
+        }
+    }
+
+    ion-card-content {
+        padding: 0 24px 24px 24px;
+        text-align: center;
+
+        .card-description {
+            font-size: 14px;
+            color: var(--app-text-secondary);
+            margin: 0 0 8px 0;
+            line-height: 1.5;
+
+            &.unavailable {
+                color: #eb445a;
+                font-weight: 600;
+            }
+        }
+
+        .card-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--app-hover-bg);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--app-text-primary);
+            margin-top: 8px;
+
+            &.unavailable {
+                background: #ffebee;
+                color: #eb445a;
+
+                ion-icon {
+                    font-size: 16px;
+                }
+            }
+        }
+
+        .card-loading {
+            display: flex;
+            justify-content: center;
+            padding: 12px 0;
+
+            ion-spinner {
+                --color: #2196f3;
+            }
+        }
+    }
+}

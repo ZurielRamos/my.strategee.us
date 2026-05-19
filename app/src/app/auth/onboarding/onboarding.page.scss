@@ -1,0 +1,146 @@
+:host {
+    --background: #0D1C3F;
+}
+
+.onboarding-content {
+    --background: #0D1C3F;
+}
+
+/* Hero Section */
+.hero-section {
+    background: #0D1C3F;
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: #ffffff;
+        border-radius: 40px 40px 0 0;
+    }
+}
+
+.star {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.2rem;
+    animation: twinkle 2.4s ease-in-out infinite alternate;
+
+    &.star-1 {
+        top: 15%;
+        left: 12%;
+        animation-delay: 0s;
+    }
+
+    &.star-2 {
+        top: 20%;
+        right: 15%;
+        animation-delay: 0.6s;
+    }
+
+    &.star-3 {
+        bottom: 25%;
+        left: 20%;
+        animation-delay: 1s;
+    }
+}
+
+@keyframes twinkle {
+    0% {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+.hero-illustration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+.illustration-circle {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-icon {
+    font-size: 80px;
+    color: #ffffff;
+}
+
+/* Bottom Card */
+.bottom-card {
+    background: #ffffff;
+    min-height: 40vh;
+    padding: 0;
+}
+
+.card-content {
+    padding: 36px 28px 40px;
+}
+
+.headline {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0D1C3F;
+    line-height: 1.25;
+    margin: 0 0 12px;
+}
+
+.subheadline {
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0 0 36px;
+}
+
+.login-btn {
+    --background: #1A2F5A;
+    --background-hover: #0D1C3F;
+    --background-activated: #0D1C3F;
+    --border-radius: 50px;
+    --color: #ffffff;
+    --box-shadow: 0 6px 24px rgba(13, 28, 63, 0.35);
+    height: 54px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:active {
+        transform: scale(0.98);
+    }
+}

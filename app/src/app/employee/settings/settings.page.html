@@ -1,0 +1,134 @@
+<app-page-header [backUrl]="'/employee/dashboard'" ></app-page-header>
+
+<ion-content [fullscreen]="true" class="settings-content">
+    <div class="page-container">
+        <div class="settings-grid">
+            <!-- Cuenta y Seguridad -->
+            <ion-card class="settings-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="shield-checkmark-outline"></ion-icon>
+                        Cuenta y Seguridad
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-list lines="none">
+                        <ion-item button (click)="changePassword()" class="settings-item">
+                            <ion-icon name="key-outline" slot="start"></ion-icon>
+                            <ion-label>
+                                <h3>Cambiar Contraseña</h3>
+                                <p>Actualiza tu contraseña de acceso</p>
+                            </ion-label>
+                            <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+                        </ion-item>
+
+                        <ion-item button [routerLink]="['/employee/sessions']" class="settings-item">
+                            <ion-icon name="phone-portrait-outline" slot="start"></ion-icon>
+                            <ion-label>
+                                <h3>Sesiones Iniciadas</h3>
+                                <p>Administra tus dispositivos conectados</p>
+                            </ion-label>
+                            <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+                        </ion-item>
+                    </ion-list>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- Notificaciones -->
+            <ion-card class="settings-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="notifications-outline"></ion-icon>
+                        Notificaciones
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-list lines="none">
+                        <!-- Push Notifications Component -->
+                        <app-push-settings></app-push-settings>
+
+                        <!-- Email Notifications -->
+                        <ion-item class="settings-item">
+                            <ion-icon name="mail-outline" slot="start"></ion-icon>
+                            <ion-label>
+                                <h3>Correo Personal</h3>
+                                <p>Recibe notificaciones en tu correo personal</p>
+                            </ion-label>
+                            <ion-toggle slot="end" [(ngModel)]="personalEmailNotification" (ionChange)="onPersonalEmailNotificationChange()"></ion-toggle>
+                        </ion-item>
+
+                        <ion-item class="settings-item">
+                            <ion-icon name="mail-outline" slot="start"></ion-icon>
+                            <ion-label>
+                                <h3>Correo Corporativo</h3>
+                                <p>Recibe notificaciones en tu correo corporativo</p>
+                            </ion-label>
+                            <ion-toggle slot="end" [(ngModel)]="corporativeEmailNotification" (ionChange)="onCorporativeEmailNotificationChange()"></ion-toggle>
+                        </ion-item>
+                    </ion-list>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- Apariencia -->
+            <ion-card class="settings-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="moon-outline"></ion-icon>
+                        Apariencia
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-list lines="none">
+                        <ion-item class="settings-item">
+                            <ion-icon name="moon-outline" slot="start"></ion-icon>
+                            <ion-label>
+                                <h3>Modo Oscuro</h3>
+                                <p>Cambia el tema de la aplicación</p>
+                            </ion-label>
+                            <ion-toggle slot="end" [(ngModel)]="darkMode" (ionChange)="onDarkModeChange()"></ion-toggle>
+                        </ion-item>
+                    </ion-list>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- Información -->
+            <ion-card class="settings-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="information-circle-outline"></ion-icon>
+                        Información
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-list lines="none">
+                        <ion-item button (click)="viewPrivacyPolicy()" class="settings-item">
+                            <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
+                            <ion-label>
+                                <h3>Política de Privacidad</h3>
+                                <p>Lee nuestra política de privacidad</p>
+                            </ion-label>
+                            <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+                        </ion-item>
+
+                        <ion-item button (click)="viewTermsOfService()" class="settings-item">
+                            <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+                            <ion-label>
+                                <h3>Términos de Servicio</h3>
+                                <p>Lee nuestros términos de servicio</p>
+                            </ion-label>
+                            <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+                        </ion-item>
+
+                        <ion-item class="settings-item">
+                            <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+                            <ion-label>
+                                <h3>Versión de la App</h3>
+                                <p>{{ appVersion }}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-list>
+                </ion-card-content>
+            </ion-card>
+        </div>
+    </div>
+</ion-content>

@@ -1,0 +1,32 @@
+<ion-card 
+    class="card-button" 
+    [class.disabled]="disabled"
+    [class]="colorClass"
+    [button]="!disabled && !loading"
+    (click)="handleClick()">
+    <ion-card-header>
+        <div class="card-icon">
+            <ion-icon [name]="icon"></ion-icon>
+        </div>
+        <ion-card-title>{{ title }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+        @if (loading) {
+            <div class="card-loading">
+                <ion-spinner name="dots"></ion-spinner>
+            </div>
+        } @else {
+            <p class="card-description" [class.unavailable]="badge?.type === 'unavailable'">
+                {{ description }}
+            </p>
+            @if (badge) {
+                <div class="card-badge" [class.unavailable]="badge.type === 'unavailable'">
+                    @if (badge.type === 'unavailable') {
+                        <ion-icon name="close-circle-outline"></ion-icon>
+                    }
+                    {{ badge.text }}
+                </div>
+            }
+        }
+    </ion-card-content>
+</ion-card>

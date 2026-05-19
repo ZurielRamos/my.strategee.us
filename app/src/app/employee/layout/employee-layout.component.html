@@ -1,0 +1,35 @@
+<ion-split-pane contentId="employee-content" class="admin-split-pane">
+    <!-- Menú lateral izquierdo (navegación) -->
+    <ion-menu contentId="employee-content" type="overlay" class="admin-sidebar">
+        <ion-content class="sidebar-content">
+            <div class="sidebar-header">
+                <img src="assets/logo_completo.avif" alt="Logo" class="sidebar-logo">
+            </div>
+
+            <ion-list class="sidebar-list" lines="none">
+                @for (p of appPages; track p.title) {
+                <ion-menu-toggle auto-hide="false">
+                    <ion-item [routerLink]="[p.url]" detail="false" routerLinkActive="selected"
+                        class="menu-item">
+                        <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'"
+                            [md]="p.icon + '-sharp'"></ion-icon>
+                        <ion-label>{{ p.title }}</ion-label>
+                        @if (p.badge) {
+                        <ion-badge slot="end" class="menu-badge" [class.active-badge]="false">{{ p.badge }}</ion-badge>
+                        }
+                    </ion-item>
+                </ion-menu-toggle>
+                }
+            </ion-list>
+
+        </ion-content>
+
+        <ion-footer class="ion-no-border">
+            <div class="sidebar-user-footer">
+                <app-user-profile></app-user-profile>
+            </div>
+        </ion-footer>
+    </ion-menu>
+
+    <ion-router-outlet id="employee-content"></ion-router-outlet>
+</ion-split-pane>

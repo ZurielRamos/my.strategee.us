@@ -1,0 +1,59 @@
+// Títulos de sección
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--app-text-primary);
+    margin: 24px 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--app-border-light);
+}
+
+// Estilos de campos
+ion-item {
+    --background: var(--app-hover-bg);
+    --border-radius: 12px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --min-height: 56px;
+    --border-width: 0;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+
+    &:focus-within {
+        --background: var(--app-card-bg);
+        box-shadow: 0 0 0 2px var(--app-text-primary);
+    }
+
+    ion-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    ion-input {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--app-text-primary);
+        --padding-start: 0;
+        --padding-end: 0;
+
+        &::placeholder {
+            color: var(--app-text-secondary);
+            opacity: 0.7;
+        }
+    }
+}
+
+// Mensajes de error
+.error-message {
+    color: #eb445a;
+    font-size: 12px;
+    font-weight: 600;
+    margin: -12px 0 16px 16px;
+}

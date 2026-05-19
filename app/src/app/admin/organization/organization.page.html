@@ -1,0 +1,96 @@
+<app-page-header 
+    [showSearch]="false"
+></app-page-header>
+
+<ion-content [fullscreen]="true" class="admin-page-content">
+  <div class="admin-container">
+    <app-page-title 
+      title="Organización" 
+      subtitle="Gestiona la estructura de tu empresa">
+    </app-page-title>
+
+    <ion-grid class="menu-grid">
+    <ion-row>
+      <!-- Compañias -->
+      <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
+        <ion-card class="menu-card items-company" routerLink="/admin/organization/companies">
+          <div class="card-icon-container">
+            <ion-icon name="business-outline"></ion-icon>
+          </div>
+          <ion-card-header>
+            <ion-card-title>Compañías</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Administra entidades.
+          </ion-card-content>
+          <ion-ripple-effect></ion-ripple-effect>
+        </ion-card>
+      </ion-col>
+
+      <!-- Localizaciones -->
+      <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
+        <ion-card class="menu-card items-location" routerLink="/admin/organization/locations">
+          <div class="card-icon-container">
+            <ion-icon name="location-outline"></ion-icon>
+          </div>
+          <ion-card-header>
+            <ion-card-title>Locaciones</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Sucursales físicas.
+          </ion-card-content>
+          <ion-ripple-effect></ion-ripple-effect>
+        </ion-card>
+      </ion-col>
+
+      <!-- Horarios -->
+      <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
+        <ion-card class="menu-card items-schedule" routerLink="/admin/organization/schedules">
+          <div class="card-icon-container">
+            <ion-icon name="time-outline"></ion-icon>
+          </div>
+          <ion-card-header>
+            <ion-card-title>Horarios</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Turnos de trabajo.
+          </ion-card-content>
+          <ion-ripple-effect></ion-ripple-effect>
+        </ion-card>
+      </ion-col>
+
+      <!-- Áreas -->
+      <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
+        <ion-card class="menu-card items-areas" routerLink="/admin/organization/areas">
+          <div class="card-icon-container">
+            <ion-icon name="layers-outline"></ion-icon>
+          </div>
+          <ion-card-header>
+            <ion-card-title>Áreas</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Departamentos.
+          </ion-card-content>
+          <ion-ripple-effect></ion-ripple-effect>
+        </ion-card>
+      </ion-col>
+
+      <!-- Puestos -->
+      <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
+        <ion-card class="menu-card items-position" routerLink="/admin/organization/positions">
+          <div class="card-icon-container">
+            <ion-icon name="briefcase-outline"></ion-icon>
+          </div>
+          <ion-card-header>
+            <ion-card-title>Puestos</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Roles y puestos.
+          </ion-card-content>
+          <ion-ripple-effect></ion-ripple-effect>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

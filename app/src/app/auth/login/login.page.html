@@ -1,0 +1,112 @@
+<ion-content class="login-content">
+    <div class="login-wrapper">
+        <!-- Header -->
+        <div class="login-header">
+            <h1 class="login-title">Iniciar sesión</h1>
+            <p class="login-subtitle">
+                Al iniciar sesión, aceptas nuestros
+                <span class="link-text">Términos de Uso.</span>
+            </p>
+        </div>
+
+        <!-- Form -->
+        <form [formGroup]="loginForm" (ngSubmit)="step === 'email' ? nextStep() : onSubmit()" class="login-form">
+            <div class="stepper-track" [class.show-password]="step === 'password'">
+
+                <!-- Step 1: Email -->
+                <div class="step-panel">
+                    <div class="field-group">
+                        <label class="field-label">Correo electrónico</label>
+                        <div class="input-wrapper" [class.error]="emailCtrl.invalid && emailCtrl.touched">
+                            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+                            <input id="email-input" type="email" formControlName="email" placeholder="tu@correo.com"
+                                autocomplete="email" class="custom-input" />
+                        </div>
+                        <div class="field-hint" *ngIf="!(emailCtrl.invalid && emailCtrl.touched)">
+                            Te enviaremos acceso a tu cuenta.
+                        </div>
+                        <div class="field-error" *ngIf="emailCtrl.touched && emailCtrl.hasError('required')">
+                            El correo electrónico es requerido.
+                        </div>
+                        <div class="field-error" *ngIf="emailCtrl.touched && emailCtrl.hasError('email')">
+                            Introduce un correo electrónico válido.
+                        </div>
+                    </div>
+
+                    <!-- Recordarme -->
+                    <div class="remember-me-container">
+                        <ion-checkbox formControlName="rememberMe" mode="md" class="custom-checkbox">
+                            Recordarme
+                        </ion-checkbox>
+                    </div>
+
+                    <ion-button expand="block" type="submit" class="submit-btn"
+                        [disabled]="(emailCtrl.invalid && emailCtrl.touched) || isCheckingEmail">
+                        <ion-spinner name="crescent" *ngIf="isCheckingEmail" slot="start"></ion-spinner>
+                        {{ isCheckingEmail ? 'Verificando...' : 'Continuar' }}
+                    </ion-button>
+
+                    <!-- Social Login -->
+                    <div class="social-login">
+                        <div class="divider">
+                            <span>O continuar con</span>
+                        </div>
+                        <div class="social-btn-group">
+                            <ion-button expand="block" fill="outline" class="social-btn">
+                                <ion-icon name="logo-google" slot="start"></ion-icon>
+                                Google
+                            </ion-button>
+                            <ion-button expand="block" fill="outline" class="social-btn">
+                                <ion-icon name="logo-apple" slot="start"></ion-icon>
+                                Apple
+                            </ion-button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Password -->
+                <div class="step-panel">
+                    <div class="field-group">
+                        <label class="field-label">Contraseña</label>
+                        <div class="input-wrapper" [class.error]="passwordCtrl.invalid && passwordCtrl.touched">
+                            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+                            <input id="password-input" [type]="showPassword ? 'text' : 'password'"
+                                formControlName="password" placeholder="••••••••" autocomplete="current-password"
+                                class="custom-input" />
+                            <button type="button" class="toggle-pw-btn" (click)="togglePasswordVisibility()">
+                                <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+                            </button>
+                        </div>
+                        <div class="field-error" *ngIf="passwordCtrl.touched && passwordCtrl.hasError('required')">
+                            La contraseña es requerida.
+                        </div>
+                        <div class="field-error" *ngIf="passwordCtrl.touched && passwordCtrl.hasError('minlength')">
+                            La contraseña debe tener al menos 6 caracteres.
+                        </div>
+                    </div>
+
+                    <!-- Recuperar contraseña -->
+                    <div class="forgot-password-container">
+                        <button type="button" class="forgot-btn" (click)="goToForgotPassword()">
+                            ¿Olvidaste tu contraseña?
+                        </button>
+                    </div>
+
+                    <ion-button id="login-submit-btn" expand="block" type="submit" class="submit-btn"
+                        [disabled]="isLoading">
+                        <ion-icon name="log-in-outline" slot="start" *ngIf="!isLoading"></ion-icon>
+                        <ion-spinner name="crescent" *ngIf="isLoading" slot="start"></ion-spinner>
+                        {{ isLoading ? 'Verificando...' : 'Conectar' }}
+                    </ion-button>
+                </div>
+
+            </div>
+        </form>
+
+        <!-- Privacy -->
+        <p class="privacy-text">
+            Para más información, consulta nuestra
+            <span class="link-text">Política de privacidad.</span>
+        </p>
+    </div>
+</ion-content>

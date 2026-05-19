@@ -1,0 +1,177 @@
+<app-page-header></app-page-header>
+
+<ion-content [fullscreen]="true" class="admin-page-content">
+    <div class="admin-container">
+
+        <!-- Header -->
+        <div class="dash-header">
+            <div>
+                <app-page-title
+                    title="Dashboard"
+                    [subtitle]="todayLabel">
+                </app-page-title>
+            </div>
+            <ion-button fill="clear" class="refresh-btn" (click)="load()" [disabled]="isLoading">
+                <ion-icon name="refresh-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="isLoading" class="loading-state">
+            <ion-spinner name="crescent"></ion-spinner>
+            <span>Cargando datos...</span>
+        </div>
+
+        <ng-container *ngIf="!isLoading && data">
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div *ngFor="let action of quickActions"
+                     class="action-card"
+                     [class]="'action-' + action.color"
+                     (click)="navigateTo(action.route)">
+                    <ion-icon [name]="action.icon"></ion-icon>
+                    <span>{{ action.title }}</span>
+                </div>
+            </div>
+
+            <!-- KPI Row -->
+            <div class="kpi-row">
+
+                <!-- Empleados activos -->
+                <div class="kpi-card">
+                    <div class="kpi-icon-wrap primary">
+                        <ion-icon name="people-outline"></ion-icon>
+                    </div>
+                    <div class="kpi-body">
+                        <div class="kpi-value">{{ data.activeEmployees }}</div>
+                        <div class="kpi-label">Empleados activos</div>
+                        <div class="kpi-sub">{{ data.totalEmployees }} en total · {{ activePercent() }}% activos</div>
+                    </div>
+                </div>
+
+                <!-- Solicitudes pendientes -->
+                <div class="kpi-card clickable" (click)="navigateTo('/admin/operations/requests')">
+                    <div class="kpi-icon-wrap warning">
+                        <ion-icon name="time-outline"></ion-icon>
+                    </div>
+                    <div class="kpi-body">
+                        <div class="kpi-value warning">{{ data.pendingRequests }}</div>
+                        <div class="kpi-label">Solicitudes pendientes</div>
+                        <div class="kpi-sub">Requieren revisión</div>
+                    </div>
+                </div>
+
+                <!-- Contratos activos -->
+                <div class="kpi-card clickable" (click)="navigateTo('/admin/finance/contracts')">
+                    <div class="kpi-icon-wrap tertiary">
+                        <ion-icon name="briefcase-outline"></ion-icon>
+                    </div>
+                    <div class="kpi-body">
+                        <div class="kpi-value">{{ data.activeContracts }}</div>
+                        <div class="kpi-label">Contratos activos</div>
+                        <div class="kpi-sub">Vigentes actualmente</div>
+                    </div>
+                </div>
+
+                <!-- Actividad hoy -->
+                <div class="kpi-card">
+                    <div class="kpi-icon-wrap success">
+                        <ion-icon name="stats-chart-outline"></ion-icon>
+                    </div>
+                    <div class="kpi-body">
+                        <div class="kpi-value success">{{ data.approvedToday }}</div>
+                        <div class="kpi-label">Aprobadas hoy</div>
+                        <div class="kpi-sub danger-text">{{ data.rejectedToday }} rechazadas</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Grid -->
+            <div class="bottom-grid">
+
+                <!-- Solicitudes recientes -->
+                <div class="grid-card span-2">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <ion-icon name="document-text-outline" class="title-icon"></ion-icon>
+                            Solicitudes recientes
+                        </div>
+                        <ion-button fill="clear" size="small" (click)="navigateTo('/admin/operations/requests')">
+                            Ver todas
+                        </ion-button>
+                    </div>
+
+                    <div class="requests-list" *ngIf="data.recentRequests.length > 0; else noRequests">
+                        <div *ngFor="let req of data.recentRequests" class="request-item">
+                            <div class="request-info">
+                                <div class="request-employee">{{ req.employeeName }}</div>
+                                <div class="request-meta">
+                                    <span class="request-type">{{ getTypeLabel(req.type) }}</span>
+                                    <span class="request-date">{{ req.createdAt | date:'d MMM, HH:mm' }}</span>
+                                </div>
+                            </div>
+                            <div class="request-badge" [class]="'badge-' + getStatusColor(req.status)">
+                                {{ getStatusLabel(req.status) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <ng-template #noRequests>
+                        <div class="empty-state">No hay solicitudes recientes</div>
+                    </ng-template>
+                </div>
+
+                <!-- Resumen de empleados -->
+                <div class="grid-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <ion-icon name="people-outline" class="title-icon"></ion-icon>
+                            Plantilla
+                        </div>
+                    </div>
+
+                    <div class="donut-wrap">
+                        <div class="donut-chart">
+                            <svg viewBox="0 0 36 36">
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--app-hover-bg)" stroke-width="3.5"/>
+                                <circle cx="18" cy="18" r="15.9" fill="none"
+                                    stroke="var(--ion-color-success)"
+                                    stroke-width="3.5"
+                                    [attr.stroke-dasharray]="activePercent() + ' ' + (100 - activePercent())"
+                                    stroke-dashoffset="25"
+                                    stroke-linecap="round"/>
+                            </svg>
+                            <div class="donut-label">
+                                <span class="donut-value">{{ activePercent() }}%</span>
+                                <span class="donut-sub">activos</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="legend-list">
+                        <div class="legend-item">
+                            <span class="legend-dot success"></span>
+                            <span class="legend-text">Activos</span>
+                            <span class="legend-count">{{ data.activeEmployees }}</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot danger"></span>
+                            <span class="legend-text">Inactivos</span>
+                            <span class="legend-count">{{ data.inactiveEmployees }}</span>
+                        </div>
+                    </div>
+
+                    <ion-button expand="block" fill="outline" size="small"
+                        (click)="navigateTo('/admin/organization/employees')" class="card-action-btn">
+                        Gestionar empleados
+                    </ion-button>
+                </div>
+
+            </div>
+
+        </ng-container>
+
+    </div>
+</ion-content>

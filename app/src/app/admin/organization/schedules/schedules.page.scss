@@ -1,0 +1,107 @@
+@import '../../../../theme/admin-standards.scss';
+
+.schedules-content {
+    @include admin-page-background;
+}
+
+.page-container {
+    @include admin-page-container;
+}
+
+.page-title-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    gap: 24px;
+
+    .title-text {
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--app-text-primary);
+            margin: 0 0 8px 0;
+            letter-spacing: -1px;
+
+            @media (max-width: 767px) {
+                font-size: 28px;
+            }
+        }
+
+        p {
+            font-size: 15px;
+            color: var(--app-text-secondary);
+            margin: 0;
+            font-weight: 500;
+        }
+    }
+
+    .title-actions {
+        display: flex;
+        gap: 12px;
+
+        .create-button {
+            @include admin-button-primary;
+        }
+    }
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+
+    ion-spinner {
+        --color: var(--app-text-primary);
+        width: 48px;
+        height: 48px;
+    }
+}
+
+.schedules-grid {
+    @include admin-grid(1, 2, 3);
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    text-align: center;
+    padding: 48px 24px;
+
+    ion-icon {
+        font-size: 80px;
+        color: var(--app-border);
+        margin-bottom: 24px;
+    }
+
+    h2 {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        margin: 0 0 8px 0;
+    }
+
+    p {
+        font-size: 15px;
+        color: var(--app-text-secondary);
+        margin: 0;
+        max-width: 400px;
+    }
+}
+
+// Responsive utilities
+.desktop-only {
+    @media (max-width: 767px) {
+        display: none !important;
+    }
+}
+
+.mobile-only {
+    @media (min-width: 768px) {
+        display: none !important;
+    }
+}

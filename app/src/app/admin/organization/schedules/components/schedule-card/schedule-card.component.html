@@ -1,0 +1,31 @@
+<ion-card class="schedule-card" (click)="onCardClick()">
+    <ion-card-header>
+        <div class="card-header-content">
+            <ion-card-title>{{ schedule.name }}</ion-card-title>
+            @if (!schedule.isActive) {
+            <ion-chip class="inactive-chip">
+                <ion-label>Inactivo</ion-label>
+            </ion-chip>
+            }
+        </div>
+    </ion-card-header>
+
+    <ion-card-content>
+        <div class="schedule-info">
+            @if (schedule.description) {
+            <div class="info-row">
+                <span class="label">Descripción:</span>
+                <span class="value">{{ schedule.description }}</span>
+            </div>
+            }
+            <div class="info-row">
+                <span class="label">Días laborales:</span>
+                <span class="value">{{ workDaysCount }} de 7 días</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Horario típico:</span>
+                <span class="value">{{ workDaysSummary }}</span>
+            </div>
+        </div>
+    </ion-card-content>
+</ion-card>

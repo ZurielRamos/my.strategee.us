@@ -1,0 +1,251 @@
+:host {
+    display: block;
+    position: relative;
+}
+
+// ─── Wrapper clickable ───────────────────────────────────────────────────────
+.user-profile-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 12px;
+    transition: background 0.2s ease;
+    user-select: none;
+
+    &:hover {
+        background: var(--app-hover-bg);
+    }
+
+    &:active {
+        background: var(--app-border-light);
+    }
+}
+
+// ─── Avatar ──────────────────────────────────────────────────────────────────
+.avatar-container {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--ion-color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+
+    .avatar-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .avatar-initials {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--ion-color-primary-contrast, var(--app-text-primary));
+        line-height: 1;
+    }
+}
+
+// ─── User Info ───────────────────────────────────────────────────────────────
+.user-info {
+    display: flex;
+    flex-direction: column;
+
+    &.hide-on-mobile {
+        @media (max-width: 768px) {
+            display: none;
+        }
+    }
+
+    .user-name {
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--app-text-primary);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        line-height: 1.2;
+
+        ion-icon {
+            font-size: 13px;
+            color: var(--app-text-secondary);
+            transition: transform 0.2s ease;
+        }
+    }
+
+    .user-role {
+        font-size: 11px;
+        color: var(--app-text-secondary);
+        font-weight: 500;
+    }
+}
+
+// ─── Custom Popover Overlay ──────────────────────────────────────────────────
+::ng-deep .custom-user-popover {
+    --min-width: 240px;
+    --background: var(--app-card-bg);
+    --box-shadow: 0 12px 40px var(--app-shadow), 0 2px 8px var(--app-shadow);
+    --border-radius: 20px;
+
+    &::part(content) {
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid var(--app-border);
+    }
+}
+
+// ─── Popup Content ───────────────────────────────────────────────────────────
+.profile-popup-content {
+    display: flex;
+    flex-direction: column;
+}
+
+// ─── Popup Header ─────────────────────────────────────────────────────────────
+.popup-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 16px 14px;
+
+    .popup-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--ion-color-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        overflow: hidden;
+
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        span {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--ion-color-primary-contrast, var(--app-text-primary));
+        }
+    }
+
+    .popup-user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        overflow: hidden;
+
+        .popup-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+        }
+
+        .popup-email {
+            font-size: 12px;
+            color: var(--app-text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+
+        .popup-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            background: var(--ion-color-primary);
+            color: var(--ion-color-primary-contrast);
+            padding: 2px 8px;
+            border-radius: 20px;
+            width: fit-content;
+            margin-top: 2px;
+        }
+    }
+}
+
+// ─── Divider ─────────────────────────────────────────────────────────────────
+.popup-divider {
+    height: 1px;
+    background: var(--app-border);
+    margin: 0;
+}
+
+// ─── Menu Items ──────────────────────────────────────────────────────────────
+.popup-menu {
+    list-style: none;
+    margin: 0;
+    padding: 6px 0;
+}
+
+.popup-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    font-size: 14px;
+    color: var(--app-text-primary);
+    font-weight: 500;
+
+    ion-icon {
+        font-size: 18px;
+        color: var(--app-text-secondary);
+        flex-shrink: 0;
+    }
+
+    &:hover {
+        background: var(--app-hover-bg);
+
+        ion-icon {
+            color: var(--app-text-primary);
+        }
+    }
+
+    &:active {
+        background: var(--app-border-light);
+    }
+}
+
+// ─── Logout ──────────────────────────────────────────────────────────────────
+.popup-logout {
+    padding: 6px 0 6px;
+    cursor: pointer;
+
+    .logout-inner {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #e53935;
+        transition: background 0.15s ease;
+
+        ion-icon {
+            font-size: 18px;
+            color: #e53935;
+        }
+
+        &:hover {
+            background: #fff5f5;
+        }
+
+        &:active {
+            background: #ffe9e9;
+        }
+
+        &.loading {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    }
+}

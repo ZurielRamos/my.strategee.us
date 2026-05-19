@@ -1,0 +1,93 @@
+<app-base-modal 
+    title="Disfrute de Días Compensados"
+    subtitle="Solicita el disfrute de tus días compensados acumulados"
+    confirmText="Enviar Solicitud"
+    [confirmDisabled]="!form.valid || hasInsufficientBalance || calculatedHours === 0"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <!-- Información importante -->
+        <app-alert-box type="info">
+            Solicita el disfrute de tus días compensados. Puedes solicitar días completos o solo horas específicas.
+        </app-alert-box>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Información de Disfrute</h4>
+
+        <!-- Tipo de solicitud -->
+        <app-form-select
+            label="Tipo de solicitud"
+            [options]="usageTypeOptions"
+            formControlName="usageType"
+            placeholder="Seleccione tipo"
+            [required]="true">
+        </app-form-select>
+
+        <!-- Fecha -->
+        <app-date-input
+            formControlName="date"
+            label="Fecha"
+            placeholder="dd/mm/yyyy"
+            mode="single"
+            [required]="true"
+            [minDate]="minDate">
+        </app-date-input>
+
+        <!-- Campo de horas (solo para tipo HOURS) -->
+        @if (form.get('usageType')?.value === UsageType.HOURS) {
+            <app-text-input
+                formControlName="hours"
+                label="Cantidad de Horas"
+                placeholder="Ej: 4"
+                type="number"
+                [required]="true"
+                helperText="Ingresa la cantidad de horas que deseas disfrutar"
+                helperIcon="information-circle-outline">
+            </app-text-input>
+        }
+
+        <!-- Comentarios -->
+        <app-textarea-input
+            formControlName="comments"
+            label="Comentarios u observaciones"
+            placeholder="Describe el motivo de tu solicitud..."
+            [rows]="3"
+            [maxlength]="500"
+            [showCharCounter]="true">
+        </app-textarea-input>
+
+        <!-- Resumen -->
+        @if (calculatedHours > 0) {
+            <div class="summary-box">
+                <h4>Resumen</h4>
+                <div class="summary-item">
+                    <span class="label">Horas solicitadas:</span>
+                    <span class="value">{{ calculatedHours }} horas</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Equivalente en días:</span>
+                    <span class="value">{{ calculatedDays }} días</span>
+                </div>
+                
+                @if (balance) {
+                    <div class="summary-item balance-after" [class.insufficient]="hasInsufficientBalance">
+                        <span class="label">
+                            <ion-icon [name]="hasInsufficientBalance ? 'close-circle' : 'checkmark-circle'"></ion-icon>
+                            Balance después:
+                        </span>
+                        <span class="value">{{ balance.availableBalance - calculatedHours }} horas</span>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- Warning si no hay suficiente balance -->
+        @if (hasInsufficientBalance) {
+            <app-alert-box type="danger">
+                No tienes suficientes horas disponibles para esta solicitud.
+            </app-alert-box>
+        }
+    </form>
+</app-base-modal>

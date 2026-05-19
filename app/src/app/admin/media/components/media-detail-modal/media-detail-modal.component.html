@@ -1,0 +1,114 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Detalles del Archivo</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()" fill="clear">
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="detail-container">
+        <!-- Preview Section -->
+        <div class="preview-section">
+            @if (attachment.type === AttachmentType.IMAGE) {
+            <div class="image-preview">
+                <ion-img [src]="getImageUrl()" [alt]="attachment.alt || attachment.name"></ion-img>
+            </div>
+            } @else {
+            <div class="file-preview">
+                <ion-icon [name]="getFileIcon(attachment.mimeType)"></ion-icon>
+                <p class="file-name">{{ attachment.name }}</p>
+            </div>
+            }
+
+            <!-- File Info Chips -->
+            <div class="file-info">
+                <ion-chip class="info-chip">
+                    <ion-label>{{ formatFileSize(attachment.size) }}</ion-label>
+                </ion-chip>
+                <ion-chip class="info-chip">
+                    <ion-label>{{ attachment.type }}</ion-label>
+                </ion-chip>
+                @if (attachment.folder) {
+                <ion-chip class="info-chip">
+                    <ion-label>{{ attachment.folder }}</ion-label>
+                </ion-chip>
+                }
+            </div>
+
+            <!-- Upload Date -->
+            <p class="upload-date">Subido el {{ formatDate(attachment.createdAt) }}</p>
+        </div>
+
+        <!-- Edit Form -->
+        <form [formGroup]="detailForm" class="edit-form">
+            <ion-item lines="none">
+                <ion-label position="stacked">Título</ion-label>
+                <ion-input 
+                    formControlName="title"
+                    placeholder="Título del archivo"
+                ></ion-input>
+            </ion-item>
+
+            @if (attachment.type === AttachmentType.IMAGE) {
+            <ion-item lines="none">
+                <ion-label position="stacked">Texto Alternativo</ion-label>
+                <ion-input 
+                    formControlName="alt"
+                    placeholder="Para accesibilidad"
+                ></ion-input>
+            </ion-item>
+            }
+
+            <ion-item lines="none">
+                <ion-label position="stacked">Descripción</ion-label>
+                <ion-textarea 
+                    formControlName="description"
+                    placeholder="Describe el archivo"
+                    rows="4"
+                ></ion-textarea>
+            </ion-item>
+        </form>
+
+        <!-- Actions -->
+        <div class="actions-section">
+            <ion-button 
+                expand="block" 
+                (click)="save()"
+                [disabled]="detailForm.invalid || isSaving"
+                class="save-button"
+            >
+                @if (isSaving) {
+                <ion-spinner name="crescent"></ion-spinner>
+                } @else {
+                <ion-icon slot="start" name="save-outline"></ion-icon>
+                Guardar Cambios
+                }
+            </ion-button>
+
+            <div class="secondary-actions">
+                <ion-button 
+                    fill="outline" 
+                    (click)="downloadFile()"
+                    class="download-button"
+                >
+                    <ion-icon slot="start" name="download-outline"></ion-icon>
+                    Descargar
+                </ion-button>
+
+                <ion-button 
+                    fill="outline" 
+                    color="danger"
+                    (click)="confirmDelete()"
+                    class="delete-button"
+                >
+                    <ion-icon slot="start" name="trash-outline"></ion-icon>
+                    Eliminar
+                </ion-button>
+            </div>
+        </div>
+    </div>
+</ion-content>

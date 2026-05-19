@@ -1,0 +1,59 @@
+.text-input-container {
+    position: relative;
+    margin-bottom: 16px;
+
+    ion-item {
+        --background: var(--app-hover-bg);
+        --border-radius: 12px;
+        --border-width: 0;
+        --min-height: 56px;
+        --padding-start: 16px;
+        --padding-end: 16px;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+
+        &:focus-within {
+            --background: var(--app-card-bg);
+            box-shadow: 0 0 0 2px var(--app-text-primary);
+        }
+
+        ion-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+
+            .required-indicator {
+                color: #eb445a;
+            }
+        }
+
+        ion-input {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--app-text-primary);
+            --padding-start: 0;
+            --padding-end: 0;
+
+            &::placeholder {
+                color: var(--app-text-secondary);
+                opacity: 0.7;
+            }
+        }
+
+        ion-note {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--app-text-secondary);
+            margin-top: 8px;
+
+            ion-icon {
+                font-size: 14px;
+            }
+        }
+    }
+}

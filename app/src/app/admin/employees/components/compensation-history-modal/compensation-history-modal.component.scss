@@ -1,0 +1,198 @@
+ion-header {
+    ion-toolbar {
+        --background: var(--app-card-bg);
+        --color: var(--app-text-primary);
+        --border-width: 0;
+        --min-height: 64px;
+        border-radius: 24px 24px 0 0;
+    }
+
+    ion-title {
+        font-weight: 800;
+        font-size: 20px;
+        color: var(--app-text-primary);
+    }
+
+    ion-button {
+        --color: var(--app-text-secondary);
+
+        ion-icon {
+            font-size: 24px;
+        }
+    }
+}
+
+ion-content {
+    --background: var(--app-card-bg);
+    border-radius: 0 0 24px 24px;
+}
+
+.history-container {
+    padding: 24px;
+
+    @media (min-width: 768px) {
+        padding: 32px;
+    }
+
+    .employee-info {
+        margin-bottom: 24px;
+        padding: 16px;
+        background: var(--app-hover-bg);
+        border-radius: 12px;
+
+        h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin: 0 0 4px 0;
+        }
+
+        p {
+            font-size: 13px;
+            color: var(--app-text-secondary);
+            margin: 0;
+        }
+    }
+
+    .loading-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 300px;
+
+        ion-spinner {
+            --color: var(--app-text-primary);
+            transform: scale(1.5);
+        }
+    }
+
+    .compensations-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .compensation-card {
+        margin: 0;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px var(--app-shadow);
+
+        ion-card-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--app-border-light);
+
+            .card-header-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                ion-card-title {
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: var(--app-text-primary);
+                    margin: 0;
+                }
+
+                .header-actions {
+                    ion-button {
+                        margin: 0;
+                        --padding-start: 8px;
+                        --padding-end: 8px;
+
+                        ion-icon {
+                            font-size: 20px;
+                        }
+                    }
+                }
+            }
+        }
+
+        ion-card-content {
+            padding: 16px;
+
+            .compensation-details {
+                .detail-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 8px 0;
+                    border-bottom: 1px solid var(--app-border-light);
+
+                    &:last-of-type {
+                        border-bottom: none;
+                    }
+
+                    .detail-label {
+                        font-size: 13px;
+                        font-weight: 600;
+                        color: var(--app-text-secondary);
+                    }
+
+                    .detail-value {
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: var(--app-text-primary);
+                        text-align: right;
+
+                        &.amount {
+                            font-size: 18px;
+                            font-weight: 800;
+                            color: var(--app-text-primary);
+                        }
+                    }
+
+                    ion-badge {
+                        font-size: 12px;
+                        font-weight: 600;
+                        padding: 4px 12px;
+                        border-radius: 12px;
+                    }
+                }
+
+                .chips-row {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                    margin-top: 12px;
+
+                    ion-chip {
+                        height: 28px;
+                        font-size: 12px;
+                        font-weight: 600;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 300px;
+        text-align: center;
+        padding: 40px 20px;
+
+        ion-icon {
+            font-size: 64px;
+            color: var(--app-text-secondary);
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin: 0 0 8px 0;
+        }
+
+        p {
+            font-size: 14px;
+            color: var(--app-text-secondary);
+            margin: 0;
+        }
+    }
+}

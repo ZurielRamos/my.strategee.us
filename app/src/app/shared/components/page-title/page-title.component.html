@@ -1,0 +1,13 @@
+<div class="page-title-section">
+  <div class="title-text">
+    <h1>{{ title }}</h1>
+    <p *ngIf="subtitle">{{ subtitle }}</p>
+  </div>
+  <ng-content></ng-content>
+  <div class="title-controls" *ngIf="showControls">
+    <span class="date" *ngIf="date">{{ date }}</span>
+    <div class="date-filter" *ngIf="filterLabel">
+      {{ filterLabel }} <ion-icon name="chevron-down-outline"></ion-icon>
+    </div>
+  </div>
+</div>

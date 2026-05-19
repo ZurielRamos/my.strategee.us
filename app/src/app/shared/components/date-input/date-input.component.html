@@ -1,0 +1,27 @@
+<div class="date-input-container">
+    <ion-item lines="none" button (click)="toggleDatePicker()" [disabled]="disabled">
+        <ion-label position="stacked">
+            {{ label }}
+            @if (required) {
+                <span class="required-indicator"> *</span>
+            }
+        </ion-label>
+        <ion-input
+            readonly
+            [value]="displayValue"
+            [placeholder]="placeholder"
+            [disabled]="disabled">
+        </ion-input>
+        <ion-icon name="calendar-outline" slot="end"></ion-icon>
+    </ion-item>
+
+    @if (showDatePicker) {
+        <div class="datepicker-overlay" (click)="toggleDatePicker()"></div>
+        <div class="datepicker-wrapper">
+            <app-advanced-datepicker
+                [config]="datePickerConfig"
+                (dateSelected)="onDateSelected($event)">
+            </app-advanced-datepicker>
+        </div>
+    }
+</div>

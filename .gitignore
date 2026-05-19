@@ -1,0 +1,41 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Kiro
+.kiro/
+
+# ─── API (NestJS) ───────────────────────────────────────────
+api/node_modules/
+api/dist/
+api/.env
+api/coverage/
+
+# ─── APP (Angular / Ionic) ──────────────────────────────────
+app/node_modules/
+app/www/
+app/.angular/
+app/coverage/
+
+# Capacitor native
+app/android/
+app/ios/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Misc
+*.tmp
+temp.scss
+chat.html

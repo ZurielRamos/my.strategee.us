@@ -1,0 +1,968 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.employee-detail-content {
+    --background: var(--app-hover-bg);
+}
+
+.page-container {
+    padding: 16px 32px 32px 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+
+    @media (max-width: 768px) {
+        padding: 16px 16px 32px 16px;
+    }
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+
+    ion-spinner {
+        --color: var(--app-text-primary);
+        transform: scale(1.5);
+    }
+}
+
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .back-button {
+        --color: var(--app-text-primary);
+        font-weight: 600;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+
+        @media (max-width: 768px) {
+            width: 100%;
+
+            ion-button {
+                flex: 1;
+            }
+        }
+    }
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 24px;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// Left Column Styles
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.profile-card {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    padding: 32px 24px;
+    margin: 0;
+    text-align: center;
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 20px;
+        position: relative;
+
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            background: var(--app-hover-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .avatar-placeholder {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                ion-icon {
+                    font-size: 60px;
+                    color: var(--app-text-secondary);
+                }
+            }
+        }
+
+        .photo-fab {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            
+            ion-icon {
+                font-size: 18px;
+            }
+        }
+    }
+
+    .profile-info {
+        margin-bottom: 24px;
+
+        h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--app-text-primary);
+            margin: 0 0 8px 0;
+        }
+
+        .profile-location {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: var(--app-text-secondary);
+            font-size: 14px;
+            margin: 0 0 12px 0;
+
+            ion-icon {
+                font-size: 16px;
+            }
+        }
+
+        .profile-status {
+            display: flex;
+            justify-content: center;
+
+            ion-badge {
+                font-size: 12px;
+                font-weight: 600;
+                padding: 6px 14px;
+                border-radius: 12px;
+            }
+        }
+    }
+
+    .profile-actions {
+        margin-bottom: 24px;
+
+        ion-button {
+            --border-radius: 12px;
+            height: 44px;
+            font-weight: 600;
+            text-transform: none;
+        }
+    }
+
+    .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        padding-top: 24px;
+        border-top: 1px solid var(--app-border);
+
+        .stat-item {
+            text-align: center;
+
+            .stat-label {
+                font-size: 12px;
+                color: var(--app-text-secondary);
+                margin-bottom: 4px;
+                display: block;
+            }
+
+            .stat-value {
+                font-size: 24px;
+                font-weight: 800;
+                color: var(--app-text-primary);
+                display: block;
+            }
+        }
+    }
+}
+
+.info-card {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    margin: 0;
+
+    ion-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--app-border);
+
+        .card-header-with-action {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .header-actions {
+                display: flex;
+                gap: 4px;
+            }
+
+            ion-button {
+                margin: 0;
+                --padding-start: 8px;
+                --padding-end: 8px;
+                
+                ion-icon {
+                    font-size: 20px;
+                }
+            }
+        }
+
+        ion-card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+
+            ion-icon {
+                font-size: 20px;
+            }
+        }
+    }
+
+    ion-card-content {
+        padding: 20px 24px;
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--app-border-light);
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            .info-label {
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--app-text-secondary);
+                flex: 0 0 40%;
+            }
+
+            .info-value {
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--app-text-primary);
+                text-align: right;
+                flex: 1;
+            }
+        }
+    }
+}
+
+// Right Column Styles
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.relation-card {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    margin: 0;
+
+    ion-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--app-border);
+
+        .card-header-with-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .header-actions {
+                display: flex;
+                gap: 4px;
+
+                ion-button {
+                    margin: 0;
+                    --padding-start: 8px;
+                    --padding-end: 8px;
+                    
+                    ion-icon {
+                        font-size: 20px;
+                    }
+                }
+            }
+        }
+
+        ion-card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+
+            ion-icon {
+                font-size: 20px;
+            }
+        }
+    }
+
+    ion-card-content {
+        padding: 20px 24px;
+    }
+}
+
+.contract-info {
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--app-border-light);
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--app-text-secondary);
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--app-text-primary);
+
+            &.highlight {
+                font-size: 16px;
+                font-weight: 700;
+                color: var(--app-text-primary);
+            }
+        }
+
+        .salary-value-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .toggle-salary-btn {
+                --padding-start: 4px;
+                --padding-end: 4px;
+                margin: 0;
+                height: 32px;
+                
+                ion-icon {
+                    font-size: 18px;
+                    color: var(--app-text-secondary);
+                }
+
+                &:hover ion-icon {
+                    color: var(--app-text-primary);
+                }
+            }
+        }
+    }
+
+    .memorandums-history {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 2px solid var(--app-border-light);
+
+        .memorandums-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 0;
+            user-select: none;
+
+            &:hover {
+                opacity: 0.7;
+            }
+
+            .header-title {
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--app-text-primary);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            ion-icon {
+                font-size: 18px;
+                color: var(--app-text-secondary);
+            }
+        }
+
+        .memorandums-list {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .memorandum-item {
+                padding: 10px;
+                background: var(--app-hover-bg);
+                border-radius: 8px;
+                border-left: 3px solid #e0e4e8;
+                transition: all 0.2s ease;
+
+                &.active {
+                    background: #e8f5e9;
+                    border-left-color: #4caf50;
+                }
+
+                .memo-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    margin-bottom: 6px;
+                    gap: 8px;
+
+                    .memo-info {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 4px;
+                        flex: 1;
+
+                        .memo-position {
+                            font-size: 13px;
+                            font-weight: 700;
+                            color: var(--app-text-primary);
+                        }
+
+                        ion-badge {
+                            font-size: 10px;
+                            font-weight: 600;
+                            padding: 2px 6px;
+                            border-radius: 6px;
+                            width: fit-content;
+                        }
+                    }
+
+                    .memo-header-actions {
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+
+                        .memo-dates {
+                            font-size: 11px;
+                            font-weight: 500;
+                            color: var(--app-text-secondary);
+                            white-space: nowrap;
+                        }
+
+                        ion-button {
+                            --padding-start: 4px;
+                            --padding-end: 4px;
+                            margin: 0;
+                            height: 24px;
+
+                            ion-icon {
+                                font-size: 14px;
+                            }
+                        }
+                    }
+                }
+
+                .memo-details {
+                    .memo-detail-row {
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 3px 0;
+                        font-size: 12px;
+
+                        .label {
+                            color: var(--app-text-secondary);
+                            font-weight: 500;
+                        }
+
+                        .value {
+                            color: var(--app-text-primary);
+                            font-weight: 600;
+                            text-align: right;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.compensation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .compensation-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+        background: var(--app-hover-bg);
+        border-radius: 12px;
+        position: relative;
+
+        .compensation-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .compensation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+
+            .compensation-type {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--app-text-primary);
+            }
+
+            .compensation-amount {
+                font-size: 16px;
+                font-weight: 800;
+                color: var(--app-text-primary);
+            }
+        }
+
+        .compensation-details {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+
+            .compensation-frequency {
+                font-size: 12px;
+                color: var(--app-text-secondary);
+            }
+
+            ion-chip {
+                height: 24px;
+                font-size: 11px;
+            }
+        }
+
+        .compensation-menu-btn {
+            --padding-start: 8px;
+            --padding-end: 8px;
+            margin: 0;
+            height: 32px;
+            flex-shrink: 0;
+
+            ion-icon {
+                font-size: 18px;
+            }
+        }
+    }
+}
+
+.benefit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: var(--app-hover-bg);
+        border-radius: 12px;
+        position: relative;
+
+        .benefit-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--app-text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            ion-icon {
+                font-size: 20px;
+                color: var(--app-card-bg);
+            }
+        }
+
+        .benefit-info {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .benefit-type {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--app-text-primary);
+            }
+
+            .benefit-amount {
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--app-text-secondary);
+            }
+        }
+
+        .benefit-menu-btn {
+            --padding-start: 8px;
+            --padding-end: 8px;
+            margin: 0;
+            height: 32px;
+
+            ion-icon {
+                font-size: 18px;
+            }
+        }
+    }
+}
+
+.contract-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .contract-item {
+        padding: 16px;
+        background: var(--app-hover-bg);
+        border-radius: 12px;
+
+        .contract-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+
+            .contract-type {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--app-text-primary);
+            }
+        }
+
+        .contract-dates {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--app-text-secondary);
+        }
+    }
+}
+
+.empty-state-small {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+
+    ion-icon {
+        font-size: 48px;
+        color: var(--app-text-secondary);
+        opacity: 0.3;
+        margin-bottom: 12px;
+    }
+
+    p {
+        font-size: 13px;
+        color: var(--app-text-secondary);
+        margin: 0;
+    }
+}
+
+// ─── Parafiscales Card ────────────────────────────────────────────────────────
+
+.parafiscales-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .parafiscal-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: var(--app-hover-bg);
+        border-radius: 12px;
+
+        .parafiscal-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--app-text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+
+            ion-icon {
+                font-size: 20px;
+                color: var(--app-card-bg);
+            }
+        }
+
+        .parafiscal-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .parafiscal-label {
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--app-text-secondary);
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+            }
+
+            .parafiscal-value {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--app-text-primary);
+
+                &.empty {
+                    font-style: italic;
+                    font-weight: 400;
+                    color: var(--app-text-secondary);
+                    opacity: 0.7;
+                }
+            }
+        }
+    }
+}
+
+.loading-small {
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+
+    ion-spinner {
+        --color: var(--app-text-secondary);
+    }
+}
+
+// Popover de acciones del empleado
+.employee-actions-popover {
+    --width: 280px;
+
+    ion-list {
+        padding: 8px 0;
+        background: transparent;
+    }
+
+    ion-item {
+        --padding-start: 16px;
+        --padding-end: 16px;
+        --inner-padding-end: 0;
+        --min-height: 56px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+            --background: rgba(0, 0, 0, 0.04);
+        }
+
+        ion-icon {
+            font-size: 22px;
+            margin-right: 12px;
+        }
+
+        ion-label {
+            h3 {
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--app-text-primary);
+                margin: 0 0 4px 0;
+            }
+
+            p {
+                font-size: 12px;
+                color: var(--app-text-secondary);
+                margin: 0;
+            }
+        }
+    }
+}
+
+// Wrapper global del popover
+:global(.employee-actions-popover-wrapper) {
+    --width: 260px;
+    --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --backdrop-opacity: 0.2;
+    
+    .popover-content {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+}
+
+// ─── Emergency Contacts Card ──────────────────────────────────────────────────
+
+.emergency-contacts-card {
+    .loading-small {
+        display: flex;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .contacts-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .contact-item {
+        padding: 12px;
+        background: var(--app-hover-bg, #f8f9fa);
+        border-radius: 10px;
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+
+            .contact-name {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--app-text-primary);
+            }
+
+            .contact-relationship {
+                font-size: 12px;
+                font-weight: 500;
+                color: var(--ion-color-primary);
+            }
+
+            .contact-phone,
+            .contact-email {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                font-size: 13px;
+                color: var(--app-text-secondary);
+
+                ion-icon {
+                    font-size: 14px;
+                    flex-shrink: 0;
+                }
+            }
+        }
+    }
+}
+
+// ─── Contact Info Logs Card ───────────────────────────────────────────────────
+
+.contact-logs-card {
+    .loading-small {
+        display: flex;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .logs-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .log-entry {
+        background: var(--app-hover-bg, #f8f9fa);
+        border-radius: 8px;
+        padding: 10px 12px;
+
+        .log-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+            gap: 4px;
+
+            .log-date {
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--app-text-secondary);
+            }
+
+            .log-author {
+                font-size: 11px;
+                color: var(--ion-color-primary);
+                font-weight: 500;
+            }
+        }
+
+        .log-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .log-field-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            flex-wrap: wrap;
+
+            .log-field-label {
+                font-weight: 600;
+                color: var(--app-text-primary);
+                min-width: 80px;
+            }
+
+            .log-field-from {
+                color: var(--ion-color-danger);
+                text-decoration: line-through;
+                opacity: 0.8;
+            }
+
+            .log-arrow {
+                font-size: 12px;
+                color: var(--app-text-secondary);
+                transform: rotate(-90deg);
+            }
+
+            .log-field-to {
+                color: var(--ion-color-success);
+                font-weight: 500;
+            }
+        }
+    }
+}

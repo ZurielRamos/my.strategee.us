@@ -1,0 +1,39 @@
+<app-base-modal 
+  [title]="title"
+  confirmText="Guardar"
+  [confirmDisabled]="!form.valid"
+  [loading]="isSubmitting"
+  (modalDismiss)="onDismiss()"
+  (modalConfirm)="onConfirm()">
+  
+  <form [formGroup]="form">
+    <ion-item lines="none">
+      <ion-label position="stacked">Nombre *</ion-label>
+      <ion-input 
+        formControlName="name" 
+        placeholder="Ej: Cuentas de Trabajo"
+        maxlength="100">
+      </ion-input>
+    </ion-item>
+
+    @if (form.get('name')?.invalid && form.get('name')?.touched) {
+      <div class="error-message">
+        @if (form.get('name')?.errors?.['required']) {
+          El nombre es requerido
+        }
+        @if (form.get('name')?.errors?.['maxlength']) {
+          El nombre no puede exceder 100 caracteres
+        }
+      </div>
+    }
+
+    <ion-item lines="none">
+      <ion-label position="stacked">Descripción</ion-label>
+      <ion-textarea 
+        formControlName="description" 
+        placeholder="Ej: Credenciales relacionadas con el trabajo"
+        rows="3">
+      </ion-textarea>
+    </ion-item>
+  </form>
+</app-base-modal>

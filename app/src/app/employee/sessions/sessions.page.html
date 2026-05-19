@@ -1,0 +1,73 @@
+<app-page-header [backUrl]="'/employee/settings'"></app-page-header>
+
+<ion-content [fullscreen]="true" class="sessions-content">
+    <div class="page-container">
+        <div class="sessions-header">
+            <h1>Sesiones Iniciadas</h1>
+            <p>Administra los dispositivos donde has iniciado sesión</p>
+        </div>
+
+        <div class="sessions-actions" *ngIf="sessions.length > 1">
+            <ion-button 
+                fill="outline" 
+                color="danger" 
+                (click)="revokeAllOtherSessions()"
+                class="revoke-all-btn">
+                <ion-icon name="trash-outline" slot="start"></ion-icon>
+                Cerrar Todas las Demás Sesiones
+            </ion-button>
+        </div>
+
+        <div class="sessions-list" *ngIf="!isLoading">
+            <ion-card *ngFor="let session of sessions" class="session-card" [class.current-session]="session.isCurrent">
+                <ion-card-content>
+                    <div class="session-header">
+                        <div class="session-device">
+                            <ion-icon [name]="getDeviceIcon(session.deviceType)" class="device-icon"></ion-icon>
+                            <div class="device-info">
+                                <h3>{{ session.deviceName }}</h3>
+                                <ion-badge *ngIf="session.isCurrent" color="success" class="current-badge">
+                                    <ion-icon name="checkmark-circle"></ion-icon>
+                                    Sesión Actual
+                                </ion-badge>
+                            </div>
+                        </div>
+                        <ion-button 
+                            *ngIf="!session.isCurrent"
+                            fill="clear" 
+                            color="danger"
+                            (click)="revokeSession(session)"
+                            class="revoke-btn">
+                            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                        </ion-button>
+                    </div>
+
+                    <div class="session-details">
+                        <div class="detail-item">
+                            <ion-icon name="time-outline"></ion-icon>
+                            <span>{{ getTimeAgo(session.lastUsedAt) }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <ion-icon name="location-outline"></ion-icon>
+                            <span>{{ session.ipAddress }}</span>
+                        </div>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+
+            <div class="empty-state" *ngIf="sessions.length === 0">
+                <ion-icon name="phone-portrait-outline"></ion-icon>
+                <p>No hay sesiones activas</p>
+            </div>
+        </div>
+
+        <div class="loading-state" *ngIf="isLoading">
+            <ion-card class="session-card skeleton" *ngFor="let i of [1,2,3]">
+                <ion-card-content>
+                    <div class="skeleton-header"></div>
+                    <div class="skeleton-details"></div>
+                </ion-card-content>
+            </ion-card>
+        </div>
+    </div>
+</ion-content>

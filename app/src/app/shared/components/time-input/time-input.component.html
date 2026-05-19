@@ -1,0 +1,28 @@
+<div class="time-input-container">
+    <ion-item lines="none" button (click)="toggleTimePicker()" [disabled]="disabled">
+        <ion-label position="stacked">
+            {{ label }}
+            @if (required) {
+                <span class="required-indicator"> *</span>
+            }
+        </ion-label>
+        <ion-input
+            readonly
+            [value]="value"
+            [placeholder]="placeholder"
+            [disabled]="disabled">
+        </ion-input>
+        <ion-icon name="time-outline" slot="end"></ion-icon>
+    </ion-item>
+
+    @if (helperText) {
+        <div class="helper-text">{{ helperText }}</div>
+    }
+
+    <app-time-picker
+        [isOpen]="showTimePicker"
+        [value]="value"
+        (timeSelected)="onTimeSelected($event)"
+        (dismissed)="onDismissed()">
+    </app-time-picker>
+</div>

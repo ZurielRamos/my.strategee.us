@@ -1,0 +1,370 @@
+ion-header {
+    ion-toolbar {
+        --background: var(--app-card-bg);
+        --color: var(--app-text-primary);
+        --border-width: 0;
+        --min-height: 64px;
+        border-radius: 24px 24px 0 0;
+    }
+
+    ion-title {
+        font-weight: 800;
+        font-size: 20px;
+        color: var(--app-text-primary);
+    }
+
+    ion-button {
+        --color: var(--app-text-secondary);
+
+        ion-icon {
+            font-size: 24px;
+        }
+    }
+}
+
+ion-content {
+    --background: var(--app-card-bg);
+    border-radius: 0 0 24px 24px;
+}
+
+.selector-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0 24px 24px 24px;
+
+    @media (min-width: 768px) {
+        padding: 0 32px 32px 32px;
+    }
+}
+
+.filters-section {
+    flex-shrink: 0;
+    margin-bottom: 24px;
+    padding-top: 24px;
+
+    ion-searchbar {
+        --background: var(--app-hover-bg);
+        --border-radius: 12px;
+        --box-shadow: none;
+        --icon-color: var(--app-text-secondary);
+        --placeholder-color: var(--app-text-secondary);
+        --color: var(--app-text-primary);
+        padding: 0 0 16px 0;
+        margin: 0;
+    }
+
+    .filter-row {
+        display: flex;
+        gap: 12px;
+        align-items: stretch;
+
+        @media (min-width: 768px) {
+            gap: 16px;
+        }
+
+        .folder-select {
+            flex: 1;
+            --background: var(--app-hover-bg);
+            --border-radius: 12px;
+            --padding-start: 16px;
+            --padding-end: 16px;
+            --min-height: 48px;
+            --border-width: 0;
+            margin: 0;
+
+            ion-label {
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--app-text-primary);
+                margin-right: 8px;
+                text-transform: uppercase;
+            }
+
+            ion-select {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--app-text-primary);
+                max-width: 100%;
+                --padding-start: 0;
+            }
+        }
+
+        .upload-button {
+            --border-color: var(--app-text-primary);
+            --color: var(--app-text-primary);
+            --border-width: 2px;
+            --border-radius: 12px;
+            height: 48px;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: none;
+            flex-shrink: 0;
+
+            @media (min-width: 768px) {
+                font-size: 15px;
+            }
+
+            ion-icon {
+                font-size: 20px;
+            }
+        }
+    }
+}
+
+.content-section {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 24px;
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    gap: 16px;
+
+    ion-spinner {
+        --color: var(--app-text-primary);
+        width: 40px;
+        height: 40px;
+    }
+
+    p {
+        margin: 0;
+        font-size: 14px;
+        color: var(--app-text-secondary);
+        font-weight: 500;
+    }
+}
+
+.attachments-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+
+    @media (min-width: 640px) {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 1024px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.attachment-card {
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 3px solid transparent;
+    box-shadow: 0 4px 15px var(--app-shadow);
+    border-radius: 16px;
+    background: var(--app-card-bg);
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px var(--app-shadow-hover);
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+
+    &.selected {
+        border-color: var(--app-text-primary);
+        box-shadow: 0 8px 24px var(--app-shadow-hover);
+    }
+
+    .media-preview {
+        width: 100%;
+        height: 180px;
+        background: var(--app-hover-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+        border-radius: 13px 13px 0 0;
+
+        @media (min-width: 768px) {
+            height: 200px;
+        }
+
+        ion-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .selected-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 28, 27, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+
+            ion-icon {
+                font-size: 56px;
+                color: var(--app-card-bg);
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            }
+        }
+    }
+
+    ion-card-content {
+        padding: 12px;
+
+        @media (min-width: 768px) {
+            padding: 14px;
+        }
+
+        .attachment-info {
+            .attachment-title {
+                margin: 0 0 6px 0;
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--app-text-primary);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+
+                @media (min-width: 768px) {
+                    font-size: 15px;
+                }
+            }
+
+            .folder-chip {
+                --background: var(--app-border);
+                --color: var(--app-text-primary);
+                margin: 0;
+                height: 22px;
+                font-size: 11px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+
+                @media (min-width: 768px) {
+                    height: 24px;
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    text-align: center;
+    min-height: 300px;
+
+    @media (min-width: 768px) {
+        padding: 64px 32px;
+    }
+
+    ion-icon {
+        font-size: 64px;
+        color: var(--app-text-tertiary);
+        margin-bottom: 16px;
+
+        @media (min-width: 768px) {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+    }
+
+    h2 {
+        margin: 0 0 8px 0;
+        color: var(--app-text-primary);
+        font-size: 18px;
+        font-weight: 800;
+
+        @media (min-width: 768px) {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+    }
+
+    p {
+        margin: 0 0 24px 0;
+        color: var(--app-text-secondary);
+        font-size: 14px;
+
+        @media (min-width: 768px) {
+            font-size: 15px;
+            margin-bottom: 28px;
+        }
+    }
+
+    .empty-upload-button {
+        --background: var(--app-text-primary);
+        --color: var(--app-background-alt);
+        --border-radius: 12px;
+        height: 52px;
+        font-weight: 700;
+        font-size: 15px;
+        text-transform: none;
+        padding: 0 32px;
+
+        ion-icon {
+            font-size: 20px;
+            color: var(--app-background-alt);
+            margin: 0;
+        }
+    }
+}
+
+.action-buttons {
+    flex-shrink: 0;
+    display: flex;
+    gap: 12px;
+
+    @media (min-width: 768px) {
+        gap: 16px;
+    }
+
+    ion-button {
+        flex: 1;
+        margin: 0;
+        height: 52px;
+        font-weight: 700;
+        font-size: 15px;
+        text-transform: none;
+    }
+
+    .cancel-button {
+        --border-color: var(--app-border);
+        --color: var(--app-text-secondary);
+        --border-width: 2px;
+        --border-radius: 12px;
+    }
+
+    .confirm-button {
+        --background: var(--app-text-primary);
+        --background-activated: var(--app-text-primary);
+        --background-hover: var(--app-hover-bg);
+        --color: var(--app-background-alt);
+        --border-radius: 12px;
+
+        &:disabled {
+            --background: var(--app-border);
+            --color: var(--app-text-tertiary);
+        }
+    }
+}

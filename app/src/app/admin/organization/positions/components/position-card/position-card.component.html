@@ -1,0 +1,28 @@
+<ion-card class="position-card" (click)="onCardClick()">
+    <ion-card-header>
+        <ion-card-title>{{ position.name }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+        <div class="position-info">
+            <div class="info-row">
+                <span class="label">Nivel de Riesgo ARL:</span>
+                <span class="value risk-badge" [attr.data-risk]="position.riskLevel">
+                    Clase {{ position.riskLevel }}
+                </span>
+            </div>
+            @if (position.department) {
+            <div class="info-row">
+                <span class="label">Área:</span>
+                <span class="value">{{ position.department.name }}</span>
+            </div>
+            }
+            @if (position.department?.company) {
+            <div class="info-row">
+                <span class="label">Empresa:</span>
+                <span class="value">{{ position.department?.company?.name }}</span>
+            </div>
+            }
+        </div>
+    </ion-card-content>
+</ion-card>

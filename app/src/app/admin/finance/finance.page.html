@@ -1,0 +1,29 @@
+<app-page-header></app-page-header>
+
+<ion-content [fullscreen]="true" class="admin-page-content">
+  <div class="admin-container">
+    <app-page-title
+      title="Finanzas"
+      subtitle="Gestión de parámetros financieros y configuraciones del sistema"
+    ></app-page-title>
+
+    <ion-grid class="modules-grid">
+      <ion-row>
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="module-card" routerLink="/admin/finance/global-parameters" ion-activatable>
+            <ion-ripple-effect></ion-ripple-effect>
+            <ion-card-header>
+              <div class="card-icon">
+                <ion-icon name="globe-outline"></ion-icon>
+              </div>
+              <ion-card-title>Valores Globales</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              Gestión de parámetros financieros globales como salario mínimo, auxilio de transporte y valores legales
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

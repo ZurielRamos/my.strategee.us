@@ -1,0 +1,95 @@
+<app-base-modal 
+    title="Solicitar Permiso Ordinario"
+    subtitle="Solicita permiso por horas para asuntos personales"
+    confirmText="Enviar Solicitud"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <!-- Información importante -->
+        <app-alert-box type="info">
+            Solicita permiso por horas para asuntos personales. Debes proponer cómo repondrás el tiempo.
+        </app-alert-box>
+
+        <!-- Confirmación de compromisos -->
+        <ion-item lines="none" class="checkbox-item">
+            <ion-checkbox 
+                slot="start" 
+                formControlName="isUpToDate">
+            </ion-checkbox>
+            <ion-label class="ion-text-wrap">
+                Confirmo que estoy al día con mis compromisos laborales
+                <span class="required">*</span>
+            </ion-label>
+        </ion-item>
+        @if (form.get('isUpToDate')?.invalid && form.get('isUpToDate')?.touched) {
+            <div class="error-message">
+                Debes confirmar que estás al día con tus compromisos
+            </div>
+        }
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Información del Permiso</h4>
+
+        <!-- Fecha del permiso -->
+        <app-date-input
+            formControlName="date"
+            label="Fecha del Permiso"
+            placeholder="Selecciona fecha"
+            mode="single"
+            [required]="true"
+            [minDate]="minDate"
+            [maxDate]="maxDate">
+        </app-date-input>
+
+        <!-- Horarios en fila -->
+        <div class="form-row">
+            <app-time-input
+                formControlName="startTime"
+                label="Hora de Salida"
+                [required]="true">
+            </app-time-input>
+
+            <app-time-input
+                formControlName="endTime"
+                label="Hora de Regreso"
+                [required]="true">
+            </app-time-input>
+        </div>
+
+        <!-- Duración calculada -->
+        @if (getDuration()) {
+            <div class="duration-info">
+                <ion-icon name="time-outline"></ion-icon>
+                <span>Duración: {{ getDuration() }}</span>
+            </div>
+        }
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Detalles</h4>
+
+        <!-- Motivo del permiso -->
+        <app-textarea-input
+            formControlName="reason"
+            label="Motivo del Permiso"
+            placeholder="Describe el motivo de tu permiso"
+            [required]="true"
+            [rows]="3"
+            [maxlength]="500"
+            [showCharCounter]="true">
+        </app-textarea-input>
+
+        <!-- Propuesta de reposición -->
+        <app-textarea-input
+            formControlName="makeupProposal"
+            label="Propuesta de Reposición del Tiempo"
+            placeholder="¿Cómo propones reponer el tiempo? Ej: Trabajar horas extras, compensar en otro día, etc."
+            [required]="true"
+            [rows]="3"
+            [maxlength]="500"
+            [showCharCounter]="true">
+        </app-textarea-input>
+    </form>
+</app-base-modal>

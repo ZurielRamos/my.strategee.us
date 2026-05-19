@@ -1,0 +1,201 @@
+.sessions-content {
+    --background: var(--app-background);
+}
+
+.page-container {
+    max-width: 100%;
+    padding: 24px 16px;
+
+    @media (min-width: 768px) {
+        padding: 32px 24px;
+    }
+}
+
+.sessions-header {
+    margin-bottom: 24px;
+
+    h1 {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--app-text-primary);
+        margin: 0 0 8px 0;
+    }
+
+    p {
+        font-size: 15px;
+        color: var(--app-text-secondary);
+        margin: 0;
+    }
+}
+
+.sessions-actions {
+    margin-bottom: 24px;
+
+    .revoke-all-btn {
+        --border-radius: 12px;
+        height: 48px;
+        font-weight: 600;
+        text-transform: none;
+    }
+}
+
+.sessions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.session-card {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    margin: 0;
+    transition: all 0.2s ease;
+
+    &.current-session {
+        border: 2px solid var(--ion-color-primary);
+    }
+
+    &:hover {
+        box-shadow: 0 4px 12px var(--app-shadow-hover);
+    }
+
+    ion-card-content {
+        padding: 20px;
+    }
+}
+
+.session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.session-device {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex: 1;
+
+    .device-icon {
+        font-size: 32px;
+        color: var(--app-text-primary);
+        flex-shrink: 0;
+    }
+
+    .device-info {
+        flex: 1;
+
+        h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin: 0 0 8px 0;
+        }
+
+        .current-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 12px;
+
+            ion-icon {
+                font-size: 14px;
+            }
+        }
+    }
+}
+
+.revoke-btn {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    margin: 0;
+
+    ion-icon {
+        font-size: 20px;
+    }
+}
+
+.session-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 48px;
+
+    @media (min-width: 768px) {
+        flex-direction: row;
+        gap: 24px;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: var(--app-text-secondary);
+
+        ion-icon {
+            font-size: 16px;
+            color: var(--app-text-tertiary);
+        }
+    }
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    text-align: center;
+
+    ion-icon {
+        font-size: 64px;
+        color: var(--app-text-tertiary);
+        margin-bottom: 16px;
+    }
+
+    p {
+        font-size: 16px;
+        color: var(--app-text-secondary);
+        margin: 0;
+    }
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .session-card.skeleton {
+        ion-card-content {
+            .skeleton-header {
+                height: 40px;
+                background: var(--app-hover-bg);
+                border-radius: 8px;
+                margin-bottom: 16px;
+                animation: pulse 1.5s ease-in-out infinite;
+            }
+
+            .skeleton-details {
+                height: 60px;
+                background: var(--app-hover-bg);
+                border-radius: 8px;
+                animation: pulse 1.5s ease-in-out infinite;
+            }
+        }
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}

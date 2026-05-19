@@ -1,0 +1,537 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.dashboard-content {
+    --background: var(--app-background);
+}
+
+.page-container {
+    padding: 16px 32px 32px 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--app-background);
+
+    @media (max-width: 768px) {
+        padding: 16px 16px 32px 16px;
+    }
+}
+
+.page-title-section {
+    margin-bottom: 24px;
+
+    .title-text {
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--app-text-primary);
+            margin: 0 0 8px 0;
+        }
+
+        p {
+            font-size: 14px;
+            color: var(--app-text-secondary);
+            margin: 0;
+        }
+    }
+}
+
+.dashboard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.balance-cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    width: 100%;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+.balance-card {
+    min-height: 200px;
+}
+
+.content-cards-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+
+    @media (max-width: 1200px) {
+        grid-template-columns: 1fr;
+    }
+
+    @media (max-width: 768px) {
+        gap: 16px;
+    }
+}
+
+.grid-card {
+    background: var(--app-card-bg);
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px var(--app-shadow);
+    position: relative;
+    overflow: hidden;
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--app-text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .title-icon {
+                font-size: 18px;
+                color: var(--app-text-secondary);
+            }
+        }
+    }
+
+    .card-metric {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        text-align: center;
+
+        .value {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -1px;
+            color: var(--app-text-primary);
+            margin-bottom: 8px;
+        }
+
+        .label {
+            font-size: 14px;
+            color: var(--app-text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .balance-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 12px;
+            color: var(--app-text-secondary);
+        }
+    }
+
+    .card-content {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    &.vacation-card {
+        .value {
+            color: var(--ion-color-primary-contrast);
+        }
+    }
+
+    &.compensated-card {
+        .value {
+            color: var(--ion-color-warning);
+        }
+    }
+
+    &.ido-card {
+        .value {
+            color: var(--ion-color-tertiary);
+        }
+
+        .meets-requirement {
+            color: var(--ion-color-success);
+            font-weight: 600;
+        }
+
+        .not-meets-requirement {
+            color: var(--ion-color-danger);
+            font-weight: 600;
+        }
+    }
+
+    &.requests-card {
+        min-height: 400px;
+    }
+
+    &.card-list {
+        .card-content {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+    &.benefit-card-square {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 20px 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: var(--app-card-bg);
+        border: 2px solid var(--app-border);
+        min-height: 180px;
+
+        &:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px var(--app-shadow-hover);
+            border-color: var(--ion-color-success);
+        }
+
+        &.energyze-benefit-card {
+            border-color: var(--ion-color-tertiary);
+            background: linear-gradient(135deg, var(--app-card-bg) 0%, rgba(var(--ion-color-tertiary-rgb), 0.05) 100%);
+
+            &:hover {
+                border-color: var(--ion-color-tertiary);
+                box-shadow: 0 8px 20px rgba(var(--ion-color-tertiary-rgb), 0.3);
+            }
+
+            .benefit-quota-large {
+                color: var(--ion-color-tertiary);
+            }
+        }
+
+        &.gifted-benefit-card {
+            border-color: var(--ion-color-success);
+            background: linear-gradient(135deg, var(--app-card-bg) 0%, rgba(var(--ion-color-success-rgb), 0.05) 100%);
+
+            &:hover {
+                border-color: var(--ion-color-success);
+                box-shadow: 0 8px 20px rgba(var(--ion-color-success-rgb), 0.3);
+            }
+
+            .benefit-quota-large {
+                color: var(--ion-color-success);
+            }
+        }
+
+        .benefit-content {
+            width: 100%;
+
+            .benefit-name-square {
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--app-text-primary);
+                margin-bottom: 16px;
+                line-height: 1.2;
+                min-height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .benefit-loading {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 60px;
+
+                ion-spinner {
+                    --color: var(--ion-color-tertiary);
+                }
+            }
+
+            .benefit-quota-display {
+                display: flex;
+                align-items: baseline;
+                justify-content: center;
+                gap: 4px;
+                margin-bottom: 8px;
+
+                .benefit-quota-large {
+                    font-size: 36px;
+                    font-weight: 800;
+                    color: var(--ion-color-success);
+                    line-height: 1;
+                }
+
+                .benefit-quota-separator {
+                    font-size: 24px;
+                    font-weight: 600;
+                    color: var(--app-text-tertiary);
+                }
+
+                .benefit-quota-total {
+                    font-size: 24px;
+                    font-weight: 600;
+                    color: var(--app-text-secondary);
+                    line-height: 1;
+                }
+            }
+
+            .benefit-quota-label {
+                font-size: 11px;
+                color: var(--app-text-secondary);
+                font-weight: 500;
+            }
+        }
+    }
+
+    &.benefits-loading,
+    &.benefits-empty {
+        .loading-state,
+        .empty-state {
+            height: 100%;
+            
+            p {
+                margin-top: 8px;
+            }
+        }
+    }
+}
+
+.benefits-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+    min-height: 400px;
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        min-height: auto;
+    }
+
+    @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-card {
+        margin: 0;
+    }
+
+    .benefits-loading,
+    .benefits-empty {
+        grid-column: 1 / -1;
+        min-height: 400px;
+        
+        @media (max-width: 768px) {
+            min-height: 300px;
+        }
+    }
+}
+
+.request-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+
+    .request-item {
+        padding: 12px;
+        background: var(--app-hover-bg);
+        border-radius: 12px;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: var(--app-border);
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 8px;
+
+            .request-type {
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--app-text-primary);
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .status-chip {
+                height: 22px;
+                font-size: 10px;
+                font-weight: 600;
+                flex-shrink: 0;
+            }
+        }
+
+        .request-date {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: var(--app-text-secondary);
+
+            ion-icon {
+                font-size: 14px;
+            }
+        }
+    }
+}
+
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    gap: 8px;
+
+    ion-spinner {
+        --color: var(--app-text-primary);
+    }
+
+    p {
+        font-size: 12px;
+        color: var(--app-text-secondary);
+        margin: 0;
+    }
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+
+    ion-icon {
+        font-size: 48px;
+        color: var(--app-text-secondary);
+        opacity: 0.3;
+        margin-bottom: 12px;
+    }
+
+    p {
+        font-size: 13px;
+        color: var(--app-text-secondary);
+        margin: 0;
+    }
+}
+
+// ─── Contract Info Card ───────────────────────────────────────────────────────
+
+.contract-info-card {
+    .contract-status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        background: rgba(var(--ion-color-success-rgb), 0.12);
+        color: var(--ion-color-success);
+        letter-spacing: 0.02em;
+    }
+
+    .contract-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 0;
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        @media (max-width: 480px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .contract-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--app-border);
+        border-right: 1px solid var(--app-border);
+
+        &:nth-child(3n) {
+            border-right: none;
+        }
+
+        @media (max-width: 768px) {
+            &:nth-child(3n) {
+                border-right: 1px solid var(--app-border);
+            }
+            &:nth-child(2n) {
+                border-right: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            border-right: none;
+        }
+
+        .contract-field-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--app-text-secondary);
+        }
+
+        .contract-field-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--app-text-primary);
+            line-height: 1.3;
+
+            &.contract-salary {
+                font-size: 16px;
+                font-weight: 700;
+                color: var(--ion-color-primary);
+            }
+        }
+    }
+
+    .contract-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100px;
+    }
+
+    .contract-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+        gap: 12px;
+        color: var(--app-text-secondary);
+
+        ion-icon {
+            font-size: 40px;
+            opacity: 0.3;
+        }
+
+        p {
+            font-size: 14px;
+            margin: 0;
+        }
+    }
+}

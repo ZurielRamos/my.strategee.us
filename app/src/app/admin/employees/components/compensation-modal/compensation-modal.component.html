@@ -1,0 +1,142 @@
+<app-base-modal 
+    [title]="isEditMode ? 'Editar Compensación' : 'Agregar Compensación'"
+    [subtitle]="isEditMode ? 'Modifica los detalles de la compensación' : 'Agrega una compensación o ingreso adicional para un empleado'"
+    [confirmText]="isEditMode ? 'Actualizar Compensación' : 'Crear Compensación'"
+    [confirmDisabled]="!compensationForm.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="compensationForm">
+        <!-- Información General -->
+        <h4 class="section-title">Información General</h4>
+
+        <!-- Empleado (solo si no viene pre-seleccionado) -->
+        @if (!employeeId) {
+        <app-form-select
+            label="Empleado"
+            [options]="employeeOptions"
+            formControlName="employeeId"
+            placeholder="Seleccione empleado"
+            [required]="true">
+        </app-form-select>
+        }
+
+        <!-- Concepto -->
+        <ion-item lines="none">
+            <ion-label position="stacked">Concepto *</ion-label>
+            <ion-input 
+                formControlName="concept" 
+                placeholder="Ej: Bono Trimestral">
+            </ion-input>
+        </ion-item>
+
+        <!-- Frecuencia -->
+        <app-form-select
+            label="Frecuencia"
+            [options]="frequencyOptions"
+            formControlName="frequency"
+            placeholder="Seleccione frecuencia"
+            [required]="true">
+        </app-form-select>
+
+        <!-- Vincular a Parámetro Global -->
+        <ion-item lines="none" class="toggle-item">
+            <ion-label>
+                <h3>Vincular a Parámetro Global</h3>
+                <p>El monto se obtendrá de un parámetro global</p>
+            </ion-label>
+            <ion-toggle formControlName="isLinkedGlobalParameter" slot="end"></ion-toggle>
+        </ion-item>
+
+        <!-- Condición -->
+        <app-form-select
+            label="Condición"
+            formControlName="condition"
+            [options]="conditions"
+            placeholder="Seleccione una condición"
+            [required]="false">
+        </app-form-select>
+
+        <!-- Monto o Parámetro Global -->
+        @if (!isLinkedToGlobalParameter) {
+        <app-text-input
+            formControlName="amount"
+            label="Monto (S/)"
+            type="number"
+            placeholder="Ej: 1500.00"
+            [required]="true">
+        </app-text-input>
+        } @else {
+        <app-form-select
+            label="Parámetro Global"
+            [options]="parameterOptions"
+            formControlName="linkedGlobalParameter"
+            placeholder="Seleccione un parámetro"
+            helperText="El monto se actualizará automáticamente según el parámetro"
+            helperIcon="information-circle-outline"
+            [required]="true">
+        </app-form-select>
+        }
+
+        <!-- Fechas -->
+        <h4 class="section-title">Fechas</h4>
+
+        @if (showPaymentDate) {
+        <app-date-input
+            formControlName="paymentDate"
+            label="Fecha de Pago"
+            mode="single"
+            [required]="true">
+        </app-date-input>
+        <app-alert-box type="info">
+            Esta será también la fecha de inicio de la compensación.
+        </app-alert-box>
+        } @else {
+        <div class="form-row">
+            <app-date-input
+                formControlName="startDate"
+                label="Fecha de Inicio"
+                mode="single"
+                [required]="true">
+            </app-date-input>
+
+            <app-date-input
+                formControlName="endDate"
+                label="Fecha de Fin"
+                mode="single">
+            </app-date-input>
+        </div>
+        }
+
+        <!-- Días de Pago -->
+        @if (showPaymentDay) {
+        <app-text-input
+            formControlName="paymentDay"
+            label="Día de Pago (1-31)"
+            type="number"
+            placeholder="Ej: 15"
+            [min]="1"
+            [max]="31"
+            [required]="true">
+        </app-text-input>
+        }
+
+        @if (showSecondPaymentDay) {
+        <app-text-input
+            formControlName="secondPaymentDay"
+            label="Segundo Día de Pago (1-31)"
+            type="number"
+            placeholder="Ej: 30"
+            [min]="1"
+            [max]="31"
+            [required]="true">
+        </app-text-input>
+        }
+
+        <!-- Información -->
+        <app-alert-box type="info">
+            Las compensaciones activas se mostrarán en el perfil del empleado. Puedes vincularlas a parámetros globales para que se actualicen automáticamente.
+        </app-alert-box>
+    </form>
+</app-base-modal>

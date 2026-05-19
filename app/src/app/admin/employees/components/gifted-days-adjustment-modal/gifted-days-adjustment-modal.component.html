@@ -1,0 +1,59 @@
+<app-base-modal 
+    title="Ajustar Días Obsequiados"
+    [subtitle]="employeeName"
+    confirmText="Guardar Ajuste"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <!-- Balance Display -->
+        <div class="balance-display">
+            <div class="balance-item">
+                <span class="label">Balance Actual</span>
+                <span class="value">{{ currentBalance }} días</span>
+            </div>
+            <ion-icon name="arrow-forward-outline" class="arrow-icon"></ion-icon>
+            <div class="balance-item new">
+                <span class="label">Nuevo Balance</span>
+                <span class="value">{{ newBalance }} días</span>
+            </div>
+        </div>
+
+        <h4 class="section-title">Información del Ajuste</h4>
+
+        <app-form-select
+            label="Tipo de Ajuste"
+            [options]="adjustmentTypeOptions"
+            formControlName="type"
+            placeholder="Seleccione tipo de ajuste"
+            [required]="true">
+        </app-form-select>
+
+        <app-text-input
+            formControlName="days"
+            label="Cantidad de Días"
+            type="number"
+            placeholder="Ej: 2"
+            [required]="true"
+            [min]="0.5"
+            [max]="365">
+        </app-text-input>
+
+        <app-textarea-input
+            formControlName="reason"
+            label="Motivo del Ajuste"
+            placeholder="Describe el motivo del ajuste..."
+            [required]="true"
+            [rows]="4"
+            [maxlength]="500"
+            [showCharCounter]="true">
+        </app-textarea-input>
+
+        <app-alert-box type="info">
+            Los ajustes quedarán registrados en el historial del empleado. Asegúrate de proporcionar un motivo claro.
+        </app-alert-box>
+    </form>
+    
+</app-base-modal>

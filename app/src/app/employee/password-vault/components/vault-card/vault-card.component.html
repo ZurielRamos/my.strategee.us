@@ -1,0 +1,32 @@
+<ion-card class="vault-card" (click)="onCardClick()">
+  <ion-card-header>
+    <div class="card-header-content">
+      <div class="vault-icon">
+        <ion-icon name="folder-outline"></ion-icon>
+      </div>
+      <div class="vault-info">
+        <ion-card-title>{{ vault.name }}</ion-card-title>
+        @if (vault.description) {
+          <ion-card-subtitle>{{ vault.description }}</ion-card-subtitle>
+        }
+      </div>
+    </div>
+  </ion-card-header>
+
+  <ion-card-content>
+    <div class="vault-stats">
+      <span class="credential-count">{{ vault.credentialCount || 0 }} credenciales</span>
+    </div>
+
+    @if (isOwner) {
+      <div class="vault-actions">
+        <ion-button fill="clear" size="small" (click)="onEditClick($event)">
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" size="small" color="danger" (click)="onDeleteClick($event)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </div>
+    }
+  </ion-card-content>
+</ion-card>

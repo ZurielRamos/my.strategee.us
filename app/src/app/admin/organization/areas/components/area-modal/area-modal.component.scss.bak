@@ -1,0 +1,114 @@
+:host {
+    --modal-height: 600px;
+}
+
+ion-header {
+    ion-toolbar {
+        --background: var(--app-card-bg);
+        --color: var(--app-text-primary);
+        --border-width: 0;
+        --min-height: 64px;
+        border-radius: 24px 24px 0 0;
+    }
+
+    ion-title {
+        font-weight: 800;
+        font-size: 20px;
+        color: var(--app-text-primary);
+    }
+
+    ion-button {
+        --color: var(--app-text-secondary);
+
+        &[color="danger"] {
+            --color: #eb445a;
+        }
+
+        ion-icon {
+            font-size: 24px;
+        }
+    }
+}
+
+ion-content {
+    --background: var(--app-card-bg);
+    border-radius: 0 0 24px 24px;
+}
+
+.area-form {
+    padding: 24px;
+
+    @media (min-width: 768px) {
+        padding: 32px;
+    }
+
+    ion-item {
+        --background: var(--app-hover-bg);
+        --border-radius: 12px;
+        --padding-start: 16px;
+        --padding-end: 16px;
+        --min-height: 56px;
+        --border-width: 0;
+        margin-bottom: 16px;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+
+        &:focus-within {
+            --background: var(--app-card-bg);
+            box-shadow: 0 0 0 2px var(--app-text-primary);
+        }
+
+        ion-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        ion-input,
+        ion-select {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--app-text-primary);
+            --padding-start: 0;
+            --padding-end: 0;
+
+            &::placeholder {
+                color: var(--app-text-secondary);
+                opacity: 0.7;
+            }
+        }
+
+        ion-select {
+            width: 100%;
+        }
+    }
+
+    .form-actions {
+        margin-top: 32px;
+
+        ion-button {
+            --background: var(--app-text-primary);
+            --background-activated: #000000;
+            --background-hover: var(--app-hover-bg);
+            --color: #ffffff;
+            --border-radius: 12px;
+            height: 52px;
+            font-weight: 700;
+            font-size: 15px;
+            text-transform: none;
+            margin: 0;
+
+            &:disabled {
+                --background: var(--app-border);
+                --color: var(--app-text-tertiary);
+            }
+
+            ion-spinner {
+                --color: #ffffff;
+            }
+        }
+    }
+}

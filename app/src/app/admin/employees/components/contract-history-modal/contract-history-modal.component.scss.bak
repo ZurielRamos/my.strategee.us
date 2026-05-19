@@ -1,0 +1,369 @@
+:host {
+    --modal-height: 700px;
+}
+
+ion-header {
+    ion-toolbar {
+        --background: var(--app-card-bg);
+        --color: var(--app-text-primary);
+        --border-width: 0;
+        --min-height: 64px;
+        border-radius: 24px 24px 0 0;
+    }
+
+    ion-title {
+        font-weight: 800;
+        font-size: 20px;
+        color: var(--app-text-primary);
+    }
+
+    ion-button {
+        --color: var(--app-text-secondary);
+
+        ion-icon {
+            font-size: 24px;
+        }
+    }
+}
+
+ion-content {
+    --background: var(--app-card-bg);
+    border-radius: 0 0 24px 24px;
+}
+
+.history-container {
+    padding: 24px;
+
+    @media (min-width: 768px) {
+        padding: 32px;
+    }
+
+    .employee-info {
+        margin-bottom: 24px;
+        padding: 16px;
+        background: var(--app-hover-bg);
+        border-radius: 12px;
+
+        h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin: 0 0 4px 0;
+        }
+
+        p {
+            font-size: 13px;
+            color: var(--app-text-secondary);
+            margin: 0;
+        }
+    }
+
+    .loading-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 300px;
+
+        ion-spinner {
+            --color: var(--app-text-primary);
+            transform: scale(1.5);
+        }
+    }
+
+    .contracts-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .contract-card {
+        margin: 0;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px var(--app-shadow);
+
+        ion-card-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--app-border-light);
+
+            .card-header-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+
+                .header-info {
+                    flex: 1;
+
+                    ion-card-title {
+                        font-size: 16px;
+                        font-weight: 700;
+                        color: var(--app-text-primary);
+                        margin: 0 0 4px 0;
+                    }
+
+                    .contract-number {
+                        font-size: 13px;
+                        font-weight: 600;
+                        color: var(--app-text-secondary);
+                    }
+                }
+
+                .header-actions {
+                    ion-button {
+                        margin: 0;
+                        --padding-start: 8px;
+                        --padding-end: 8px;
+
+                        ion-icon {
+                            font-size: 20px;
+                        }
+                    }
+                }
+            }
+        }
+
+        ion-card-content {
+            padding: 16px;
+
+            .contract-details {
+                .detail-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 8px 0;
+                    border-bottom: 1px solid var(--app-border-light);
+
+                    &:last-of-type {
+                        border-bottom: none;
+                    }
+
+                    .detail-label {
+                        font-size: 13px;
+                        font-weight: 600;
+                        color: var(--app-text-secondary);
+                    }
+
+                    .detail-value {
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: var(--app-text-primary);
+                        text-align: right;
+
+                        &.amount {
+                            font-size: 18px;
+                            font-weight: 800;
+                            color: var(--app-text-primary);
+                        }
+                    }
+
+                    ion-badge {
+                        font-size: 12px;
+                        font-weight: 600;
+                        padding: 4px 12px;
+                        border-radius: 12px;
+                    }
+                }
+
+                .memorandums-section {
+                    margin-top: 16px;
+                    padding-top: 16px;
+                    border-top: 2px solid var(--app-border-light);
+
+                    .memorandums-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        cursor: pointer;
+                        padding: 8px 0;
+                        user-select: none;
+
+                        &:hover {
+                            opacity: 0.7;
+                        }
+
+                        h4 {
+                            font-size: 14px;
+                            font-weight: 700;
+                            color: var(--app-text-primary);
+                            margin: 0;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+
+                            ion-badge {
+                                font-size: 11px;
+                                font-weight: 600;
+                                padding: 2px 8px;
+                                border-radius: 8px;
+                                text-transform: none;
+                            }
+                        }
+
+                        ion-icon {
+                            font-size: 20px;
+                            color: var(--app-text-secondary);
+                        }
+                    }
+
+                    .memorandums-list {
+                        margin-top: 12px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 12px;
+
+                        .memorandum-item {
+                            padding: 12px;
+                            background: var(--app-hover-bg);
+                            border-radius: 8px;
+                            border-left: 3px solid #e0e4e8;
+                            transition: all 0.2s ease;
+
+                            &.active {
+                                background: #e8f5e9;
+                                border-left-color: #4caf50;
+                            }
+
+                            .memo-header {
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: flex-start;
+                                margin-bottom: 8px;
+                                gap: 12px;
+
+                                .memo-title {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 4px;
+                                    flex: 1;
+
+                                    .memo-position {
+                                        font-size: 14px;
+                                        font-weight: 700;
+                                        color: var(--app-text-primary);
+                                    }
+
+                                    ion-badge {
+                                        font-size: 11px;
+                                        font-weight: 600;
+                                        padding: 2px 8px;
+                                        border-radius: 8px;
+                                        width: fit-content;
+                                    }
+                                }
+
+                                .memo-actions {
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+
+                                    .memo-dates {
+                                        font-size: 12px;
+                                        font-weight: 500;
+                                        color: var(--app-text-secondary);
+                                        white-space: nowrap;
+                                    }
+
+                                    ion-button {
+                                        --padding-start: 4px;
+                                        --padding-end: 4px;
+                                        margin: 0;
+                                        height: 28px;
+
+                                        ion-icon {
+                                            font-size: 16px;
+                                        }
+                                    }
+                                }
+                            }
+
+                            .memo-details {
+                                .detail-row {
+                                    padding: 4px 0;
+                                    border-bottom: none;
+
+                                    .detail-label {
+                                        font-size: 12px;
+                                    }
+
+                                    .detail-value {
+                                        font-size: 13px;
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 4px;
+
+                                        &.amount {
+                                            font-size: 16px;
+                                        }
+
+                                        ion-chip {
+                                            height: 24px;
+                                            font-size: 11px;
+                                            margin: 0;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .chips-row {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                    margin-top: 12px;
+
+                    ion-chip {
+                        height: 28px;
+                        font-size: 12px;
+                        font-weight: 600;
+                        margin: 0;
+                    }
+                }
+
+                .memorandums-count {
+                    margin-top: 12px;
+                    padding-top: 12px;
+                    border-top: 1px solid var(--app-border-light);
+
+                    ion-chip {
+                        height: 28px;
+                        font-size: 12px;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 300px;
+        text-align: center;
+        padding: 40px 20px;
+
+        ion-icon {
+            font-size: 64px;
+            color: var(--app-text-secondary);
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin: 0 0 8px 0;
+        }
+
+        p {
+            font-size: 14px;
+            color: var(--app-text-secondary);
+            margin: 0;
+        }
+    }
+}

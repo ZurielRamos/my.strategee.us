@@ -1,0 +1,82 @@
+<div [id]="uniqueId" class="user-profile-wrapper">
+    <!-- Menu button (mobile only) is handled outside this component in the header -->
+
+    <!-- Avatar -->
+    <div class="avatar-container">
+        <img *ngIf="hasProfilePhoto" [src]="profilePhotoUrl" alt="Profile" class="avatar-image" />
+        <span *ngIf="!hasProfilePhoto" class="avatar-initials">{{ userInitials }}</span>
+    </div>
+
+    <!-- User Info -->
+    <div class="user-info" [class.hide-on-mobile]="hideTextOnMobile">
+        <div class="user-name">
+            {{ userDisplayName }}
+            <ion-icon name="chevron-down-outline"></ion-icon>
+        </div>
+        <div class="user-role">{{ userRole }}</div>
+    </div>
+</div>
+
+<!-- Popup Menu usando ion-popover para evitar overflow problems -->
+<ion-popover [trigger]="uniqueId" triggerAction="click" dismissOnSelect="true" alignment="end" side="bottom"
+    class="custom-user-popover" mode="md">
+    <ng-template>
+        <div class="profile-popup-content">
+            <!-- Header del popup -->
+            <div class="popup-header">
+                <div class="popup-avatar">
+                    <img *ngIf="hasProfilePhoto" [src]="profilePhotoUrl" alt="Profile" class="avatar-image" />
+                    <span *ngIf="!hasProfilePhoto">{{ userInitials }}</span>
+                </div>
+                <div class="popup-user-info">
+                    <div class="popup-name">{{ userDisplayName }}</div>
+                    <div class="popup-email">{{ userEmail }}</div>
+                    <span class="popup-badge">{{ userRole }}</span>
+                </div>
+            </div>
+
+            <div class="popup-divider"></div>
+
+            <!-- Opciones del menú -->
+            <ul class="popup-menu">
+                @if (isAdmin) {
+                    @if (currentArea === 'employee') {
+                        <li class="popup-item" (click)="navigateTo('/admin/dashboard')">
+                            <ion-icon name="shield-checkmark-outline"></ion-icon>
+                            <span>Área Administración</span>
+                        </li>
+                    }
+                    @if (currentArea === 'admin') {
+                        <li class="popup-item" (click)="navigateTo('/employee/dashboard')">
+                            <ion-icon name="briefcase-outline"></ion-icon>
+                            <span>Área Empleados</span>
+                        </li>
+                    }
+                }
+
+                <li class="popup-item" (click)="navigateTo('/employee/profile')">
+                    <ion-icon name="person-outline"></ion-icon>
+                    <span>Mi Perfil</span>
+                </li>
+                <li class="popup-item" (click)="navigateTo('/employee/settings')">
+                    <ion-icon name="settings-outline"></ion-icon>
+                    <span>Ajustes</span>
+                </li>
+                <li class="popup-item" (click)="navigateTo('/help')">
+                    <ion-icon name="help-circle-outline"></ion-icon>
+                    <span>Ayuda</span>
+                </li>
+            </ul>
+
+            <div class="popup-divider"></div>
+
+            <!-- Cerrar sesión -->
+            <div class="popup-logout" (click)="logout()">
+                <div class="logout-inner" [class.loading]="isLoggingOut">
+                    <ion-icon name="log-out-outline"></ion-icon>
+                    <span>{{ isLoggingOut ? 'Cerrando sesión...' : 'Cerrar sesión' }}</span>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</ion-popover>

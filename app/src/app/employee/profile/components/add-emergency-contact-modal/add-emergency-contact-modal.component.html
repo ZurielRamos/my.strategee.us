@@ -1,0 +1,40 @@
+<app-base-modal
+    title="Agregar Contacto de Emergencia"
+    subtitle="Complete los datos del contacto"
+    confirmText="Agregar Contacto"
+    [confirmDisabled]="form.invalid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+
+    <form [formGroup]="form">
+        <app-text-input
+            formControlName="name"
+            label="Nombre Completo"
+            placeholder="Ej: María García"
+            [required]="true">
+        </app-text-input>
+
+        <app-text-input
+            formControlName="relationship"
+            label="Parentesco"
+            placeholder="Ej: Madre, Esposo, Hermano"
+            [required]="true">
+        </app-text-input>
+
+        <app-text-input
+            formControlName="phone"
+            label="Teléfono"
+            placeholder="Ej: 3001234567"
+            type="tel"
+            [required]="true">
+        </app-text-input>
+
+        <app-text-input
+            formControlName="email"
+            label="Correo Electrónico"
+            placeholder="Ej: maria@email.com (opcional)"
+            type="email">
+        </app-text-input>
+    </form>
+</app-base-modal>

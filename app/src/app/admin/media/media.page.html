@@ -1,0 +1,149 @@
+<app-page-header 
+    [showSearch]="true" 
+    [useCustomSearch]="true"
+    (searchChange)="onHeaderSearchChange($event)"
+></app-page-header>
+
+<ion-content [fullscreen]="true" class="admin-page-content">
+    <div class="admin-container">
+        <!-- Page Title & Controls -->
+        <app-page-title 
+            title="Biblioteca de Medios" 
+            subtitle="Gestiona tus archivos multimedia">
+            <div class="title-controls desktop-only">
+                <ion-button (click)="openUploadModal()" class="add-button">
+                    <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
+                    Subir Archivo
+                </ion-button>
+            </div>
+        </app-page-title>
+
+        <!-- Filters & Search -->
+        <div class="filters-container">
+            <!-- Filters Row -->
+            <div class="filters-row">
+                <ion-item lines="none" class="filter-item">
+                    <ion-icon name="filter-outline" slot="start"></ion-icon>
+                    <ion-select 
+                        [(ngModel)]="selectedType" 
+                        placeholder="Tipo"
+                        (ionChange)="onFilterChange()"
+                        interface="popover"
+                    >
+                        <ion-select-option [value]="undefined">Todos</ion-select-option>
+                        <ion-select-option [value]="AttachmentType.IMAGE">Imágenes</ion-select-option>
+                        <ion-select-option [value]="AttachmentType.DOCUMENT">Documentos</ion-select-option>
+                        <ion-select-option [value]="AttachmentType.VIDEO">Videos</ion-select-option>
+                        <ion-select-option [value]="AttachmentType.OTHER">Otros</ion-select-option>
+                    </ion-select>
+                </ion-item>
+
+                <ion-item lines="none" class="filter-item">
+                    <ion-icon name="folder-outline" slot="start"></ion-icon>
+                    <ion-select 
+                        [(ngModel)]="selectedFolder" 
+                        placeholder="Carpeta"
+                        (ionChange)="onFilterChange()"
+                        interface="popover"
+                    >
+                        <ion-select-option [value]="undefined">Todas</ion-select-option>
+                        <ion-select-option [value]="AttachmentFolder.GENERAL">General</ion-select-option>
+                        <ion-select-option [value]="AttachmentFolder.EMPLOYEES">Empleados</ion-select-option>
+                        <ion-select-option [value]="AttachmentFolder.CONTRACTS">Contratos</ion-select-option>
+                        <ion-select-option [value]="AttachmentFolder.REQUESTS">Solicitudes</ion-select-option>
+                        <ion-select-option [value]="AttachmentFolder.LOGOS">Logos</ion-select-option>
+                    </ion-select>
+                </ion-item>
+
+                <ion-item lines="none" class="filter-item">
+                    <ion-icon name="swap-vertical-outline" slot="start"></ion-icon>
+                    <ion-select 
+                        [(ngModel)]="sortByDate" 
+                        placeholder="Ordenar"
+                        (ionChange)="onFilterChange()"
+                        interface="popover"
+                    >
+                        <ion-select-option value="DESC">Más recientes</ion-select-option>
+                        <ion-select-option value="ASC">Más antiguos</ion-select-option>
+                    </ion-select>
+                </ion-item>
+            </div>
+
+            <!-- Clear Filters Button -->
+            @if (hasActiveFilters()) {
+            <div class="clear-filters-wrapper">
+                <ion-button 
+                    fill="clear" 
+                    size="small" 
+                    (click)="clearFilters()"
+                    class="clear-filters-button"
+                >
+                    <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+                    Limpiar filtros
+                </ion-button>
+            </div>
+            }
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        <!-- Media Grid -->
+        @if (!isLoading && mediaFiles.length > 0) {
+        <div class="media-grid">
+            @for (media of mediaFiles; track media.id) {
+            <ion-card class="media-card" (click)="openDetailModal(media)">
+                <div class="media-preview">
+                    @if (media.type === AttachmentType.IMAGE) {
+                    <ion-img [src]="getImageUrl(media)" [alt]="media.alt || media.name"></ion-img>
+                    } @else {
+                    <div class="file-icon-preview">
+                        <ion-icon [name]="getFileIcon(media.mimeType)"></ion-icon>
+                    </div>
+                    }
+                    <!-- Type Badge -->
+                    <ion-chip class="type-badge">
+                        <ion-label>{{ media.type }}</ion-label>
+                    </ion-chip>
+                </div>
+
+                <ion-card-content>
+                    <div class="media-info">
+                        @if (media.title) {
+                        <h3 class="media-title">{{ media.title }}</h3>
+                        <p class="media-filename">{{ media.name }}</p>
+                        } @else {
+                        <h3 class="media-title">{{ media.name }}</h3>
+                        }
+                    </div>
+                </ion-card-content>
+            </ion-card>
+            }
+        </div>
+        }
+
+        <!-- Empty State -->
+        @if (!isLoading && mediaFiles.length === 0) {
+        <div class="empty-state">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+            <h2>No hay archivos</h2>
+            <p>Comienza subiendo tu primer archivo</p>
+            <ion-button (click)="openUploadModal()">
+                <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
+                Subir Archivo
+            </ion-button>
+        </div>
+        }
+    </div>
+
+    <!-- Mobile FAB -->
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end" class="mobile-only">
+        <ion-fab-button (click)="openUploadModal()" color="dark">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+</ion-content>

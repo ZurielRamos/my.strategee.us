@@ -1,0 +1,266 @@
+.datepicker-container {
+    width: 100%;
+    max-width: 380px;
+    background: var(--app-card-bg);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 12px 32px var(--app-shadow), 0 4px 12px var(--app-shadow);
+    border: 1px solid var(--app-border);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+.datepicker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--app-border);
+
+    ion-button {
+        --padding-start: 10px;
+        --padding-end: 10px;
+        --border-radius: 10px;
+        --background: var(--app-hover-bg);
+        --background-hover: var(--app-input-bg);
+        --color: var(--app-text-primary);
+        
+        ion-icon {
+            font-size: 22px;
+        }
+        
+        &:disabled {
+            --background: var(--app-hover-bg);
+            --color: var(--app-text-tertiary);
+            opacity: 0.5;
+        }
+    }
+
+    .month-year {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        letter-spacing: -0.3px;
+    }
+}
+
+.day-names {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+
+    .day-name {
+        text-align: center;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--app-text-secondary);
+        padding: 10px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        
+        &:first-child, &:last-child {
+            color: var(--ion-color-danger);
+        }
+    }
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+
+    .calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        user-select: none;
+        position: relative;
+
+        .day-number {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--app-text-primary);
+            z-index: 1;
+            transition: all 0.2s ease;
+        }
+
+        &.other-month {
+            .day-number {
+                color: var(--app-text-tertiary);
+                opacity: 0.6;
+            }
+        }
+
+        &.today {
+            .day-number {
+                color: var(--ion-color-primary);
+                font-weight: 700;
+            }
+            
+            &:not(.selected):not(.range-start):not(.range-end):not(.in-range) {
+                background: var(--app-hover-bg);
+            }
+        }
+
+        &.selected {
+            background: var(--ion-color-primary);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+            
+            .day-number {
+                color: var(--ion-color-primary-contrast);
+                font-weight: 700;
+            }
+        }
+
+        &.disabled {
+            cursor: not-allowed;
+            opacity: 0.4;
+            
+            .day-number {
+                color: var(--app-text-tertiary);
+                text-decoration: line-through;
+            }
+            
+            &:hover {
+                background: transparent !important;
+            }
+        }
+
+        &.in-range {
+            background: var(--app-hover-bg);
+            position: relative;
+            border-radius: 0;
+            
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: var(--app-hover-bg);
+                z-index: 0;
+            }
+            
+            .day-number {
+                color: var(--ion-color-primary);
+                font-weight: 600;
+                position: relative;
+                z-index: 1;
+            }
+        }
+
+        &.range-start {
+            background: var(--ion-color-primary);
+            border-radius: 10px 0 0 10px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+            
+            .day-number {
+                color: var(--ion-color-primary-contrast);
+                font-weight: 700;
+            }
+            
+            &:after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: -3px;
+                bottom: 0;
+                width: 6px;
+                background: var(--app-hover-bg);
+                z-index: 1;
+            }
+        }
+
+        &.range-end {
+            background: var(--ion-color-primary);
+            border-radius: 0 10px 10px 0;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+            
+            .day-number {
+                color: var(--ion-color-primary-contrast);
+                font-weight: 700;
+            }
+            
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -3px;
+                bottom: 0;
+                width: 6px;
+                background: var(--app-hover-bg);
+                z-index: 1;
+            }
+        }
+
+        // Cuando solo hay un día seleccionado en modo rango
+        &.range-start.range-end {
+            border-radius: 10px;
+            
+            &:before, &:after {
+                display: none;
+            }
+        }
+
+        &:not(.disabled):not(.selected):not(.range-start):not(.range-end):not(.in-range):hover {
+            background: var(--app-hover-bg);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px var(--app-shadow);
+            
+            .day-number {
+                color: var(--ion-color-primary);
+                font-weight: 600;
+            }
+        }
+    }
+}
+
+.datepicker-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--app-border);
+
+    ion-button {
+        --padding-start: 16px;
+        --padding-end: 16px;
+        --border-radius: 10px;
+        --background: var(--app-hover-bg);
+        --background-hover: var(--app-input-bg);
+        --color: var(--app-text-primary);
+        font-size: 14px;
+        font-weight: 600;
+        
+        ion-icon {
+            margin-right: 6px;
+        }
+    }
+}
+
+// Animaciones
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.datepicker-container {
+    animation: fadeIn 0.3s ease;
+}

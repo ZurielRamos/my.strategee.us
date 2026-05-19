@@ -1,0 +1,31 @@
+<app-base-modal 
+    title="Crear Credenciales de Acceso"
+    [subtitle]="employeeName"
+    confirmText="Crear Credenciales"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <!-- Mensaje informativo -->
+        <app-alert-box type="info">
+            Selecciona el rol que tendrá el empleado en el sistema. Se enviará un correo electrónico a <strong>{{ corporateEmail }}</strong> con instrucciones para establecer su contraseña.
+        </app-alert-box>
+
+        <!-- Título de sección -->
+        <h4 class="section-title">Selección de Rol</h4>
+
+        <!-- Selección de Rol -->
+        <app-form-select
+            label="Rol del Empleado"
+            [options]="roleOptions"
+            formControlName="role"
+            placeholder="Seleccione el rol"
+            helperText="Esto determinará los permisos y accesos del empleado"
+            helperIcon="information-circle-outline"
+            [required]="true">
+        </app-form-select>
+    </form>
+    
+</app-base-modal>

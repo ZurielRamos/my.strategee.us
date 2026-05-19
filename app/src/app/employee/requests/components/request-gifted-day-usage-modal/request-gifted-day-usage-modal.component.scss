@@ -1,0 +1,98 @@
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--app-text-primary);
+    margin: 24px 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--app-border-light);
+}
+
+.error-message {
+    color: #eb445a;
+    font-size: 12px;
+    font-weight: 600;
+    margin: -12px 0 16px 16px;
+}
+
+.selection-summary {
+    background: var(--app-hover-bg);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    border: 1px solid var(--app-border-light);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--app-border-light);
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--app-text-secondary);
+        }
+
+        .summary-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+
+            &.available {
+                color: #198754;
+            }
+
+            &.exceeded {
+                color: #dc3545;
+            }
+        }
+    }
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--app-text-primary);
+    margin-bottom: 8px;
+
+    .required {
+        color: #eb445a;
+        margin-left: 2px;
+    }
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--app-border-light);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--app-text-primary);
+    background: var(--app-card-bg);
+    resize: vertical;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+
+    &:focus {
+        outline: none;
+        border-color: var(--ion-color-primary);
+    }
+
+    &::placeholder {
+        color: var(--app-text-secondary);
+    }
+}

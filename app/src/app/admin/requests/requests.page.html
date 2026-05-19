@@ -1,0 +1,546 @@
+<app-page-header></app-page-header>
+
+<ion-content [fullscreen]="true" class="admin-page-content">
+    <div class="admin-container">
+        <!-- Page Title -->
+        <app-page-title 
+            title="Gestión de Solicitudes" 
+            subtitle="Administra las solicitudes de todos los empleados">
+        </app-page-title>
+
+        <!-- Filters & Search -->
+        <div class="filters-container">
+            <!-- Filters Row -->
+            <div class="filters-row">
+                <ion-item lines="none" class="filter-item">
+                    <ion-icon name="filter-outline" slot="start"></ion-icon>
+                    <ion-select 
+                        [(ngModel)]="selectedType" 
+                        placeholder="Tipo"
+                        (ionChange)="onFilterChange()"
+                        interface="popover"
+                    >
+                        <ion-select-option [value]="undefined">Todos</ion-select-option>
+                        @for (type of requestTypes; track type.value) {
+                            <ion-select-option [value]="type.value">{{ type.label }}</ion-select-option>
+                        }
+                    </ion-select>
+                </ion-item>
+
+                <ion-item lines="none" class="filter-item">
+                    <ion-icon name="filter-outline" slot="start"></ion-icon>
+                    <ion-select 
+                        [(ngModel)]="selectedStatus" 
+                        placeholder="Estado"
+                        (ionChange)="onFilterChange()"
+                        interface="popover"
+                    >
+                        <ion-select-option [value]="null">Todos</ion-select-option>
+                        @for (status of requestStatuses; track status.value) {
+                            <ion-select-option [value]="status.value">{{ status.label }}</ion-select-option>
+                        }
+                    </ion-select>
+                </ion-item>
+
+                <ion-item lines="none" class="filter-item">
+                    <ion-icon name="swap-vertical-outline" slot="start"></ion-icon>
+                    <ion-select 
+                        [(ngModel)]="sortByDate" 
+                        placeholder="Ordenar"
+                        (ionChange)="onFilterChange()"
+                        interface="popover"
+                    >
+                        <ion-select-option value="DESC">Más recientes</ion-select-option>
+                        <ion-select-option value="ASC">Más antiguos</ion-select-option>
+                    </ion-select>
+                </ion-item>
+            </div>
+
+            <!-- Clear Filters Button -->
+            @if (hasActiveFilters()) {
+            <div class="clear-filters-wrapper">
+                <ion-button 
+                    fill="clear" 
+                    size="small" 
+                    (click)="clearFilters()"
+                    class="clear-filters-button"
+                >
+                    <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+                    Limpiar filtros
+                </ion-button>
+            </div>
+            }
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading && requests.length === 0) {
+            <div class="loading-container">
+                <ion-spinner name="crescent"></ion-spinner>
+            </div>
+        }
+
+        <!-- Requests List -->
+        @if (!isLoading || requests.length > 0) {
+            @if (requests.length > 0) {
+                <div class="requests-list">
+                    @for (request of requests; track request.id) {
+                        <ion-card class="request-card">
+                            <!-- Header compacto -->
+                            <div class="card-header">
+                                <div class="header-left">
+                                    <!-- Nombre del empleado -->
+                                    <div class="employee-name">
+                                        <ion-icon name="person-outline"></ion-icon>
+                                        <span>{{ getEmployeeName(request) }}</span>
+                                    </div>
+                                    <div class="request-type">
+                                        <ion-icon [name]="getRequestIcon(request.type)"></ion-icon>
+                                        <span>{{ getRequestTypeLabel(request.type) }}</span>
+                                    </div>
+                                    <div class="request-date">
+                                        <ion-icon name="calendar-outline"></ion-icon>
+                                        <span>{{ formatDate(request.createdAt) }}</span>
+                                    </div>
+                                </div>
+                                <div class="header-right">
+                                    @if ((request.type === 'ORDINARY_PERMISSION' || request.type === 'MEDICAL_APPOINTMENT') && request.details?.durationHours) {
+                                        <div class="duration-badge">
+                                            <ion-icon name="time"></ion-icon>
+                                            <span>{{ formatDuration(request.details.durationHours) }}</span>
+                                        </div>
+                                    }
+                                    @if (request.type === 'SICK_LEAVE' && request.details?.startDate && request.details?.endDate) {
+                                        <div class="duration-badge days-badge">
+                                            <ion-icon name="calendar"></ion-icon>
+                                            <span>{{ calculateDaysBetween(request.details.startDate, request.details.endDate) }} días</span>
+                                        </div>
+                                    }
+                                    @if (request.type === 'GIFTED_DAY_USAGE' && request.details?.days) {
+                                        <div class="duration-badge days-badge">
+                                            <ion-icon name="gift-outline"></ion-icon>
+                                            <span>{{ request.details.days }} días</span>
+                                        </div>
+                                    }
+                                    <ion-badge [color]="getStatusColor(request.status)" class="status-badge">
+                                        {{ getStatusLabel(request.status) }}
+                                    </ion-badge>
+                                </div>
+                            </div>
+
+                            <!-- Content compacto -->
+                            <div class="card-content">
+                                <!-- PERMISO ORDINARIO -->
+                                @if (request.type === 'ORDINARY_PERMISSION' && request.details) {
+                                    <div class="compact-details">
+                                        <div class="time-display">
+                                            <div class="time-block">
+                                                <span class="time-value">{{ formatTime(request.details.exitDateTime) }}</span>
+                                                <span class="time-label">Salida</span>
+                                            </div>
+                                            <ion-icon name="arrow-forward" class="time-arrow"></ion-icon>
+                                            <div class="time-block">
+                                                <span class="time-value">{{ formatTime(request.details.returnDateTime) }}</span>
+                                                <span class="time-label">Regreso</span>
+                                            </div>
+                                        </div>
+                                        @if (request.details.reason) {
+                                            <div class="reason-compact">
+                                                <ion-icon name="document-text-outline"></ion-icon>
+                                                <span>{{ request.details.reason }}</span>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                
+                                <!-- CITA MÉDICA -->
+                                @else if (request.type === 'MEDICAL_APPOINTMENT' && request.details) {
+                                    <div class="compact-details">
+                                        <div class="time-display">
+                                            <div class="time-block">
+                                                <span class="time-value">{{ formatTime(request.details.exitDateTime) }}</span>
+                                                <span class="time-label">Salida</span>
+                                            </div>
+                                            <ion-icon name="arrow-forward" class="time-arrow"></ion-icon>
+                                            <div class="time-block">
+                                                <span class="time-value">{{ formatTime(request.details.returnDateTime) }}</span>
+                                                <span class="time-label">Regreso</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Gestión de comprobante -->
+                                        <div class="attachment-section">
+                                            @if (request.details.attachmentUrl) {
+                                                <div class="attachment-info">
+                                                    <div class="attachment-content">
+                                                        <ion-icon name="document-attach-outline"></ion-icon>
+                                                        <span>Comprobante adjunto</span>
+                                                    </div>
+                                                    <div class="attachment-actions">
+                                                        <ion-button 
+                                                            fill="clear" 
+                                                            size="small" 
+                                                            color="primary"
+                                                            (click)="viewAttachment(request.details.attachmentUrl)">
+                                                            <ion-icon name="eye-outline" slot="icon-only"></ion-icon>
+                                                        </ion-button>
+                                                    </div>
+                                                </div>
+                                            } @else {
+                                                <div class="no-attachment-info">
+                                                    <ion-icon name="information-circle-outline"></ion-icon>
+                                                    <span>Sin comprobante</span>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                                
+                                <!-- INCAPACIDAD -->
+                                @else if (request.type === 'SICK_LEAVE' && request.details) {
+                                    <div class="compact-details">
+                                        <div class="date-range-display">
+                                            <div class="date-block">
+                                                <span class="date-label">Desde</span>
+                                                <span class="date-value">{{ formatDate(request.details.startDate) }}</span>
+                                            </div>
+                                            <ion-icon name="arrow-forward" class="date-arrow"></ion-icon>
+                                            <div class="date-block">
+                                                <span class="date-label">Hasta</span>
+                                                <span class="date-value">{{ formatDate(request.details.endDate) }}</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Gestión de comprobante -->
+                                        <div class="attachment-section">
+                                            @if (request.details.attachmentUrl) {
+                                                <div class="attachment-info">
+                                                    <div class="attachment-content">
+                                                        <ion-icon name="document-attach-outline"></ion-icon>
+                                                        <span>Comprobante EPS/ARL</span>
+                                                    </div>
+                                                    <div class="attachment-actions">
+                                                        <ion-button 
+                                                            fill="clear" 
+                                                            size="small" 
+                                                            color="primary"
+                                                            (click)="viewAttachment(request.details.attachmentUrl)">
+                                                            <ion-icon name="eye-outline" slot="icon-only"></ion-icon>
+                                                        </ion-button>
+                                                    </div>
+                                                </div>
+                                            } @else {
+                                                <div class="no-attachment-info">
+                                                    <ion-icon name="information-circle-outline"></ion-icon>
+                                                    <span>Sin comprobante</span>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                                
+                                <!-- DOCUMENTO -->
+                                @else if (request.type === 'DOCUMENT' && request.details) {
+                                    <div class="compact-details document-details">
+                                        <div class="document-info-grid">
+                                            @if (request.details.documentType) {
+                                                <div class="info-item">
+                                                    <span class="info-label">Tipo:</span>
+                                                    <span class="info-value">{{ request.details.documentType === 'CERTIFICADO_LABORAL' ? 'Certificado Laboral' : 'Comprobante de Nómina' }}</span>
+                                                </div>
+                                            }
+                                            @if (request.details.addressedTo) {
+                                                <div class="info-item">
+                                                    <span class="info-label">Dirigido a:</span>
+                                                    <span class="info-value">{{ request.details.addressedTo }}</span>
+                                                </div>
+                                            }
+                                        </div>
+                                        @if (request.details.notes) {
+                                            <div class="notes-section">
+                                                <ion-icon name="chatbox-outline"></ion-icon>
+                                                <span>{{ request.details.notes }}</span>
+                                            </div>
+                                        }
+                                        
+                                        <!-- Gestión de documento (solo admin) -->
+                                        <div class="attachment-section">
+                                            @if (request.details.documentUrl) {
+                                                <div class="attachment-info">
+                                                    <div class="attachment-content">
+                                                        <ion-icon name="document-attach-outline"></ion-icon>
+                                                        <span>Documento adjunto</span>
+                                                    </div>
+                                                    <div class="attachment-actions">
+                                                        <ion-button 
+                                                            fill="clear" 
+                                                            size="small" 
+                                                            color="primary"
+                                                            (click)="viewAttachment(request.details.documentUrl)">
+                                                            <ion-icon name="eye-outline" slot="icon-only"></ion-icon>
+                                                        </ion-button>
+                                                        @if (request.status === 'PENDING') {
+                                                            <ion-button 
+                                                                fill="clear" 
+                                                                size="small" 
+                                                                color="danger"
+                                                                (click)="removeDocument(request)">
+                                                                <ion-icon name="close-circle" slot="icon-only"></ion-icon>
+                                                            </ion-button>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            } @else {
+                                                @if (request.status === 'PENDING') {
+                                                    <ion-button 
+                                                        fill="outline" 
+                                                        size="small"
+                                                        (click)="uploadDocument(request)">
+                                                        <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+                                                        Adjuntar Documento
+                                                    </ion-button>
+                                                } @else {
+                                                    <div class="no-attachment-info">
+                                                        <ion-icon name="information-circle-outline"></ion-icon>
+                                                        <span>Sin documento adjunto</span>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                                
+                                <!-- VACACIONES -->
+                                @else if (request.type === 'VACATION' && request.details) {
+                                    <div class="compact-details">
+                                        <div class="date-range-display vacation-range">
+                                            <div class="date-block">
+                                                <span class="date-label">Desde</span>
+                                                <span class="date-value">{{ formatDate(request.details.startDate) }}</span>
+                                            </div>
+                                            <ion-icon name="arrow-forward" class="date-arrow"></ion-icon>
+                                            <div class="date-block">
+                                                <span class="date-label">Hasta</span>
+                                                <span class="date-value">{{ formatDate(request.details.endDate) }}</span>
+                                            </div>
+                                        </div>
+                                        @if (request.details.calculatedDays) {
+                                            <div class="vacation-days-info">
+                                                <ion-icon name="calendar-outline"></ion-icon>
+                                                <span>{{ request.details.calculatedDays }} días hábiles</span>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                
+                                <!-- ACUMULACIÓN DE COMPENSADOS -->
+                                @else if (request.type === 'COMPENSATED_TIME_ACCUMULATION' && request.details) {
+                                    <div class="compact-details">
+                                        <div class="compensated-info-grid">
+                                            <div class="info-item">
+                                                <span class="info-label">Fecha del evento:</span>
+                                                <span class="info-value">{{ formatDate(request.details.date) }}</span>
+                                            </div>
+                                            <div class="info-item">
+                                                <span class="info-label">Días a acumular:</span>
+                                                <span class="info-value">{{ request.details.days }} {{ request.details.days === 1 ? 'día' : 'días' }} ({{ request.details.calculatedHours }} hrs)</span>
+                                            </div>
+                                            <div class="info-item full-width">
+                                                <span class="info-label">Motivo:</span>
+                                                <span class="info-value">{{ getAccumulationReasonLabel(request.details.reason) }}</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Gestión de comprobante -->
+                                        <div class="attachment-section">
+                                            @if (request.details.proofUrl) {
+                                                <div class="attachment-info">
+                                                    <div class="attachment-content">
+                                                        <ion-icon name="document-attach-outline"></ion-icon>
+                                                        <span>Comprobante adjunto</span>
+                                                    </div>
+                                                    <div class="attachment-actions">
+                                                        <ion-button 
+                                                            fill="clear" 
+                                                            size="small" 
+                                                            color="primary"
+                                                            (click)="viewAttachment(request.details.proofUrl)">
+                                                            <ion-icon name="eye-outline" slot="icon-only"></ion-icon>
+                                                        </ion-button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        
+                                        @if (request.details.comments) {
+                                            <div class="notes-section">
+                                                <ion-icon name="chatbox-outline"></ion-icon>
+                                                <span>{{ request.details.comments }}</span>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                
+                                <!-- DISFRUTE DE COMPENSADOS -->
+                                @else if (request.type === 'COMPENSATED_TIME_USAGE' && request.details) {
+                                    <div class="compact-details">
+                                        <div class="compensated-info-grid">
+                                            <div class="info-item">
+                                                <span class="info-label">Tipo:</span>
+                                                <span class="info-value">{{ request.details.usageType === 'DAYS' ? 'Días completos' : 'Por horas' }}</span>
+                                            </div>
+                                            <div class="info-item">
+                                                <span class="info-label">Solicitado:</span>
+                                                <span class="info-value">{{ formatBalanceDisplay(request.details.calculatedHours) }}</span>
+                                            </div>
+                                        </div>
+                                        
+                                        @if (request.details.usageType === 'DAYS') {
+                                            <div class="date-range-display">
+                                                <div class="date-block">
+                                                    <span class="date-label">Desde</span>
+                                                    <span class="date-value">{{ formatDate(request.details.startDate) }}</span>
+                                                </div>
+                                                <ion-icon name="arrow-forward" class="date-arrow"></ion-icon>
+                                                <div class="date-block">
+                                                    <span class="date-label">Hasta</span>
+                                                    <span class="date-value">{{ formatDate(request.details.endDate) }}</span>
+                                                </div>
+                                            </div>
+                                        } @else {
+                                            <div class="time-display">
+                                                <div class="time-block">
+                                                    <span class="time-label">Fecha</span>
+                                                    <span class="time-value">{{ formatDate(request.details.startDate) }}</span>
+                                                </div>
+                                                <div class="time-block">
+                                                    <span class="time-label">Horario</span>
+                                                    <span class="time-value">{{ formatTime(request.details.startTime) }} - {{ formatTime(request.details.endTime) }}</span>
+                                                </div>
+                                            </div>
+                                        }
+                                        
+                                        @if (request.details.comments) {
+                                            <div class="notes-section">
+                                                <ion-icon name="chatbox-outline"></ion-icon>
+                                                <span>{{ request.details.comments }}</span>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                
+                                <!-- DÍAS OBSEQUIADOS POR SERVICIOS -->
+                                @else if (request.type === 'GIFTED_DAY_USAGE' && request.details) {
+                                    <div class="compact-details">
+                                        <div class="date-range-display vacation-range">
+                                            <div class="date-block">
+                                                <span class="date-label">Desde</span>
+                                                <span class="date-value">{{ formatDate(request.details.startDate) }}</span>
+                                            </div>
+                                            <ion-icon name="arrow-forward" class="date-arrow"></ion-icon>
+                                            <div class="date-block">
+                                                <span class="date-label">Hasta</span>
+                                                <span class="date-value">{{ formatDate(request.details.endDate) }}</span>
+                                            </div>
+                                        </div>
+                                        @if (request.details.days) {
+                                            <div class="vacation-days-info">
+                                                <ion-icon name="gift-outline"></ion-icon>
+                                                <span>{{ request.details.days }} días hábiles</span>
+                                            </div>
+                                        }
+                                        @if (request.details.reason) {
+                                            <div class="notes-section">
+                                                <ion-icon name="chatbox-outline"></ion-icon>
+                                                <span>{{ request.details.reason }}</span>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                
+                                <!-- OTROS TIPOS -->
+                                @else if (request.details) {
+                                    <div class="generic-details">
+                                        @if (request.details.date) {
+                                            <div class="detail-chip">
+                                                <ion-icon name="calendar"></ion-icon>
+                                                <span>{{ formatDate(request.details.date) }}</span>
+                                            </div>
+                                        }
+                                        @if (request.details.amount) {
+                                            <div class="detail-chip">
+                                                <ion-icon name="time"></ion-icon>
+                                                <span>{{ request.details.amount }} día(s)</span>
+                                            </div>
+                                        }
+                                        @if (request.details.benefitType) {
+                                            <div class="detail-chip">
+                                                <ion-icon name="gift"></ion-icon>
+                                                <span>{{ request.details.benefitType }}</span>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                
+                                <!-- Comentario del revisor -->
+                                @if (request.reviewerComment) {
+                                    <div class="comment-compact">
+                                        <ion-icon name="chatbox"></ion-icon>
+                                        <span>{{ request.reviewerComment }}</span>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Footer con acciones de admin -->
+                            <div class="card-footer">
+                                @if (canProcessRequest(request)) {
+                                    <ion-button 
+                                        fill="clear" 
+                                        color="danger" 
+                                        size="small"
+                                        (click)="rejectRequest(request)">
+                                        <ion-icon slot="start" name="close-circle"></ion-icon>
+                                        Rechazar
+                                    </ion-button>
+                                    <ion-button 
+                                        fill="clear" 
+                                        color="success" 
+                                        size="small"
+                                        (click)="approveRequest(request)">
+                                        <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+                                        Aprobar
+                                    </ion-button>
+                                }
+                                
+                                @if (canShowHistory(request)) {
+                                    <ion-button 
+                                        fill="clear" 
+                                        color="medium" 
+                                        size="small"
+                                        (click)="openRequestHistory(request)">
+                                        <ion-icon slot="start" name="time-outline"></ion-icon>
+                                        Historial
+                                    </ion-button>
+                                }
+                            </div>
+                        </ion-card>
+                    }
+                </div>
+
+                <!-- Infinite Scroll -->
+                <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)" threshold="100px">
+                    <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Cargando más solicitudes...">
+                    </ion-infinite-scroll-content>
+                </ion-infinite-scroll>
+            }
+        }
+
+        <!-- Empty State -->
+        @if (!isLoading && requests.length === 0) {
+            <div class="empty-state">
+                <ion-icon name="document-text-outline"></ion-icon>
+                <h2>No hay solicitudes</h2>
+                <p>No se encontraron solicitudes con los filtros aplicados</p>
+            </div>
+        }
+    </div>
+</ion-content>

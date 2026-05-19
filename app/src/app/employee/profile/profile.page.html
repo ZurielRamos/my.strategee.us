@@ -1,0 +1,292 @@
+<app-page-header [backUrl]="'/employee/dashboard'" pageTitle="Mi Perfil"></app-page-header>
+
+<ion-content [fullscreen]="true" class="profile-content">
+    <div class="page-container">
+        @if (isLoading) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        @if (!isLoading && employee) {
+        <div class="detail-grid">
+            <!-- Left Column: Profile Card -->
+            <div class="left-column">
+                <ion-card class="profile-card">
+                    <div class="profile-avatar">
+                        <div class="avatar-image">
+                            @if (hasProfilePhoto) {
+                            <img [src]="profilePhotoUrl" [alt]="fullName" />
+                            } @else {
+                            <div class="avatar-placeholder">
+                                <ion-icon name="person-outline"></ion-icon>
+                            </div>
+                            }
+                        </div>
+                        <!-- Botón flotante para cambiar foto -->
+                        <ion-fab-button class="photo-fab" size="small" color="dark" (click)="openPhotoSelector()">
+                            <ion-icon name="camera-outline"></ion-icon>
+                        </ion-fab-button>
+                    </div>
+                    <div class="profile-info">
+                        <h1>{{ fullName }}</h1>
+                        <p class="profile-location">
+                            <ion-icon name="location-outline"></ion-icon>
+                            {{ employee.address || 'Sin dirección' }}
+                        </p>
+                        <div class="profile-status">
+                            <ion-badge [color]="employee.isActive ? 'success' : 'medium'">
+                                {{ employee.isActive ? 'Activo' : 'Inactivo' }}
+                            </ion-badge>
+                        </div>
+                    </div>
+                </ion-card>
+
+                <!-- Personal Information Card -->
+                <ion-card class="info-card">
+                    <ion-card-header>
+                        <div class="card-header-with-action">
+                            <ion-card-title>
+                                <ion-icon name="person-outline"></ion-icon>
+                                Información Personal
+                            </ion-card-title>
+                            <ion-button fill="clear" color="primary" size="small" (click)="openEditContactInfoAlert()" title="Editar datos de contacto">
+                                <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+                            </ion-button>
+                        </div>
+                    </ion-card-header>
+                    <ion-card-content>
+                        <div class="info-row">
+                            <span class="info-label">Documento</span>
+                            <span class="info-value">{{ employee.documentType }}: {{ employee.documentNumber }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Fecha de Nacimiento</span>
+                            <span class="info-value">{{ formatDate(employee.birthDate) }} ({{ age }} años)</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Género</span>
+                            <span class="info-value">{{ getGenderLabel(employee.gender) }}</span>
+                        </div>
+                        <div class="info-row editable-field">
+                            <span class="info-label">Teléfono Personal</span>
+                            <span class="info-value">{{ employee.personalPhone }}</span>
+                        </div>
+                        <div class="info-row editable-field">
+                            <span class="info-label">Email Personal</span>
+                            <span class="info-value">{{ employee.personalEmail }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email Corporativo</span>
+                            <span class="info-value">{{ employee.corporateEmail || '-' }}</span>
+                        </div>
+                        <div class="info-row editable-field">
+                            <span class="info-label">Dirección</span>
+                            <span class="info-value">{{ employee.address || '-' }}</span>
+                        </div>
+
+                        <!-- Historial de cambios -->
+                        <div class="contact-logs-section">
+                            <button class="logs-toggle" (click)="toggleContactLogs()">
+                                <ion-icon name="time-outline"></ion-icon>
+                                <span>Historial de cambios</span>
+                                <ion-icon [name]="showContactLogs ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+                            </button>
+
+                            @if (showContactLogs) {
+                                @if (isLoadingLogs) {
+                                    <div class="logs-loading">
+                                        <ion-spinner name="crescent"></ion-spinner>
+                                    </div>
+                                } @else if (contactInfoLogs.length === 0) {
+                                    <p class="logs-empty">Sin cambios registrados.</p>
+                                } @else {
+                                    <div class="logs-list">
+                                        @for (log of contactInfoLogs; track log.id) {
+                                        <div class="log-entry">
+                                            <div class="log-meta">
+                                                <span class="log-date">{{ formatLogDate(log.createdAt) }}</span>
+                                                <span class="log-author">por {{ log.changedBy }}</span>
+                                            </div>
+                                            <div class="log-fields">
+                                                @for (f of log.fields; track f.field) {
+                                                <div class="log-field-row">
+                                                    <span class="log-field-label">{{ f.label }}:</span>
+                                                    <span class="log-field-from">{{ f.from || '—' }}</span>
+                                                    <ion-icon name="chevron-down-outline" class="log-arrow"></ion-icon>
+                                                    <span class="log-field-to">{{ f.to }}</span>
+                                                </div>
+                                                }
+                                            </div>
+                                        </div>
+                                        }
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+            </div>
+
+            <!-- Right Column: Contract Info -->
+            <div class="right-column">
+                <!-- Emergency Contacts Card -->
+                <ion-card class="info-card emergency-contacts-card">
+                    <ion-card-header>
+                        <div class="card-header-with-action">
+                            <ion-card-title>
+                                <ion-icon name="alert-circle-outline"></ion-icon>
+                                Contactos de Emergencia
+                            </ion-card-title>
+                            <ion-button fill="clear" color="primary" size="small" (click)="openAddContactAlert()">
+                                <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+                            </ion-button>
+                        </div>
+                    </ion-card-header>
+                    <ion-card-content>
+                        @if (isLoadingContacts) {
+                            <div class="loading-small">
+                                <ion-spinner name="crescent"></ion-spinner>
+                            </div>
+                        } @else if (emergencyContacts.length === 0) {
+                            <div class="empty-state-small">
+                                <ion-icon name="alert-circle-outline"></ion-icon>
+                                <p>No tienes contactos de emergencia registrados</p>
+                            </div>
+                        } @else {
+                            <div class="contacts-list">
+                                @for (contact of emergencyContacts; track contact.id) {
+                                <div class="contact-item">
+                                    <div class="contact-info">
+                                        <span class="contact-name">{{ contact.name }}</span>
+                                        <span class="contact-relationship">{{ contact.relationship }}</span>
+                                        <span class="contact-phone">
+                                            <ion-icon name="call-outline"></ion-icon>
+                                            {{ contact.phone }}
+                                        </span>
+                                        @if (contact.email) {
+                                        <span class="contact-email">
+                                            <ion-icon name="mail-outline"></ion-icon>
+                                            {{ contact.email }}
+                                        </span>
+                                        }
+                                    </div>
+                                    <ion-button fill="clear" color="danger" size="small" (click)="confirmDeleteContact(contact)">
+                                        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                                    </ion-button>
+                                </div>
+                                }
+                            </div>
+                        }
+                    </ion-card-content>
+                </ion-card>
+
+                <!-- Active Contract Card -->
+                <ion-card class="relation-card">
+                    <ion-card-header>
+                        <ion-card-title>
+                            <ion-icon name="briefcase-outline"></ion-icon>
+                            Mi Contrato Actual
+                        </ion-card-title>
+                    </ion-card-header>
+                    <ion-card-content>
+                        @if (hasActiveContract) {
+                        <div class="contract-info">
+                            @if (activeContract.currentMemorandum) {
+                            <div class="info-row">
+                                <span class="info-label">Puesto</span>
+                                <span class="info-value">{{ activeContract.currentMemorandum.position?.name || '-' }}</span>
+                            </div>
+                            @if (activeContract.currentMemorandum.department) {
+                            <div class="info-row">
+                                <span class="info-label">Departamento/Área</span>
+                                <span class="info-value">{{ activeContract.currentMemorandum.department?.name || '-' }}</span>
+                            </div>
+                            }
+                            <div class="info-row">
+                                <span class="info-label">Salario</span>
+                                <span class="info-value highlight">{{ formatCurrency(activeContract.currentMemorandum.salaryAmount) }}</span>
+                            </div>
+                            }
+                            
+                            <div class="info-row">
+                                <span class="info-label">Tipo de Contrato</span>
+                                <span class="info-value">{{ activeContract.type }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Fecha de Inicio</span>
+                                <span class="info-value">{{ formatDate(activeContract.startDate) }}</span>
+                            </div>
+                            @if (activeContract.endDate) {
+                            <div class="info-row">
+                                <span class="info-label">Fecha de Fin</span>
+                                <span class="info-value">{{ formatDate(activeContract.endDate) }}</span>
+                            </div>
+                            }
+
+                            <!-- Historial de Memorandos -->
+                            @if (activeContract.memorandums && activeContract.memorandums.length > 0) {
+                            <div class="memorandums-history">
+                                <div class="memorandums-header" (click)="toggleMemorandumsHistory()">
+                                    <span class="header-title">
+                                        Historial de Memorandos ({{ activeContract.memorandums.length }})
+                                    </span>
+                                    <ion-icon [name]="showMemorandumsHistory ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+                                </div>
+
+                                @if (showMemorandumsHistory) {
+                                <div class="memorandums-list">
+                                    @for (memo of getSortedMemorandums(activeContract.memorandums); track memo.id) {
+                                    <div class="memorandum-item" [class.active]="isCurrentMemorandum(memo)">
+                                        <div class="memo-header">
+                                            <div class="memo-info">
+                                                <span class="memo-position">{{ memo.position?.name || 'Sin cargo' }}</span>
+                                                <ion-badge [color]="getMemorandumStatusColor(memo)" size="small">
+                                                    {{ getMemorandumStatusLabel(memo) }}
+                                                </ion-badge>
+                                            </div>
+                                            <span class="memo-dates">
+                                                {{ formatDate(memo.startDate) }}
+                                                @if (memo.endDate) {
+                                                - {{ formatDate(memo.endDate) }}
+                                                }
+                                            </span>
+                                        </div>
+                                        <div class="memo-details">
+                                            @if (memo.department) {
+                                            <div class="memo-detail-row">
+                                                <span class="label">Departamento:</span>
+                                                <span class="value">{{ memo.department?.name }}</span>
+                                            </div>
+                                            }
+                                            <div class="memo-detail-row">
+                                                <span class="label">Salario:</span>
+                                                <span class="value">{{ formatCurrency(memo.salaryAmount) }}</span>
+                                            </div>
+                                            @if (memo.reason) {
+                                            <div class="memo-detail-row">
+                                                <span class="label">Razón:</span>
+                                                <span class="value">{{ memo.reason }}</span>
+                                            </div>
+                                            }
+                                        </div>
+                                    </div>
+                                    }
+                                </div>
+                                }
+                            </div>
+                            }
+                        </div>
+                        } @else {
+                        <div class="empty-state-small">
+                            <ion-icon name="briefcase-outline"></ion-icon>
+                            <p>No hay contrato activo</p>
+                        </div>
+                        }
+                    </ion-card-content>
+                </ion-card>
+            </div>
+        </div>
+        }
+    </div>
+</ion-content>

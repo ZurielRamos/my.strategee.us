@@ -1,0 +1,121 @@
+.alert-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    border-left: 4px solid;
+    transition: all 0.2s ease;
+
+    ion-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+    .alert-content {
+        flex: 1;
+
+        p {
+            margin: 0;
+            font-size: 14px !important;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+    }
+}
+
+// Info (azul)
+.alert-info {
+    background: #e3f2fd;
+    border-left-color: #2196f3;
+
+    ion-icon {
+        color: #2196f3;
+    }
+
+    .alert-content p {
+        color: #1976d2;
+        opacity: 0.85;
+    }
+}
+
+// Warning (amarillo/naranja)
+.alert-warning {
+    background: #fff3e0;
+    border-left-color: #ff9800;
+
+    ion-icon {
+        color: #ff9800;
+    }
+
+    .alert-content p {
+        color: #f57c00;
+        opacity: 0.85;
+    }
+}
+
+// Danger (rojo)
+.alert-danger {
+    background: #ffebee;
+    border-left-color: #eb445a;
+
+    ion-icon {
+        color: #eb445a;
+    }
+
+    .alert-content p {
+        color: #d32f2f;
+        opacity: 0.85;
+    }
+}
+
+// Success (verde)
+.alert-success {
+    background: #e8f5e9;
+    border-left-color: #4caf50;
+
+    ion-icon {
+        color: #4caf50;
+    }
+
+    .alert-content p {
+        color: #388e3c;
+        opacity: 0.85;
+    }
+}
+
+// Dark mode support
+body.dark {
+    .alert-info {
+        background: rgba(33, 150, 243, 0.15);
+        
+        .alert-content p {
+            color: #90caf9;
+        }
+    }
+
+    .alert-warning {
+        background: rgba(255, 152, 0, 0.15);
+        
+        .alert-content p {
+            color: #ffb74d;
+        }
+    }
+
+    .alert-danger {
+        background: rgba(235, 68, 90, 0.15);
+        
+        .alert-content p {
+            color: #ef5350;
+        }
+    }
+
+    .alert-success {
+        background: rgba(76, 175, 80, 0.15);
+        
+        .alert-content p {
+            color: #81c784;
+        }
+    }
+}
