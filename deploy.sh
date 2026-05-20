@@ -38,13 +38,11 @@ chown -R $(whoami):$(whoami) "$PROJECT_DIR" 2>/dev/null || true
 echo ""
 echo "==> Instalando dependencias del frontend (app)..."
 cd "$PROJECT_DIR/app"
-rm -rf node_modules
 npm install --legacy-peer-deps
 
 echo ""
 echo "==> Instalando dependencias del backend (api)..."
 cd "$PROJECT_DIR/api"
-rm -rf node_modules
 rm -f tsconfig.build.tsbuildinfo
 pnpm install
 
