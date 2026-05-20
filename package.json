@@ -3,12 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "npm run build:app && npm run build:api",
+    "install:all": "npm install --prefix app && pnpm install --prefix api",
     "build:app": "npm run build --prefix app",
-    "build:api": "npm run build --prefix api",
+    "build:api": "pnpm run build --prefix api",
+    "build": "npm run build:app && npm run build:api",
     "start": "node api/dist/main",
-    "start:dev:api": "npm run start:dev --prefix api",
+    "start:prod": "node api/dist/main",
+    "start:dev:api": "pnpm run start:dev --prefix api",
     "start:dev:app": "npm run start --prefix app",
-    "install:all": "npm install --prefix app && npm install --prefix api"
+    "deploy": "bash deploy.sh"
   }
 }
