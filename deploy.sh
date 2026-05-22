@@ -23,12 +23,6 @@ if ! command -v npm &> /dev/null; then
 fi
 echo "  npm: $(npm -v)"
 
-if ! command -v pm2 &> /dev/null; then
-  echo "  pm2 no encontrado, instalando..."
-  npm install -g pm2
-fi
-echo "  pm2: $(pm2 -v)"
-
 # --- Verificar .env ---
 echo ""
 echo "==> Verificando configuración..."
@@ -58,23 +52,8 @@ echo ""
 echo "==> Compilando backend (NestJS)..."
 npm run build:api
 
-# --- Iniciar / Reiniciar con PM2 ---
-echo ""
-echo "==> Iniciando servidor con PM2..."
-cd "$PROJECT_DIR"
-
-if pm2 describe my-strategee > /dev/null 2>&1; then
-  echo "  Proceso existente encontrado, reiniciando..."
-  pm2 restart my-strategee
-else
-  echo "  Creando nuevo proceso PM2..."
-  pm2 start npm --name "my-strategee" -- start
-fi
-
-pm2 save
-pm2 startup
-
 echo ""
 echo "========================================"
-echo "  Deploy completado exitosamente!"
+echo "  Build completado exitosamente!"
+echo "  Inicia la aplicacion desde aaPanel con: npm start"
 echo "========================================"
