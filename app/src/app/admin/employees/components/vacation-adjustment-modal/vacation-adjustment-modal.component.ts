@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { arrowForwardOutline } from 'ionicons/icons';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { BaseModalComponent } from '../../../../shared/components/base-modal/base-modal.component';
 import { FormSelectComponent, SelectOption } from '../../../../shared/components/form-select/form-select.component';
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
@@ -18,6 +18,7 @@ import { EmployeesService } from '../../services/employees.service';
     templateUrl: './vacation-adjustment-modal.component.html',
     styleUrls: ['./vacation-adjustment-modal.component.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,

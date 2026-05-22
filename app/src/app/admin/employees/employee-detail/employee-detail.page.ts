@@ -57,7 +57,7 @@ import { CompensationService } from '../services/compensation.service';
 import { ContractsService } from '../services/contracts.service';
 import { Employee } from '../models/employee.model';
 import { getContractStatusLabel, getMemorandumStatus, getMemorandumStatusLabel } from '../models/contract.model';
-import { ModalController, AlertController, LoadingController } from '@ionic/angular';
+import { ModalController, AlertController, LoadingController } from '@ionic/angular/standalone';
 import { ModalService } from '../../../shared/services/modal.service';
 import { EmployeeModalComponent } from '../components/employee-modal/employee-modal.component';
 import { BenefitAllocationModalComponent } from '../components/benefit-allocation-modal/benefit-allocation-modal.component';
@@ -97,7 +97,7 @@ import { EmployeeParafiscales } from '../models/parafiscales.model';
     templateUrl: './employee-detail.page.html',
     styleUrls: ['./employee-detail.page.scss'],
     standalone: true,
-    providers: [PopoverController],
+    providers: [PopoverController, ModalController, AlertController, LoadingController],
     imports: [
         CommonModule,
         IonContent,

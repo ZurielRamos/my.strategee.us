@@ -3,7 +3,15 @@ import { Preferences } from '@capacitor/preferences';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
+import { ToastController, LoadingController } from '@ionic/angular/standalone';
+import {
+    IonContent, IonButton, IonIcon, IonSpinner, IonCheckbox
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+    mailOutline, lockClosedOutline, eyeOutline, eyeOffOutline,
+    logoGoogle, logoApple, logInOutline
+} from 'ionicons/icons';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -11,7 +19,7 @@ import { AuthService } from '../services/auth.service';
     templateUrl: './login.page.html',
     styleUrls: ['./login.page.scss'],
     standalone: true,
-    imports: [CommonModule, IonicModule, ReactiveFormsModule]
+    imports: [CommonModule, ReactiveFormsModule, IonContent, IonButton, IonIcon, IonSpinner, IonCheckbox]
 })
 export class LoginPage implements OnInit {
     loginForm!: FormGroup;
@@ -25,7 +33,12 @@ export class LoginPage implements OnInit {
         private router: Router,
         private toastCtrl: ToastController,
         private loadingCtrl: LoadingController
-    ) { }
+    ) {
+        addIcons({
+            mailOutline, lockClosedOutline, eyeOutline, eyeOffOutline,
+            logoGoogle, logoApple, logInOutline
+        });
+    }
 
     ngOnInit() {
         this.loginForm = this.fb.group({

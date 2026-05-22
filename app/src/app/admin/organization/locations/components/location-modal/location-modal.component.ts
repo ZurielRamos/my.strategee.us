@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { Location } from '../../models/location.model';
 import { BaseModalComponent } from 'src/app/shared/components/base-modal/base-modal.component';
 import { TextInputComponent } from 'src/app/shared/components/text-input/text-input.component';
@@ -15,6 +15,7 @@ import { LocationsService } from '../../services/locations.service';
     templateUrl: './location-modal.component.html',
     styleUrls: ['./location-modal.component.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,

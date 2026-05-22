@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
+import { ToastController, LoadingController, IonContent, IonButton, IonIcon, IonSpinner } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { closeOutline, lockClosedOutline, eyeOutline, eyeOffOutline, saveOutline } from 'ionicons/icons';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -10,7 +12,7 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './reset-password.page.html',
   styleUrls: ['./reset-password.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, IonContent, IonButton, IonIcon, IonSpinner]
 })
 export class ResetPasswordPage implements OnInit {
   resetForm!: FormGroup;
@@ -25,7 +27,9 @@ export class ResetPasswordPage implements OnInit {
     private route: ActivatedRoute,
     private toastCtrl: ToastController,
     private loadingCtrl: LoadingController
-  ) { }
+  ) {
+    addIcons({ closeOutline, lockClosedOutline, eyeOutline, eyeOffOutline, saveOutline });
+  }
 
   ngOnInit() {
     this.token = this.route.snapshot.queryParamMap.get('token');

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { BaseModalComponent } from '../../../../shared/components/base-modal/base-modal.component';
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
 import { TextareaInputComponent } from '../../../../shared/components/textarea-input/textarea-input.component';
@@ -13,6 +13,7 @@ import { AuthService } from '../../../../auth/services/auth.service';
     selector: 'app-edit-contact-info-modal',
     templateUrl: './edit-contact-info-modal.component.html',
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonItem, IonLabel, IonInput, IonNote, IonIcon } from '@ionic/angular/standalone';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { informationCircleOutline } from 'ionicons/icons';
 import { ContractType, PayrollGroup, ContractStatus, SalaryType } from '../../models/contract.model';
@@ -22,6 +22,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
     templateUrl: './contract-modal.component.html',
     styleUrls: ['./contract-modal.component.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,

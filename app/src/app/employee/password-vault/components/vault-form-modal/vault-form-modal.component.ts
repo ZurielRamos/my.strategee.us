@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { IonItem, IonLabel, IonInput, IonTextarea } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 import { BaseModalComponent } from '../../../../shared/components/base-modal/base-modal.component';
@@ -14,6 +14,7 @@ import { Vault } from '../../models/vault.model';
   templateUrl: './vault-form-modal.component.html',
   styleUrls: ['./vault-form-modal.component.scss'],
   standalone: true,
+  providers: [ModalController],
   imports: [
     CommonModule,
     ReactiveFormsModule,

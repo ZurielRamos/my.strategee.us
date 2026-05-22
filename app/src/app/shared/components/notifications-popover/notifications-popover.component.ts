@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonContent, IonFooter, IonSpinner } from '@ionic/angular/standalone';
-import { PopoverController, NavController } from '@ionic/angular';
+import { IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonContent, IonFooter, IonSpinner, PopoverController } from '@ionic/angular/standalone';
+import { NavController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { closeOutline, notificationsOffOutline, checkmarkCircleOutline, alertCircleOutline, informationCircleOutline } from 'ionicons/icons';
 import { NotificationService } from '../../services/notification.service';

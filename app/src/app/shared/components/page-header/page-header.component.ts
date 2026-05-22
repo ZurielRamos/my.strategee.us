@@ -2,9 +2,8 @@ import { Component, Input, OnInit, OnDestroy, inject, ViewChild, ElementRef, Out
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
-    IonHeader, IonToolbar, IonButtons, IonMenuButton, IonIcon
+    IonHeader, IonToolbar, IonButtons, IonMenuButton, IonIcon, PopoverController
 } from '@ionic/angular/standalone';
-import { PopoverController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { searchOutline, notificationsOutline, closeOutline, arrowBackOutline } from 'ionicons/icons';
 import { FormsModule } from '@angular/forms';
@@ -18,6 +17,7 @@ import { NotificationBadgeComponent } from '../notification-badge/notification-b
     templateUrl: './page-header.component.html',
     styleUrls: ['./page-header.component.scss'],
     standalone: true,
+    providers: [PopoverController],
     imports: [
         CommonModule, FormsModule, IonHeader, IonToolbar,
         IonButtons, IonMenuButton, IonIcon,

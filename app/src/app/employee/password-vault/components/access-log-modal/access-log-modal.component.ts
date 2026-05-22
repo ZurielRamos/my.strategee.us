@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { IonSpinner } from '@ionic/angular/standalone';
 import { BaseModalComponent } from '../../../../shared/components/base-modal/base-modal.component';
 import { PasswordVaultService } from '../../services/password-vault.service';
@@ -13,6 +13,7 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './access-log-modal.component.html',
   styleUrls: ['./access-log-modal.component.scss'],
   standalone: true,
+  providers: [ModalController],
   imports: [
     CommonModule,
     BaseModalComponent,

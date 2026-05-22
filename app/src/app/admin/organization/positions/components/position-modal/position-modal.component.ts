@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { Position } from '../../models/position.model';
 import { Area } from '../../../areas/models/area.model';
 import { AreasService } from '../../../areas/services/areas.service';
@@ -16,6 +16,7 @@ import { ToastService } from '../../../../../shared/services/toast.service';
     templateUrl: './position-modal.component.html',
     styleUrls: ['./position-modal.component.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,

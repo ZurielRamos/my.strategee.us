@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { BaseModalComponent } from '../../../../shared/components/base-modal/base-modal.component';
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
 import { AlertBoxComponent } from '../../../../shared/components/alert-box/alert-box.component';
@@ -14,6 +14,7 @@ import { EmployeeParafiscales } from '../../models/parafiscales.model';
     templateUrl: './parafiscales-modal.component.html',
     styleUrls: ['./parafiscales-modal.component.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,

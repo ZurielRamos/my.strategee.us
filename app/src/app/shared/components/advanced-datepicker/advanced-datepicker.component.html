@@ -1,60 +1,83 @@
 <div class="datepicker-container">
-    <!-- Header -->
+
+    <!-- ── Header ─────────────────────────────────────────────────────────── -->
     <div class="datepicker-header">
-        <ion-button 
-            fill="clear" 
+        <ion-button
+            fill="clear"
             size="small"
-            (click)="previousMonth()"
-            [disabled]="!canGoPrevious">
+            (click)="showYearPicker ? previousDecade() : previousMonth()"
+            [disabled]="!showYearPicker && !canGoPrevious">
             <ion-icon name="chevron-back-outline"></ion-icon>
         </ion-button>
-        
-        <div class="month-year">{{ currentMonthName }}</div>
-        
-        <ion-button 
-            fill="clear" 
+
+        <button class="month-year-btn" (click)="toggleYearPicker()">
+            {{ showYearPicker ? decadeLabel : currentMonthName }}
+            <ion-icon [name]="showYearPicker ? 'chevron-up-outline' : 'chevron-down-outline'" class="toggle-icon"></ion-icon>
+        </button>
+
+        <ion-button
+            fill="clear"
             size="small"
-            (click)="nextMonth()"
-            [disabled]="!canGoNext">
+            (click)="showYearPicker ? nextDecade() : nextMonth()"
+            [disabled]="!showYearPicker && !canGoNext">
             <ion-icon name="chevron-forward-outline"></ion-icon>
         </ion-button>
     </div>
 
-    <!-- Day names -->
-    <div class="day-names">
-        @for (dayName of dayNames; track dayName) {
-            <div class="day-name">{{ dayName }}</div>
-        }
-    </div>
+    <!-- ── Year picker grid ───────────────────────────────────────────────── -->
+    @if (showYearPicker) {
+        <div class="year-grid">
+            @for (year of decadeYears; track year) {
+                <button
+                    class="year-cell"
+                    [class.selected]="isCurrentYear(year)"
+                    [class.disabled]="isYearDisabled(year)"
+                    [disabled]="isYearDisabled(year)"
+                    (click)="selectYear(year)">
+                    {{ year }}
+                </button>
+            }
+        </div>
+    }
 
-    <!-- Calendar grid -->
-    <div class="calendar-grid">
-        @for (day of calendarDays; track day.date.getTime()) {
-            <div 
-                class="calendar-day"
-                [class.other-month]="!day.isCurrentMonth"
-                [class.today]="day.isToday"
-                [class.selected]="day.isSelected"
-                [class.disabled]="day.isDisabled"
-                [class.in-range]="day.isInRange"
-                [class.range-start]="day.isRangeStart"
-                [class.range-end]="day.isRangeEnd"
-                (click)="selectDate(day)">
-                <span class="day-number">{{ day.day }}</span>
+    <!-- ── Calendar ───────────────────────────────────────────────────────── -->
+    @if (!showYearPicker) {
+        <!-- Day names -->
+        <div class="day-names">
+            @for (dayName of dayNames; track dayName) {
+                <div class="day-name">{{ dayName }}</div>
+            }
+        </div>
+
+        <!-- Calendar grid -->
+        <div class="calendar-grid">
+            @for (day of calendarDays; track day.date.getTime()) {
+                <div
+                    class="calendar-day"
+                    [class.other-month]="!day.isCurrentMonth"
+                    [class.today]="day.isToday"
+                    [class.selected]="day.isSelected"
+                    [class.disabled]="day.isDisabled"
+                    [class.in-range]="day.isInRange"
+                    [class.range-start]="day.isRangeStart"
+                    [class.range-end]="day.isRangeEnd"
+                    (click)="selectDate(day)">
+                    <span class="day-number">{{ day.day }}</span>
+                </div>
+            }
+        </div>
+
+        <!-- Actions -->
+        @if (config.mode === 'range' && (rangeStart || rangeEnd)) {
+            <div class="datepicker-actions">
+                <ion-button
+                    fill="clear"
+                    size="small"
+                    (click)="clearSelection()">
+                    <ion-icon name="close-outline" slot="start"></ion-icon>
+                    Limpiar
+                </ion-button>
             </div>
         }
-    </div>
-
-    <!-- Actions -->
-    @if (config.mode === 'range' && (rangeStart || rangeEnd)) {
-        <div class="datepicker-actions">
-            <ion-button 
-                fill="clear" 
-                size="small"
-                (click)="clearSelection()">
-                <ion-icon name="close-outline" slot="start"></ion-icon>
-                Limpiar
-            </ion-button>
-        </div>
     }
 </div>

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 import { BaseModalComponent } from '../../../../shared/components/base-modal/base-modal.component';
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
@@ -17,6 +17,7 @@ import { VisibilityLevel } from '../../models/visibility.model';
   templateUrl: './credential-form-modal.component.html',
   styleUrls: ['./credential-form-modal.component.scss'],
   standalone: true,
+  providers: [ModalController],
   imports: [
     CommonModule,
     ReactiveFormsModule,

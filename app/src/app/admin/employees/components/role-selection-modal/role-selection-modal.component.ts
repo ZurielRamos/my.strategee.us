@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { BaseModalComponent } from '../../../../shared/components/base-modal/base-modal.component';
 import { FormSelectComponent, SelectOption } from '../../../../shared/components/form-select/form-select.component';
 import { AlertBoxComponent } from '../../../../shared/components/alert-box/alert-box.component';
@@ -13,6 +13,7 @@ import { EmployeesService } from '../../services/employees.service';
   templateUrl: './role-selection-modal.component.html',
   styleUrls: ['./role-selection-modal.component.scss'],
   standalone: true,
+  providers: [ModalController],
   imports: [
     CommonModule,
     ReactiveFormsModule,

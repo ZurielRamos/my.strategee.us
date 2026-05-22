@@ -14,7 +14,7 @@ export class InitialGuard implements CanActivate {
         await this.authService.storageReady;
 
         if (!this.authService.isAuthenticated()) {
-            return this.router.createUrlTree(['/auth/splash']);
+            return this.router.createUrlTree(['/auth/login']);
         }
 
         const user = this.authService.getCurrentUser();

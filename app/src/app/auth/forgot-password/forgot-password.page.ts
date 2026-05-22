@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
+import { ToastController, LoadingController, IonContent, IonButton, IonIcon, IonSpinner } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { chevronBackOutline, mailOutline, paperPlaneOutline } from 'ionicons/icons';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -10,7 +12,7 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './forgot-password.page.html',
   styleUrls: ['./forgot-password.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, IonContent, IonButton, IonIcon, IonSpinner]
 })
 export class ForgotPasswordPage implements OnInit {
   forgotForm!: FormGroup;
@@ -22,7 +24,9 @@ export class ForgotPasswordPage implements OnInit {
     private router: Router,
     private toastCtrl: ToastController,
     private loadingCtrl: LoadingController
-  ) { }
+  ) {
+    addIcons({ chevronBackOutline, mailOutline, paperPlaneOutline });
+  }
 
   ngOnInit() {
     this.forgotForm = this.fb.group({

@@ -8,7 +8,7 @@ import {
     IonNote,
     IonIcon
 } from '@ionic/angular/standalone';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { informationCircleOutline } from 'ionicons/icons';
 import { SalaryType } from '../../models/contract.model';
@@ -28,6 +28,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
     templateUrl: './memorandum-modal.component.html',
     styleUrls: ['./memorandum-modal.component.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,

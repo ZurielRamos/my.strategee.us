@@ -36,14 +36,72 @@
         }
     }
 
-    .month-year {
+    .month-year-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 6px 12px;
+        border-radius: 10px;
+        transition: background 0.15s ease;
         font-size: 18px;
         font-weight: 700;
         color: var(--app-text-primary);
         letter-spacing: -0.3px;
+
+        &:hover {
+            background: var(--app-hover-bg);
+        }
+
+        .toggle-icon {
+            font-size: 14px;
+            color: var(--app-text-secondary);
+        }
     }
 }
 
+// ── Year picker ────────────────────────────────────────────────────────────
+
+.year-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 4px 0 8px;
+    animation: fadeIn 0.2s ease;
+
+    .year-cell {
+        background: var(--app-hover-bg);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 4px;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--app-text-primary);
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.15s ease;
+
+        &:hover:not(.disabled) {
+            background: var(--app-input-bg);
+            color: var(--ion-color-primary);
+            font-weight: 600;
+        }
+
+        &.selected {
+            background: var(--ion-color-primary);
+            color: var(--ion-color-primary-contrast);
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        &.disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+    }
+}
 .day-names {
     display: grid;
     grid-template-columns: repeat(7, 1fr);

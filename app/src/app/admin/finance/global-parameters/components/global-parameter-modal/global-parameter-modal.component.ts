@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { BaseModalComponent } from '../../../../../shared/components/base-modal/base-modal.component';
 import { TextInputComponent } from '../../../../../shared/components/text-input/text-input.component';
 import { DateInputComponent } from '../../../../../shared/components/date-input/date-input.component';
@@ -13,6 +13,7 @@ import { GlobalParameter } from '../../models/global-parameter.model';
   templateUrl: './global-parameter-modal.component.html',
   styleUrls: ['./global-parameter-modal.component.scss'],
   standalone: true,
+  providers: [ModalController],
   imports: [
     CommonModule,
     ReactiveFormsModule,

@@ -20,7 +20,7 @@ import {
     IonLabel,
     IonChip
 } from '@ionic/angular/standalone';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { closeOutline, cloudUploadOutline, checkmarkCircle, imageOutline } from 'ionicons/icons';
 import { MediaService } from '../../../admin/media/services/media.service';
@@ -32,6 +32,7 @@ import { MediaUploadModalComponent } from '../../../admin/media/components/media
     templateUrl: './attachment-selector-modal.component.html',
     styleUrls: ['./attachment-selector-modal.component.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         FormsModule,

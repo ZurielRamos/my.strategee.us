@@ -17,7 +17,7 @@ import {
     IonCheckbox,
     IonSpinner
 } from '@ionic/angular/standalone';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { closeOutline, trashOutline, createOutline } from 'ionicons/icons';
 import { Schedule, DayOfWeek, ScheduleDay } from '../../models/schedule.model';
@@ -27,6 +27,7 @@ import { Schedule, DayOfWeek, ScheduleDay } from '../../models/schedule.model';
     templateUrl: './schedule-modal.component.html',
     styleUrls: ['./schedule-modal.component.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,

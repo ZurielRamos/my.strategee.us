@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { BaseModalComponent } from '../../../../shared/components/base-modal/base-modal.component';
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
 import { EmergencyContactsService } from '../../../../shared/services/emergency-contacts.service';
@@ -11,6 +11,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
     selector: 'app-add-emergency-contact-modal',
     templateUrl: './add-emergency-contact-modal.component.html',
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,

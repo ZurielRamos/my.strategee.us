@@ -7,7 +7,7 @@ import {
     IonIcon,
     IonSpinner
 } from '@ionic/angular/standalone';
-import { ModalController, AlertController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { addOutline, createOutline, trashOutline, eyeOutline, briefcaseOutline } from 'ionicons/icons';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';

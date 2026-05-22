@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { Employee } from '../../models/employee.model';
 import { GENDER_OPTIONS } from '../../helpers/gender.helper';
 import { EmployeesService } from '../../services/employees.service';
@@ -17,6 +17,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
     templateUrl: './employee-modal.component.html',
     styleUrls: ['./employee-modal.component.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,

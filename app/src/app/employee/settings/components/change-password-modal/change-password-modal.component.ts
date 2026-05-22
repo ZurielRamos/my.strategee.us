@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { BaseModalComponent } from '../../../../shared/components/base-modal/base-modal.component';
@@ -13,6 +13,7 @@ import { AlertBoxComponent } from '../../../../shared/components/alert-box/alert
     templateUrl: './change-password-modal.component.html',
     styleUrls: ['./change-password-modal.component.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,

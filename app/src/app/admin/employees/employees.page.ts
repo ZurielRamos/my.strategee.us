@@ -13,7 +13,7 @@ import {
     IonSelectOption,
     IonItem
 } from '@ionic/angular/standalone';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
     addOutline, 
@@ -35,6 +35,7 @@ import { EmployeeCardComponent } from './components/employee-card/employee-card.
     templateUrl: './employees.page.html',
     styleUrls: ['./employees.page.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         FormsModule,

@@ -17,7 +17,7 @@ import {
     IonChip,
     IonLabel
 } from '@ionic/angular/standalone';
-import { ModalController, AlertController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { closeOutline, trashOutline, briefcaseOutline, checkmarkCircleOutline, pauseCircleOutline, chevronUpOutline, chevronDownOutline } from 'ionicons/icons';
 import { ContractsService } from '../../services/contracts.service';
@@ -29,6 +29,7 @@ import { formatCurrency } from '../../../../shared/helpers/currency.helper';
     templateUrl: './contract-history-modal.component.html',
     styleUrls: ['./contract-history-modal.component.scss'],
     standalone: true,
+    providers: [ModalController, AlertController],
     imports: [
         CommonModule,
         IonHeader,

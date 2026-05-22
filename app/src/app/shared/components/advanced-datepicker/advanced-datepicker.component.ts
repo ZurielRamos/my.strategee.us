@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IonIcon, IonButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { chevronBackOutline, chevronForwardOutline, closeOutline } from 'ionicons/icons';
+import { chevronBackOutline, chevronForwardOutline, chevronUpOutline, chevronDownOutline, closeOutline } from 'ionicons/icons';
 
 export interface DatePickerConfig {
     minDate?: Date;
@@ -51,9 +51,18 @@ export class AdvancedDatepickerComponent implements OnInit, ControlValueAccessor
     rangeStart: Date | null = null;
     rangeEnd: Date | null = null;
 
+    // Year/Month picker
+    showYearPicker = false;
+    yearPickerDecade: number = Math.floor(new Date().getFullYear() / 10) * 10;
+
     monthNames = [
         'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+
+    monthNamesShort = [
+        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+        'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
     ];
 
     dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
@@ -62,7 +71,7 @@ export class AdvancedDatepickerComponent implements OnInit, ControlValueAccessor
     private onTouched: () => void = () => {};
 
     constructor() {
-        addIcons({ chevronBackOutline, chevronForwardOutline, closeOutline });
+        addIcons({ chevronBackOutline, chevronForwardOutline, chevronUpOutline, chevronDownOutline, closeOutline });
     }
 
     ngOnInit() {
@@ -274,5 +283,46 @@ export class AdvancedDatepickerComponent implements OnInit, ControlValueAccessor
         if (!this.config.maxDate) return true;
         const lastDayOfMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 0);
         return lastDayOfMonth < this.config.maxDate;
+    }
+
+    // ── Year / Month picker ───────────────────────────────────────────────────
+
+    toggleYearPicker() {
+        this.showYearPicker = !this.showYearPicker;
+        if (this.showYearPicker) {
+            this.yearPickerDecade = Math.floor(this.currentMonth.getFullYear() / 10) * 10;
+        }
+    }
+
+    get decadeYears(): number[] {
+        return Array.from({ length: 12 }, (_, i) => this.yearPickerDecade + i);
+    }
+
+    get decadeLabel(): string {
+        return `${this.yearPickerDecade} – ${this.yearPickerDecade + 11}`;
+    }
+
+    previousDecade() {
+        this.yearPickerDecade -= 12;
+    }
+
+    nextDecade() {
+        this.yearPickerDecade += 12;
+    }
+
+    selectYear(year: number) {
+        this.currentMonth = new Date(year, this.currentMonth.getMonth(), 1);
+        this.showYearPicker = false;
+        this.generateCalendar();
+    }
+
+    isYearDisabled(year: number): boolean {
+        if (this.config.minDate && year < this.config.minDate.getFullYear()) return true;
+        if (this.config.maxDate && year > this.config.maxDate.getFullYear()) return true;
+        return false;
+    }
+
+    isCurrentYear(year: number): boolean {
+        return year === this.currentMonth.getFullYear();
     }
 }

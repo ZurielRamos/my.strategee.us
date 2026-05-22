@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { IonIcon, IonPopover } from '@ionic/angular/standalone';
-import { PopoverController } from '@ionic/angular';
+import { IonIcon, IonPopover, PopoverController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
     chevronDownOutline, chevronUpOutline, personOutline, settingsOutline,
@@ -18,6 +17,7 @@ import { PushNotificationService } from '../../services/push-notification.servic
     templateUrl: './user-profile.component.html',
     styleUrls: ['./user-profile.component.scss'],
     standalone: true,
+    providers: [PopoverController],
     imports: [CommonModule, IonIcon, IonPopover]
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
@@ -199,11 +199,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
         this.authService.logout().subscribe({
             next: () => {
-                this.router.navigate(['/auth/splash'], { replaceUrl: true });
+                this.router.navigate(['/auth/login'], { replaceUrl: true });
             },
             error: () => {
                 // Incluso si falla el endpoint, limpiar sesión local y redirigir
-                this.router.navigate(['/auth/splash'], { replaceUrl: true });
+                this.router.navigate(['/auth/login'], { replaceUrl: true });
             }
         });
     }

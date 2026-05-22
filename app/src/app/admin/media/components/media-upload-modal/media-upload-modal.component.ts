@@ -6,7 +6,7 @@ import {
     IonButton,
     IonProgressBar
 } from '@ionic/angular/standalone';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { cloudUploadOutline, documentOutline, closeOutline } from 'ionicons/icons';
 import { MediaService } from '../../services/media.service';
@@ -21,15 +21,16 @@ import { ToastService } from '../../../../shared/services/toast.service';
     templateUrl: './media-upload-modal.component.html',
     styleUrls: ['./media-upload-modal.component.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        BaseModalComponent,
-        TextInputComponent,
-        FormSelectComponent,
         IonIcon,
         IonButton,
-        IonProgressBar
+        IonProgressBar,
+        BaseModalComponent,
+        TextInputComponent,
+        FormSelectComponent
     ]
 })
 export class MediaUploadModalComponent implements OnInit {

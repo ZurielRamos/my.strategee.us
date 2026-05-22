@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { BenefitType, BENEFIT_TYPE_LABELS } from '../../models/benefit-allocation.model';
 import { BenefitsService } from '../../services/benefits.service';
 import { EmployeesService } from '../../services/employees.service';
@@ -16,6 +16,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
     templateUrl: './benefit-allocation-modal.component.html',
     styleUrls: ['./benefit-allocation-modal.component.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,

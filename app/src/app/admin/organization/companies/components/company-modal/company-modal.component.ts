@@ -6,7 +6,7 @@ import {
     IonIcon,
     IonImg
 } from '@ionic/angular/standalone';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { imageOutline, trashOutline } from 'ionicons/icons';
 import { Company } from '../../models/company.model';

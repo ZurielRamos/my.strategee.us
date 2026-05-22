@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonItem, IonLabel, IonInput, IonToggle } from '@ionic/angular/standalone';
-import { ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { CompensationFrequency, COMPENSATION_FREQUENCY_LABELS, CompensationCondition, COMPENSATION_CONDITION_LABELS } from '../../models/compensation.model';
 import { GlobalParametersService } from '../../../finance/global-parameters/services/global-parameters.service';
 import { GlobalParameter } from '../../../finance/global-parameters/models/global-parameter.model';
@@ -20,6 +20,7 @@ import { EmployeesService } from '../../services/employees.service';
     templateUrl: './compensation-modal.component.html',
     styleUrls: ['./compensation-modal.component.scss'],
     standalone: true,
+    providers: [ModalController],
     imports: [
         CommonModule,
         ReactiveFormsModule,
