@@ -36,7 +36,8 @@ echo "  .env encontrado OK"
 echo ""
 echo "==> Actualizando código desde GitHub..."
 cd "$PROJECT_DIR"
-sudo chown -R administrator:administrator "$PROJECT_DIR/.git"
+git config --global --add safe.directory "$PROJECT_DIR"
+sudo chown -R www:www "$PROJECT_DIR/.git"
 git pull origin main
 
 # --- Instalar dependencias ---
