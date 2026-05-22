@@ -42,7 +42,7 @@ import { PasswordVaultModule } from '@modules/security/password-vault/password-v
     }),
     ScheduleModule.forRoot(),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', 'app', 'www'),
+      rootPath: join(__dirname, '..', 'app', 'www'),
       exclude: ['/api/v1/{*path}'],
     }),
     IamModule,
