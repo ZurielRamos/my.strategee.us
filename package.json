@@ -3,14 +3,18 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "install:all": "npm install --prefix app && pnpm install --prefix api",
-    "build:app": "npm run build --prefix app",
-    "build:api": "pnpm run build --prefix api",
+    "postinstall": "npm install --prefix app && npm install --prefix api",
+    "install:all": "npm install --prefix app && npm install --prefix api",
+    "build:app": "npm run build --prefix app -- --output-path=../api/app/www",
+    "build:api": "npm run build --prefix api",
     "build": "npm run build:app && npm run build:api",
-    "start": "node api/dist/main",
-    "start:prod": "node api/dist/main",
-    "start:dev:api": "pnpm run start:dev --prefix api",
+    "start": "cd api && node dist/main",
+    "dev": "concurrently --names \"api,app\" --prefix-colors \"blue,green\" \"npm run start:dev --prefix api\" \"npm run start --prefix app\"",
+    "start:dev:api": "npm run start:dev --prefix api",
     "start:dev:app": "npm run start --prefix app",
     "deploy": "bash deploy.sh"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }

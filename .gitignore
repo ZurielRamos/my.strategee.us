@@ -35,6 +35,18 @@ app/ios/
 npm-debug.log*
 pnpm-debug.log*
 
+# Root
+node_modules/
+package-lock.json
+
+# API compiled output
+api/app/
+api/package-lock.json
+api/*.js
+api/*.js.map
+api/*.d.ts
+api/*.tsbuildinfo
+
 # Misc
 *.tmp
 temp.scss
