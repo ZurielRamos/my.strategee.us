@@ -15,7 +15,7 @@ export class QuizOption {
   @Column({ name: 'question_id', type: 'varchar', length: 36 })
   questionId: string;
 
-  @ManyToOne(() => QuizQuestion, (question) => question.options, { onDelete: 'NO ACTION' })
+  @ManyToOne(() => QuizQuestion, (question) => question.options, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'question_id' })
   question: QuizQuestion;
 

@@ -20,7 +20,9 @@ import {
     helpCircleOutline,
     chevronForwardOutline,
     refreshOutline,
-    openOutline
+    openOutline,
+    arrowForwardOutline,
+    schoolOutline
 } from 'ionicons/icons';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { TrainingsEmployeeService, QuizAnswer } from '../services/trainings-employee.service';
@@ -76,7 +78,9 @@ export class TrainingPlayerPage implements OnInit {
             helpCircleOutline,
             chevronForwardOutline,
             refreshOutline,
-            openOutline
+            openOutline,
+            arrowForwardOutline,
+            schoolOutline
         });
     }
 
@@ -87,12 +91,16 @@ export class TrainingPlayerPage implements OnInit {
         }
     }
 
-    loadTraining(id: string) {
+    loadTraining(id: string, onLoaded?: () => void) {
         this.isLoading = true;
         this.trainingsService.getMyTrainingDetail(id).subscribe({
             next: (training) => {
                 this.training = training;
                 this.isLoading = false;
+                if (onLoaded) {
+                    onLoaded();
+                    return;
+                }
                 // Abrir el primer material accesible no completado
                 const firstPending = training.materials.find(
                     m => m.isAccessible && !m.progress?.isCompleted
@@ -194,12 +202,21 @@ export class TrainingPlayerPage implements OnInit {
         this.trainingsService.submitQuiz(this.training.id, this.activeMaterial.id, answers).subscribe({
             next: (result) => {
                 this.quizResult = result;
-                this.currentView = 'quiz-result';
                 this.isSubmitting = false;
                 if (result.passed) {
-                    this.loadTraining(this.training!.id);
+                    // Recargar para actualizar isAccessible del siguiente material
+                    const currentMaterialId = this.activeMaterial!.id;
+                    this.loadTraining(this.training!.id, () => {
+                        // Restaurar activeMaterial al material actual (ya completado)
+                        const refreshed = this.training!.materials.find(m => m.id === currentMaterialId);
+                        if (refreshed) this.activeMaterial = refreshed;
+                        this.currentView = 'quiz-result';
+                    });
+                } else {
+                    this.currentView = 'quiz-result';
                 }
             },
+
             error: (error) => {
                 console.error('Error submitting quiz:', error);
                 this.isSubmitting = false;
@@ -208,7 +225,20 @@ export class TrainingPlayerPage implements OnInit {
         });
     }
 
-    retryQuiz() {
+    get nextMaterial(): MyTrainingMaterial | null {
+        if (!this.training || !this.activeMaterial) return null;
+        const sorted = this.sortedMaterials;
+        const currentIndex = sorted.findIndex(m => m.id === this.activeMaterial!.id);
+        const next = sorted[currentIndex + 1];
+        return next?.isAccessible ? next : null;
+    }
+
+    goToNextMaterial() {
+        const next = this.nextMaterial;
+        if (next) this.openMaterial(next);
+    }
+
+
         this.selectedAnswers = {};
         this.quizResult = null;
         this.currentView = 'quiz';

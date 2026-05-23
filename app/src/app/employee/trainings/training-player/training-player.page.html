@@ -202,7 +202,13 @@
                         Intentar de nuevo
                     </ion-button>
                     } @else {
-                    <ion-button expand="block" color="success" (click)="goBack()">
+                    @if (nextMaterial) {
+                    <ion-button expand="block" color="primary" (click)="goToNextMaterial()">
+                        <ion-icon name="arrow-forward-outline" slot="start"></ion-icon>
+                        Ver siguiente material
+                    </ion-button>
+                    }
+                    <ion-button expand="block" [fill]="nextMaterial ? 'outline' : 'solid'" color="success" (click)="goBack()">
                         <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
                         Volver a mis capacitaciones
                     </ion-button>

@@ -132,7 +132,13 @@ export class TrainingAssignmentsService {
 
     const training = await this.trainingRepository.findOne({
       where: { id: trainingId },
-      relations: ['materials', 'materials.quiz', 'materials.attachment'],
+      relations: [
+        'materials',
+        'materials.attachment',
+        'materials.quiz',
+        'materials.quiz.questions',
+        'materials.quiz.questions.options',
+      ],
       order: { materials: { orderIndex: 'ASC' } },
     });
 

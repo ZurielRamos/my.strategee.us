@@ -19,7 +19,7 @@ export class TrainingQuiz {
   @Column({ name: 'material_id', type: 'varchar', length: 36, unique: true })
   materialId: string;
 
-  @OneToOne(() => TrainingMaterial, (material) => material.quiz, { onDelete: 'NO ACTION' })
+  @OneToOne(() => TrainingMaterial, (material) => material.quiz, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'material_id' })
   material: TrainingMaterial;
 
