@@ -46,7 +46,8 @@ export class MailService {
         resetToken: string,
         userName: string,
     ): Promise<void> {
-        const resetLink = `${process.env.APP_URL}/auth/reset-password?token=${resetToken}`;
+        const baseUrl = process.env.FRONTEND_URL || process.env.APP_URL;
+        const resetLink = `${baseUrl}/auth/reset-password?token=${resetToken}`;
         const subject = 'Solicitud de Restablecimiento de Contraseña';
 
         await this.mailerService.sendMail({
@@ -73,7 +74,8 @@ export class MailService {
         employeeName: string,
         setupToken: string,
     ): Promise<void> {
-        const setupLink = `${process.env.APP_URL}/auth/set-password?token=${setupToken}`;
+        const baseUrl = process.env.FRONTEND_URL || process.env.APP_URL;
+        const setupLink = `${baseUrl}/auth/set-password?token=${setupToken}`;
         const subject = 'Bienvenido - Configura tu Contraseña';
 
         await this.mailerService.sendMail({
