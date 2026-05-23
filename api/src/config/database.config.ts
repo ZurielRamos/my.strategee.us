@@ -10,6 +10,6 @@ export default registerAs('database', () => ({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
     entities: ['dist/**/*.entity{.ts,.js}'],
-    synchronize: true,
+    synchronize: process.env.DB_SYNC === 'true',
     namingStrategy: new SnakeNamingStrategy()
 }));
