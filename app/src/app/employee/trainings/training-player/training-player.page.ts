@@ -238,7 +238,7 @@ export class TrainingPlayerPage implements OnInit {
         if (next) this.openMaterial(next);
     }
 
-
+    retryQuiz() {
         this.selectedAnswers = {};
         this.quizResult = null;
         this.currentView = 'quiz';
