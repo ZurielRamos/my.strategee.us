@@ -1,0 +1,83 @@
+<app-page-header></app-page-header>
+
+<ion-content [fullscreen]="true" class="trainings-content">
+    <div class="page-container">
+        <div class="page-title-section">
+            <h1>
+                <ion-icon name="school-outline"></ion-icon>
+                Mis Capacitaciones
+            </h1>
+            <p>Completa tus capacitaciones asignadas</p>
+        </div>
+
+        <!-- Alerta de obligatorias pendientes -->
+        @if (mandatoryPending.length > 0) {
+        <div class="mandatory-alert">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <span>
+                Tienes {{ mandatoryPending.length }} capacitación(es) obligatoria(s) pendiente(s).
+                Debes completarlas para acceder a todas las funciones de la app.
+            </span>
+        </div>
+        }
+
+        @if (isLoading) {
+        <div class="loading-state">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Cargando capacitaciones...</p>
+        </div>
+        } @else if (trainings.length === 0) {
+        <div class="empty-state">
+            <ion-icon name="school-outline"></ion-icon>
+            <p>No tienes capacitaciones asignadas</p>
+        </div>
+        } @else {
+        <div class="trainings-list">
+            @for (item of trainings; track item.training.id) {
+            <div class="training-card" (click)="openTraining(item)">
+                <div class="card-header">
+                    <div class="card-title-row">
+                        <h3>{{ item.training.title }}</h3>
+                        <div class="badges">
+                            @if (item.training.isMandatory) {
+                            <ion-badge color="danger">Obligatoria</ion-badge>
+                            }
+                            <ion-badge [color]="getStatusColor(item.assignment.status)">
+                                {{ getStatusLabel(item.assignment.status) }}
+                            </ion-badge>
+                        </div>
+                    </div>
+                    @if (item.training.description) {
+                    <p class="card-description">{{ item.training.description }}</p>
+                    }
+                </div>
+
+                <div class="card-progress">
+                    <div class="progress-label">
+                        <span>Progreso</span>
+                        <span>{{ item.progress.completed }} / {{ item.progress.total }} materiales</span>
+                    </div>
+                    <ion-progress-bar
+                        [value]="getProgressValue(item)"
+                        [color]="item.assignment.status === 'completed' ? 'success' : 'primary'">
+                    </ion-progress-bar>
+                </div>
+
+                <div class="card-footer">
+                    <span class="date-info">
+                        <ion-icon name="time-outline"></ion-icon>
+                        Disponible hasta: {{ formatDate(item.training.endsAt) }}
+                    </span>
+                    @if (item.assignment.status === 'completed') {
+                    <span class="completed-info">
+                        <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+                        Completada el {{ formatDate(item.assignment.completedAt!) }}
+                    </span>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</ion-content>

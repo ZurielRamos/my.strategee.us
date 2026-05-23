@@ -4,6 +4,8 @@ import { Observable, from, catchError, throwError, BehaviorSubject, switchMap, m
 import { Preferences } from '@capacitor/preferences';
 import { environment } from 'src/environments/environment';
 import { AuthResponse, AuthUser, RefreshResponse, SignInRequest } from '../models/auth.model';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut as firebaseSignOut } from 'firebase/auth';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
@@ -28,10 +30,17 @@ export class AuthService {
     readonly storageReady: Promise<void>;
 
     constructor(private http: HttpClient) {
+        // Inicializar Firebase si no está inicializado
+        const firebaseApp = getApps().length ? getApp() : initializeApp(environment.firebase);
+        this._firebaseAuth = getAuth(firebaseApp);
+
         // Al iniciar la app, restauramos el usuario desde el storage persistente.
         // Guardamos la Promise para que los guards puedan esperarla.
         this.storageReady = this.loadUserFromStorage();
     }
+
+    /** Instancia de Firebase Auth */
+    private _firebaseAuth: ReturnType<typeof getAuth>;
 
     // ─────────────────────────────────────────────────────────────────────────
     // Auth endpoints
@@ -79,8 +88,48 @@ export class AuthService {
         );
     }
 
-    forgotPassword(email: string): Observable<any> {
-        return this.http.post(`${this.apiUrl}/auth/forgot-password`, { email }).pipe(
+    /**
+     * Inicia sesión con Google usando Firebase Authentication.
+     * Solo permite el acceso si el correo está registrado como usuario activo.
+     */
+    signInWithGoogle(): Observable<AuthResponse> {
+        const provider = new GoogleAuthProvider();
+        return from(signInWithPopup(this._firebaseAuth, provider)).pipe(
+            switchMap((result) => from(result.user.getIdToken()).pipe(
+                switchMap((idToken) =>
+                    this.http.post<AuthResponse>(`${this.apiUrl}/auth/google`, { idToken }).pipe(
+                        switchMap((response) =>
+                            from(this.storeTokens(response.accessToken, response.refreshToken)).pipe(
+                                switchMap(() => {
+                                    if (response.user.employeeId) {
+                                        return this.http.get<any>(`${this.apiUrl}/employees/profile`).pipe(
+                                            map(profile => {
+                                                response.user.profile = profile;
+                                                return response;
+                                            }),
+                                            catchError(() => from([response]))
+                                        );
+                                    }
+                                    return from([response]);
+                                }),
+                                switchMap(updatedResponse =>
+                                    from(this.storeUser(updatedResponse.user)).pipe(map(() => updatedResponse))
+                                )
+                            )
+                        )
+                    )
+                )
+            )),
+            catchError((error) => {
+                // Cerrar sesión de Firebase para no dejar estado inconsistente
+                firebaseSignOut(this._firebaseAuth).catch(() => { });
+                const message = error?.error?.message || error?.message || 'Error al iniciar sesión con Google';
+                return throwError(() => new Error(message));
+            })
+        );
+    }
+
+    forgotPassword(email: string): Observable<any> {        return this.http.post(`${this.apiUrl}/auth/forgot-password`, { email }).pipe(
             catchError((error) => {
                 const message = error?.error?.message || 'Error al enviar el correo';
                 return throwError(() => new Error(message));

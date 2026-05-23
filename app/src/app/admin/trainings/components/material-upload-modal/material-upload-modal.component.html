@@ -1,0 +1,86 @@
+<app-base-modal
+    title="Subir Material"
+    subtitle="Sube un PDF o video para esta capacitación"
+    confirmText="Subir Material"
+    [confirmDisabled]="!canSubmit"
+    [loading]="isUploading"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+
+    <form [formGroup]="form">
+        <!-- Title Field -->
+        <app-text-input
+            formControlName="title"
+            label="Título del material"
+            placeholder="Ej: Introducción a la seguridad"
+            [required]="true"
+            [maxlength]="200">
+        </app-text-input>
+
+        <!-- File Input -->
+        <div class="file-section">
+            <label class="file-label">Archivo</label>
+            <div class="file-drop-area" (click)="fileInput.click()">
+                @if (!selectedFile) {
+                <div class="drop-placeholder">
+                    <ion-icon name="cloud-upload-outline"></ion-icon>
+                    <p>Haz clic para seleccionar un archivo</p>
+                    <span>PDF, MP4, WebM, OGG</span>
+                </div>
+                } @else {
+                <div class="file-selected">
+                    <ion-icon name="document-outline"></ion-icon>
+                    <span class="file-name">{{ selectedFile.name }}</span>
+                    <span class="file-size">{{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB</span>
+                </div>
+                }
+            </div>
+            <input
+                #fileInput
+                type="file"
+                [accept]="acceptedTypes"
+                (change)="onFileSelected($event)"
+                style="display: none">
+
+            @if (fileError) {
+            <p class="field-error">{{ fileError }}</p>
+            }
+        </div>
+
+        <!-- Preview -->
+        @if (selectedFile) {
+        <div class="preview-section">
+            <label class="file-label">Vista previa</label>
+
+            @if (isPdf) {
+            <div class="pdf-preview">
+                <ion-icon name="document-outline"></ion-icon>
+                <div class="pdf-info">
+                    <span class="pdf-name">{{ selectedFile.name }}</span>
+                    <span class="pdf-type">Documento PDF</span>
+                </div>
+            </div>
+            }
+
+            @if (isVideo && previewUrl) {
+            <div class="video-preview">
+                <video [src]="previewUrl" controls preload="metadata" class="video-player">
+                    Tu navegador no soporta la reproducción de video.
+                </video>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- Upload Progress -->
+        @if (isUploading) {
+        <div class="upload-progress">
+            <div class="progress-header">
+                <span>Subiendo archivo...</span>
+                <span>{{ uploadProgress }}%</span>
+            </div>
+            <ion-progress-bar [value]="uploadProgress / 100" color="primary"></ion-progress-bar>
+        </div>
+        }
+    </form>
+</app-base-modal>

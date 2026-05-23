@@ -160,4 +160,32 @@ export class LoginPage implements OnInit {
     goToForgotPassword() {
         this.router.navigate(['/auth/forgot-password']);
     }
+
+    async signInWithGoogle() {
+        const loading = await this.loadingCtrl.create({
+            message: 'Conectando con Google...',
+            spinner: 'crescent',
+            cssClass: 'custom-loading'
+        });
+        await loading.present();
+
+        this.authService.signInWithGoogle().subscribe({
+            next: async (response) => {
+                await loading.dismiss();
+                const roles = response.user?.roles || [];
+
+                if (roles.includes('ADMIN')) {
+                    await this.router.navigate(['/admin/dashboard'], { replaceUrl: true });
+                } else if (roles.includes('EMPLOYEE')) {
+                    await this.router.navigate(['/employee/dashboard'], { replaceUrl: true });
+                } else {
+                    await this.router.navigate(['/auth/login'], { replaceUrl: true });
+                }
+            },
+            error: async (err) => {
+                await loading.dismiss();
+                await this.showToast(err.message || 'Error al iniciar sesión con Google');
+            }
+        });
+    }
 }

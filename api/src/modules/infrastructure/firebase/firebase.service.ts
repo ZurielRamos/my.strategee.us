@@ -12,9 +12,9 @@ export class FirebaseService implements OnModuleInit {
 
     onModuleInit() {
         const storageBucket = this.configService.get<string>('firebase.storageBucket');
-        
+
         this.logger.log(`Firebase Storage Bucket from config: "${storageBucket}"`);
-        
+
         if (!admin.apps.length) {
             const config: admin.AppOptions = {
                 credential: admin.credential.cert({
@@ -23,29 +23,29 @@ export class FirebaseService implements OnModuleInit {
                     privateKey: this.configService.get<string>('firebase.privateKey'),
                 }),
             };
-            
-            // Only add storageBucket if it's defined and not empty
+
             if (storageBucket && storageBucket.trim() !== '') {
                 config.storageBucket = storageBucket;
-                this.logger.log(`Adding storageBucket to Firebase config: "${storageBucket}"`);
-                
                 admin.initializeApp(config);
                 this.logger.log('Firebase Admin SDK initialized with Storage');
-                
-                // Initialize bucket after Firebase is initialized with storageBucket
-                try {
-                    this.bucket = admin.storage().bucket();
-                    this.logger.log(`Firebase Storage bucket initialized: ${storageBucket}`);
-                } catch (error) {
-                    this.logger.error(`Failed to initialize Firebase Storage bucket: ${error.message}`);
-                    this.logger.warn('File upload features will not be available.');
-                }
             } else {
-                this.logger.warn(`Storage bucket is empty or invalid: "${storageBucket}"`);
                 admin.initializeApp(config);
                 this.logger.log('Firebase Admin SDK initialized without Storage');
-                this.logger.warn('Firebase Storage bucket not configured. File upload features will not be available.');
             }
+        } else {
+            this.logger.log('Firebase Admin SDK already initialized, reusing existing app');
+        }
+
+        // Intentar obtener el bucket siempre, independientemente de quién inicializó Firebase
+        if (storageBucket && storageBucket.trim() !== '') {
+            try {
+                this.bucket = admin.storage().bucket(storageBucket);
+                this.logger.log(`Firebase Storage bucket initialized: ${storageBucket}`);
+            } catch (error) {
+                this.logger.error(`Failed to initialize Firebase Storage bucket: ${error.message}`);
+            }
+        } else {
+            this.logger.warn('Firebase Storage bucket not configured. File upload features will not be available.');
         }
     }
 

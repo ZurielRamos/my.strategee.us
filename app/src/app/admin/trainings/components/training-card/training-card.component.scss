@@ -1,0 +1,99 @@
+.training-card {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    ion-card-header {
+        padding: 20px;
+        border-bottom: 1px solid var(--app-border);
+
+        .card-header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+
+            .training-icon {
+                width: 56px;
+                height: 56px;
+                border-radius: 14px;
+                background: var(--app-hover-bg);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+
+                ion-icon {
+                    font-size: 28px;
+                    color: var(--app-text-secondary);
+                }
+            }
+
+            .training-info {
+                flex: 1;
+                min-width: 0;
+
+                ion-card-title {
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: var(--app-text-primary);
+                    margin: 0 0 8px 0;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .training-badges {
+                    display: flex;
+                    gap: 6px;
+                    flex-wrap: wrap;
+
+                    ion-badge {
+                        font-size: 10px;
+                        font-weight: 600;
+                        padding: 4px 8px;
+                        border-radius: 10px;
+                        text-transform: uppercase;
+                        letter-spacing: 0.3px;
+                    }
+                }
+            }
+        }
+    }
+
+    ion-card-content {
+        padding: 16px 20px 20px 20px;
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: var(--app-text-secondary);
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            ion-icon {
+                font-size: 18px;
+                color: var(--app-text-secondary);
+                flex-shrink: 0;
+            }
+
+            span {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+}

@@ -4,4 +4,5 @@ export enum AttachmentFolder {
     CONTRACTS = 'contracts',
     REQUESTS = 'requests',
     LOGOS = 'logos',
+    TRAININGS = 'trainings',
 }

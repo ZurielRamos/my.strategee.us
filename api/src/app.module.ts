@@ -24,6 +24,7 @@ import { SystemModule } from '@modules/system/system.module';
 import { NotificationsModule } from '@modules/notifications/notifications.module';
 import { PushNotificationsModule } from '@modules/notifications/push-notifications.module';
 import { PasswordVaultModule } from '@modules/security/password-vault/password-vault.module';
+import { TrainingsModule } from '@modules/trainings/trainings.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { PasswordVaultModule } from '@modules/security/password-vault/password-v
     }),
     AuditModule,
     OperationsModule,
+    TrainingsModule,
     EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],

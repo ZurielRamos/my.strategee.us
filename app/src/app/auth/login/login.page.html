@@ -2,6 +2,9 @@
     <div class="login-wrapper">
         <!-- Header -->
         <div class="login-header">
+            <div class="login-logo">
+                <img src="assets/icono-strategee.png" alt="My Strategee" />
+            </div>
             <h1 class="login-title">Iniciar sesión</h1>
             <p class="login-subtitle">
                 Al iniciar sesión, aceptas nuestros
@@ -52,13 +55,9 @@
                             <span>O continuar con</span>
                         </div>
                         <div class="social-btn-group">
-                            <ion-button expand="block" fill="outline" class="social-btn">
+                            <ion-button expand="block" fill="outline" class="social-btn" (click)="signInWithGoogle()">
                                 <ion-icon name="logo-google" slot="start"></ion-icon>
                                 Google
-                            </ion-button>
-                            <ion-button expand="block" fill="outline" class="social-btn">
-                                <ion-icon name="logo-apple" slot="start"></ion-icon>
-                                Apple
                             </ion-button>
                         </div>
                     </div>

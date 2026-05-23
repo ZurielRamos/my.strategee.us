@@ -1,0 +1,270 @@
+// Títulos de sección
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--app-text-primary);
+    margin: 24px 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--app-border-light);
+
+    &:first-child {
+        margin-top: 0;
+    }
+}
+
+// Grid para campos en fila
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    @media (max-width: 576px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// Error de validación de fechas
+.field-error {
+    font-size: 12px;
+    color: var(--ion-color-danger);
+    margin: -8px 0 16px 4px;
+    line-height: 1.4;
+}
+
+// Toggle item
+.toggle-item {
+    --background: var(--app-hover-bg);
+    --border-radius: 12px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --inner-padding-end: 0;
+    border-radius: 12px;
+    margin-bottom: 8px;
+
+    ion-label {
+        h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--app-text-primary);
+            margin: 0 0 4px 0;
+        }
+
+        p {
+            font-size: 12px;
+            color: var(--app-text-secondary);
+            margin: 0;
+            white-space: normal;
+        }
+    }
+}
+
+.section-hint {
+    font-size: 12px;
+    color: var(--app-text-secondary);
+    margin: -8px 0 12px 0;
+}
+
+// Assignment mode selector
+.assignment-mode-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.mode-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 2px solid var(--app-border-light);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+
+    &:hover {
+        border-color: var(--ion-color-primary-tint);
+        background: rgba(var(--ion-color-primary-rgb), 0.04);
+    }
+
+    &.selected {
+        border-color: var(--ion-color-primary);
+        background: rgba(var(--ion-color-primary-rgb), 0.06);
+    }
+
+    .mode-radio {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 2px solid var(--ion-color-medium);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 2px;
+
+        .radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--ion-color-primary);
+        }
+    }
+
+    &.selected .mode-radio {
+        border-color: var(--ion-color-primary);
+    }
+
+    .mode-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        .mode-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--app-text-primary);
+        }
+
+        .mode-desc {
+            font-size: 12px;
+            color: var(--app-text-secondary);
+        }
+    }
+}
+
+// Employee selector
+.employee-selector {
+    margin-bottom: 16px;
+
+    .employee-selector-hint {
+        font-size: 13px;
+        color: var(--app-text-secondary);
+        margin-bottom: 10px;
+    }
+
+    .employees-loading {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .employees-list {
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid var(--app-border-light);
+        border-radius: 8px;
+    }
+}
+
+.employee-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--app-border-light);
+    font-size: 13px;
+    transition: background 0.1s;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &:hover {
+        background: var(--app-hover-bg);
+    }
+
+    &.selected {
+        background: rgba(var(--ion-color-primary-rgb), 0.06);
+    }
+
+    .emp-checkbox {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        border: 2px solid var(--ion-color-medium);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 12px;
+        color: var(--ion-color-primary);
+    }
+
+    &.selected .emp-checkbox {
+        border-color: var(--ion-color-primary);
+        background: rgba(var(--ion-color-primary-rgb), 0.1);
+    }
+}
+
+// ─── Status selector ─────────────────────────────────────────────────────────
+
+.status-selector {
+    margin-top: 16px;
+
+    .status-label {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--ion-color-medium);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 10px;
+    }
+
+    .status-options {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .status-option {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 1.5px solid var(--ion-color-light-shade);
+        font-size: 0.88rem;
+        cursor: pointer;
+        transition: all 0.15s;
+        color: var(--ion-color-dark);
+
+        &:hover { border-color: var(--ion-color-primary); }
+
+        &.selected {
+            border-color: var(--ion-color-primary);
+            background: rgba(var(--ion-color-primary-rgb), 0.08);
+            font-weight: 600;
+        }
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+
+        &.draft    { background: #9e9e9e; }
+        &.active   { background: #4caf50; }
+        &.inactive { background: #ff9800; }
+        &.expired  { background: #f44336; }
+    }
+}
+
+.assignment-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: rgba(var(--ion-color-primary-rgb), 0.06);
+    border-radius: 8px;
+    font-size: 0.83rem;
+    color: var(--ion-color-medium-shade);
+
+    ion-icon { font-size: 16px; flex-shrink: 0; color: var(--ion-color-primary); }
+}

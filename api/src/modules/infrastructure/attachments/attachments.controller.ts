@@ -7,6 +7,7 @@ import {
     Param,
     Body,
     Query,
+    Res,
     UploadedFile,
     UploadedFiles,
     UseInterceptors,
@@ -15,6 +16,7 @@ import {
     HttpCode,
     HttpStatus,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import {
     ApiTags,
@@ -114,6 +116,30 @@ export class AttachmentsController {
     @ApiOperation({ summary: 'Listar attachments con filtros y paginación' })
     findAll(@Query() dto: FindAttachmentsDto) {
         return this.attachmentsService.findAll(dto);
+    }
+
+    // ─── Proxy de archivo (evita CORS con Firebase Storage) ───────────────────
+
+    @Get(':id/proxy')
+    @Roles(Role.ADMIN, Role.HR_MANAGER, Role.EMPLOYEE)
+    @ApiOperation({ summary: 'Proxy del archivo — sirve el contenido sin CORS' })
+    async proxy(
+        @Param('id', ParseUUIDPipe) id: string,
+        @Res() res: Response,
+    ): Promise<void> {
+        const attachment = await this.attachmentsService.findOne(id);
+        const response = await fetch(attachment.url);
+        if (!response.ok) {
+            res.status(502).json({ message: 'Error fetching file from storage' });
+            return;
+        }
+        const contentType = response.headers.get('content-type') ?? attachment.mimeType ?? 'application/octet-stream';
+        const contentLength = response.headers.get('content-length');
+        res.setHeader('Content-Type', contentType);
+        res.setHeader('Cache-Control', 'private, max-age=3600');
+        if (contentLength) res.setHeader('Content-Length', contentLength);
+        const buffer = Buffer.from(await response.arrayBuffer());
+        res.send(buffer);
     }
 
     // ─── Detalle ───────────────────────────────────────────────────────────────

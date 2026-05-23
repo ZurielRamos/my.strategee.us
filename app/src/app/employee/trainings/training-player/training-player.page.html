@@ -1,0 +1,218 @@
+<app-page-header></app-page-header>
+
+<ion-content [fullscreen]="true" class="player-content">
+    @if (isLoading) {
+    <div class="loading-state">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Cargando capacitación...</p>
+    </div>
+    } @else if (training) {
+    <div class="player-layout">
+
+        <!-- Sidebar: lista de materiales -->
+        <div class="materials-sidebar">
+            <div class="sidebar-header">
+                <button class="back-btn" (click)="goBack()">
+                    <ion-icon name="arrow-back-outline"></ion-icon>
+                </button>
+                <div class="sidebar-title">
+                    <h3>{{ training.title }}</h3>
+                    @if (training.isMandatory) {
+                    <ion-badge color="danger">Obligatoria</ion-badge>
+                    }
+                </div>
+            </div>
+
+            <div class="overall-progress">
+                <div class="progress-label">
+                    <span>Progreso general</span>
+                    <span>{{ completedCount }} / {{ training.materials.length }}</span>
+                </div>
+                <ion-progress-bar
+                    [value]="overallProgress"
+                    [color]="training.assignment.status === 'completed' ? 'success' : 'primary'">
+                </ion-progress-bar>
+            </div>
+
+            <div class="materials-list">
+                @for (material of sortedMaterials; track material.id) {
+                <div
+                    class="material-item"
+                    [class.active]="isActiveMaterial(material)"
+                    [class.completed]="material.progress?.isCompleted"
+                    [class.locked]="!material.isAccessible"
+                    (click)="openMaterial(material)">
+
+                    <div class="material-icon">
+                        @if (!material.isAccessible) {
+                        <ion-icon name="lock-closed-outline" color="medium"></ion-icon>
+                        } @else if (material.progress?.isCompleted) {
+                        <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+                        } @else {
+                        <ion-icon [name]="getMaterialIcon(material.attachment?.mimeType)" color="primary"></ion-icon>
+                        }
+                    </div>
+
+                    <div class="material-info">
+                        <span class="material-title">{{ material.title }}</span>
+                        @if (material.quiz) {
+                        <span class="quiz-indicator">
+                            <ion-icon name="help-circle-outline"></ion-icon>
+                            Quiz incluido
+                        </span>
+                        }
+                    </div>
+
+                    @if (isActiveMaterial(material)) {
+                    <ion-icon name="chevron-forward-outline" class="active-indicator"></ion-icon>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+
+        <!-- Main area: visor de material / quiz -->
+        <div class="player-main">
+            @if (!activeMaterial) {
+            <div class="empty-player">
+                <ion-icon name="school-outline"></ion-icon>
+                <p>Selecciona un material para comenzar</p>
+            </div>
+            } @else {
+
+            <!-- Vista: Material -->
+            @if (currentView === 'material') {
+            <div class="material-viewer">
+                <div class="viewer-header">
+                    <h2>{{ activeMaterial.title }}</h2>
+                </div>
+
+                <!-- Video -->
+                @if (activeMaterial.attachment?.mimeType?.startsWith('video/')) {
+                <div class="video-container">
+                    <video
+                        controls
+                        [src]="activeMaterial.attachment.url"
+                        (ended)="onVideoEnded()"
+                        class="video-player">
+                        Tu navegador no soporta la reproducción de video.
+                    </video>
+                    <p class="viewer-hint">Mira el video completo para continuar.</p>
+                </div>
+                }
+
+                <!-- PDF -->
+                @if (activeMaterial.attachment?.mimeType === 'application/pdf') {
+                <div class="pdf-container">
+                    <app-pdf-viewer [attachmentId]="activeMaterial.attachment.id"></app-pdf-viewer>
+                    <div class="pdf-actions">
+                        <p class="viewer-hint">Lee el documento completo y luego haz clic en el botón.</p>
+                        <ion-button
+                            (click)="onPdfFinished()"
+                            [disabled]="isSubmitting || activeMaterial.progress?.isCompleted">
+                            @if (isSubmitting) {
+                            <ion-spinner name="crescent" slot="start"></ion-spinner>
+                            }
+                            @if (activeMaterial.progress?.isCompleted) {
+                            <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+                            Ya completado
+                            } @else {
+                            He terminado de leer
+                            }
+                        </ion-button>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+
+            <!-- Vista: Quiz -->
+            @if (currentView === 'quiz' && activeMaterial.quiz) {
+            <div class="quiz-view">
+                <div class="quiz-header">
+                    <h2>Quiz: {{ activeMaterial.title }}</h2>
+                    <p>Puntaje mínimo para aprobar: {{ activeMaterial.quiz.passingScore }}%</p>
+                </div>
+
+                <div class="questions-list">
+                    @for (question of activeMaterial.quiz.questions; track question.id; let qi = $index) {
+                    <div class="question-card">
+                        <p class="question-text">{{ qi + 1 }}. {{ question.text }}</p>
+                        <div class="options-list">
+                            @for (option of question.options; track option.id) {
+                            <div
+                                class="option-item"
+                                [class.selected]="isAnswerSelected(question.id, option.id)"
+                                (click)="selectAnswer(question.id, option.id)">
+                                <div class="option-radio">
+                                    @if (isAnswerSelected(question.id, option.id)) {
+                                    <div class="radio-dot"></div>
+                                    }
+                                </div>
+                                <span>{{ option.text }}</span>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                    }
+                </div>
+
+                <div class="quiz-actions">
+                    <ion-button
+                        expand="block"
+                        (click)="submitQuiz()"
+                        [disabled]="!allQuestionsAnswered || isSubmitting">
+                        @if (isSubmitting) {
+                        <ion-spinner name="crescent" slot="start"></ion-spinner>
+                        }
+                        Enviar respuestas
+                    </ion-button>
+                </div>
+            </div>
+            }
+
+            <!-- Vista: Resultado del quiz -->
+            @if (currentView === 'quiz-result' && quizResult) {
+            <div class="quiz-result-view">
+                <div class="result-header" [class.passed]="quizResult.passed" [class.failed]="!quizResult.passed">
+                    <ion-icon [name]="quizResult.passed ? 'checkmark-circle-outline' : 'close-circle-outline'"></ion-icon>
+                    <h2>{{ quizResult.passed ? '¡Aprobado!' : 'No aprobado' }}</h2>
+                    <p class="score-display">
+                        Puntaje: <strong>{{ quizResult.score | number:'1.0-1' }}%</strong>
+                        / Mínimo requerido: <strong>{{ quizResult.passingScore }}%</strong>
+                    </p>
+                </div>
+
+                @if (!quizResult.passed && quizResult.incorrectQuestions.length > 0) {
+                <div class="incorrect-questions">
+                    <h3>Respuestas incorrectas:</h3>
+                    @for (iq of quizResult.incorrectQuestions; track iq.questionId) {
+                    <div class="incorrect-item">
+                        <ion-icon name="close-circle-outline" color="danger"></ion-icon>
+                        <span>{{ iq.questionText }}</span>
+                    </div>
+                    }
+                </div>
+                }
+
+                <div class="result-actions">
+                    @if (!quizResult.passed) {
+                    <ion-button expand="block" (click)="retryQuiz()">
+                        <ion-icon name="refresh-outline" slot="start"></ion-icon>
+                        Intentar de nuevo
+                    </ion-button>
+                    } @else {
+                    <ion-button expand="block" color="success" (click)="goBack()">
+                        <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+                        Volver a mis capacitaciones
+                    </ion-button>
+                    }
+                </div>
+            </div>
+            }
+
+            }
+        </div>
+    </div>
+    }
+</ion-content>

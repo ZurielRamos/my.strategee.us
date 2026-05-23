@@ -1,0 +1,260 @@
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 16px;
+
+    ion-spinner {
+        --color: var(--app-text-primary);
+        transform: scale(1.3);
+    }
+
+    p {
+        color: var(--app-text-secondary);
+        font-size: 14px;
+        margin: 0;
+    }
+}
+
+.exclusion-content {
+    padding-bottom: 16px;
+}
+
+// ─── Sections ─────────────────────────────────────────────────────────────────
+
+.section {
+    margin-bottom: 24px;
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--app-text-primary);
+            margin: 0;
+
+            ion-icon {
+                font-size: 18px;
+                color: var(--app-text-secondary);
+            }
+        }
+
+        ion-button {
+            --border-radius: 8px;
+            height: 36px;
+            font-weight: 600;
+            text-transform: none;
+        }
+    }
+}
+
+.excluded-section {
+    border-top: 1px solid var(--app-hover-bg);
+    padding-top: 20px;
+}
+
+.empty-section {
+    padding: 20px;
+    background: var(--app-hover-bg);
+    border-radius: 10px;
+    text-align: center;
+
+    p {
+        color: var(--app-text-secondary);
+        font-size: 13px;
+        margin: 0;
+    }
+}
+
+// ─── Employee List ────────────────────────────────────────────────────────────
+
+.employees-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 4px;
+
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: var(--app-hover-bg);
+        border-radius: 2px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 2px;
+    }
+}
+
+.employee-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--app-hover-bg);
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+
+    &:hover {
+        background: rgba(var(--ion-color-primary-rgb), 0.06);
+    }
+
+    &.selected {
+        background: rgba(var(--ion-color-primary-rgb), 0.1);
+        border-color: rgba(var(--ion-color-primary-rgb), 0.3);
+    }
+
+    &.excluded-row {
+        cursor: default;
+
+        &:hover {
+            background: var(--app-hover-bg);
+        }
+    }
+
+    ion-checkbox {
+        flex-shrink: 0;
+    }
+
+    .employee-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+
+        .employee-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--app-text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .employee-doc {
+            font-size: 12px;
+            color: var(--app-text-secondary);
+        }
+    }
+
+    ion-button {
+        flex-shrink: 0;
+        --border-radius: 8px;
+        height: 34px;
+        font-weight: 600;
+        text-transform: none;
+    }
+}
+
+// ─── Search Box ──────────────────────────────────────────────────────────────
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--app-hover-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+
+    &:focus-within {
+        border-color: var(--ion-color-primary);
+    }
+
+    .search-icon {
+        font-size: 18px;
+        color: var(--app-text-secondary);
+        flex-shrink: 0;
+    }
+
+    .search-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        outline: none;
+        font-size: 14px;
+        color: var(--app-text-primary);
+
+        &::placeholder {
+            color: var(--app-text-tertiary);
+        }
+    }
+
+    .clear-icon {
+        font-size: 18px;
+        color: var(--app-text-secondary);
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: color 0.15s;
+
+        &:hover {
+            color: var(--app-text-primary);
+        }
+    }
+}
+
+.search-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    color: var(--app-text-secondary);
+    font-size: 13px;
+
+    ion-spinner {
+        --color: var(--app-text-secondary);
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.search-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 12px;
+    color: var(--app-text-tertiary);
+    font-size: 13px;
+
+    ion-icon {
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+}
+
+// ─── Close Row ────────────────────────────────────────────────────────────────
+
+.modal-close-row {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 8px;
+
+    ion-button {
+        --border-radius: 10px;
+        height: 40px;
+        font-weight: 600;
+        text-transform: none;
+    }
+}

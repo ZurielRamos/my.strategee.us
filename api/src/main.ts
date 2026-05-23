@@ -11,7 +11,13 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
 
   app.use(cookieParser());
-  
+
+  // Eliminar COOP header para permitir que el popup de Google Auth funcione correctamente
+  app.use((_req: any, res: any, next: any) => {
+    res.removeHeader('Cross-Origin-Opener-Policy');
+    res.removeHeader('Cross-Origin-Embedder-Policy');
+    next();
+  });
 
   app.enableCors({
     origin: [
@@ -21,6 +27,7 @@ async function bootstrap() {
       process.env.FRONTEND_URL ?? '',
     ].filter(Boolean),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type,Authorization,Accept',
     credentials: true,
   })
 

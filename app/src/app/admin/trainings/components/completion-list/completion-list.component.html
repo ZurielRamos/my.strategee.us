@@ -1,0 +1,81 @@
+@if (isLoading) {
+<div class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando reporte...</p>
+</div>
+}
+
+@if (!isLoading && report) {
+<div class="completion-content">
+
+    <!-- Global Progress -->
+    <div class="progress-section">
+        <div class="progress-header">
+            <h3>Progreso global</h3>
+            <span class="progress-percentage">{{ report.completionPercentage | number:'1.0-0' }}%</span>
+        </div>
+        <ion-progress-bar
+            [value]="progressValue"
+            [color]="progressValue >= 1 ? 'success' : 'primary'"
+            class="global-progress">
+        </ion-progress-bar>
+        <div class="progress-stats">
+            <span>{{ report.completedCount }} de {{ report.totalAssigned }} completados</span>
+        </div>
+    </div>
+
+    <!-- Status Filter -->
+    <div class="filter-section">
+        <ion-segment [(ngModel)]="selectedStatus" (ionChange)="onStatusChange()" class="status-segment">
+            <ion-segment-button value="all">
+                <ion-label>Todos</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="pending">
+                <ion-label>Pendientes</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="in_progress">
+                <ion-label>En progreso</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="completed">
+                <ion-label>Completados</ion-label>
+            </ion-segment-button>
+        </ion-segment>
+    </div>
+
+    <!-- Assignments Table -->
+    @if (filteredAssignments.length === 0) {
+    <div class="empty-state">
+        <p>No hay empleados con este estado.</p>
+    </div>
+    }
+
+    @if (filteredAssignments.length > 0) {
+    <div class="assignments-table">
+        <div class="table-header">
+            <span class="col-name">Empleado</span>
+            <span class="col-status">Estado</span>
+            <span class="col-date">Fecha de completitud</span>
+        </div>
+        <div class="table-body">
+            @for (assignment of filteredAssignments; track assignment.employeeId) {
+            <div class="table-row">
+                <span class="col-name employee-name">{{ assignment.employeeName }}</span>
+                <span class="col-status">
+                    <ion-badge [color]="getStatusColor(assignment.status)">
+                        {{ getStatusLabel(assignment.status) }}
+                    </ion-badge>
+                </span>
+                <span class="col-date completion-date">{{ formatDate(assignment.completedAt) }}</span>
+            </div>
+            }
+        </div>
+    </div>
+    }
+</div>
+}
+
+@if (!isLoading && !report) {
+<div class="empty-state">
+    <p>No se pudo cargar el reporte de seguimiento.</p>
+</div>
+}

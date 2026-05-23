@@ -2,7 +2,7 @@
 
 :host { display: block; height: 100%; }
 
-.admin-page-content { --background: var(--app-bg, #f4f5f8); }
+.admin-page-content { --background: var(--app-background); }
 
 .admin-container { @include admin-page-container; }
 

@@ -1,0 +1,79 @@
+<div class="pdf-viewer-wrapper" #viewerContainer [class.fullscreen-mode]="isFullscreen">
+
+    <!-- Toolbar -->
+    <div class="pdf-toolbar">
+        <div class="toolbar-left">
+            <span class="page-info">
+                @if (!isLoading && !hasError) {
+                    Página {{ currentPage }} de {{ totalPages }}
+                }
+            </span>
+        </div>
+        <div class="toolbar-center">
+            @if (!isLoading && !hasError) {
+                <button class="tool-btn" (click)="zoomOut()" [disabled]="scale <= 0.4" title="Reducir">
+                    <ion-icon name="remove-outline"></ion-icon>
+                </button>
+                <span class="zoom-label">{{ (scale * 100).toFixed(0) }}%</span>
+                <button class="tool-btn" (click)="zoomIn()" [disabled]="scale >= 3.0" title="Ampliar">
+                    <ion-icon name="add-outline"></ion-icon>
+                </button>
+            }
+        </div>
+        <div class="toolbar-right">
+            <button class="tool-btn" (click)="toggleFullscreen()" title="Pantalla completa">
+                <ion-icon [name]="isFullscreen ? 'contract-outline' : 'expand-outline'"></ion-icon>
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="pdf-content">
+
+        @if (isLoading) {
+            <div class="pdf-loading">
+                <ion-spinner name="crescent"></ion-spinner>
+                <p>Cargando documento...</p>
+            </div>
+        } @else if (hasError) {
+            <div class="pdf-error">
+                <ion-icon name="document-text-outline"></ion-icon>
+                <p>No se pudo cargar el documento.</p>
+            </div>
+        } @else {
+
+            <!-- Área del libro -->
+            <div class="book-area">
+
+                <!-- Flecha izquierda -->
+                <button class="nav-btn nav-prev" (click)="prevPage()"
+                        [disabled]="!canGoBack || isFlipping">
+                    <ion-icon name="chevron-back-outline"></ion-icon>
+                </button>
+
+                <!-- Página con efecto flip -->
+                <div class="page-wrapper"
+                     [class.flip-forward]="isFlipping && flipDirection === 'forward'"
+                     [class.flip-backward]="isFlipping && flipDirection === 'backward'">
+
+                    <div class="book-page">
+                        <!-- Sombra izquierda (lomo) -->
+                        <div class="spine-shadow"></div>
+                        <canvas #pageCanvas></canvas>
+                        <!-- Sombra derecha -->
+                        <div class="edge-shadow"></div>
+                    </div>
+                </div>
+
+                <!-- Flecha derecha -->
+                <button class="nav-btn nav-next" (click)="nextPage()"
+                        [disabled]="!canGoForward || isFlipping">
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                </button>
+
+            </div>
+
+        }
+    </div>
+
+</div>

@@ -1,0 +1,35 @@
+<ion-card class="training-card" (click)="onCardClick()">
+    <ion-card-header>
+        <div class="card-header-content">
+            <div class="training-icon">
+                <ion-icon name="book-outline"></ion-icon>
+            </div>
+            <div class="training-info">
+                <ion-card-title>{{ training.title }}</ion-card-title>
+                <div class="training-badges">
+                    <ion-badge [color]="statusBadgeColor">
+                        {{ statusLabel }}
+                    </ion-badge>
+                    @if (training.isMandatory) {
+                    <ion-badge color="warning">Obligatoria</ion-badge>
+                    }
+                </div>
+            </div>
+        </div>
+    </ion-card-header>
+
+    <ion-card-content>
+        <div class="info-row">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>Inicio: {{ formattedStartDate }}</span>
+        </div>
+        <div class="info-row">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>Fin: {{ formattedEndDate }}</span>
+        </div>
+        <div class="info-row">
+            <ion-icon name="document-text-outline"></ion-icon>
+            <span>{{ materialsCount }} {{ materialsCount === 1 ? 'material' : 'materiales' }}</span>
+        </div>
+    </ion-card-content>
+</ion-card>

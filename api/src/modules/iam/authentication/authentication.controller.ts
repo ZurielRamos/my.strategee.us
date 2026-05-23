@@ -4,6 +4,7 @@ import { AuthenticationService } from './authentication.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { GoogleSignInDto } from './dto/google-sign-in.dto';
 import { AccessTokenGuard } from './guards/access-token.guard';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { ActiveUser } from '../authorization/decorators/active-user.decorator';
@@ -64,6 +65,15 @@ export class AuthenticationController {
     })
     signIn(@Body() signInDto: SignInDto, @Req() request: Request) {
         return this.authenticationService.signIn(signInDto, request);
+    }
+
+    @Post('google')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Iniciar sesión con Google' })
+    @ApiResponse({ status: 200, description: 'Inicio de sesión con Google exitoso' })
+    @ApiResponse({ status: 401, description: 'Token inválido o correo no registrado' })
+    signInWithGoogle(@Body() googleSignInDto: GoogleSignInDto, @Req() request: Request) {
+        return this.authenticationService.signInWithGoogle(googleSignInDto.idToken, request);
     }
 
     @Post('refresh')

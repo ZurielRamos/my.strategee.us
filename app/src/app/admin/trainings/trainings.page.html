@@ -1,0 +1,66 @@
+<app-page-header></app-page-header>
+
+<ion-content [fullscreen]="true" class="trainings-content" (ionScroll)="onScroll($event)">
+    <div class="page-container">
+        <!-- Page Title & Controls -->
+        <div class="page-title-section">
+            <div class="title-text">
+                <h1>Capacitaciones</h1>
+                <p>Gestiona las capacitaciones y formaciones de tu organización</p>
+            </div>
+            <div class="title-controls desktop-only">
+                <ion-button (click)="openCreateModal()" class="add-button">
+                    <ion-icon slot="start" name="add-outline"></ion-icon>
+                    Nueva Capacitación
+                </ion-button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading && trainings.length === 0) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        <!-- Trainings Grid -->
+        @if (trainings.length > 0) {
+        <div class="trainings-grid">
+            @for (training of trainings; track training.id) {
+            <app-training-card
+                [training]="training"
+                (cardClick)="viewTrainingDetail($event)">
+            </app-training-card>
+            }
+        </div>
+        }
+
+        <!-- Loading More Indicator -->
+        @if (isLoadingMore) {
+        <div class="loading-more">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Cargando más capacitaciones...</p>
+        </div>
+        }
+
+        <!-- Empty State -->
+        @if (!isLoading && trainings.length === 0) {
+        <div class="empty-state">
+            <ion-icon name="school-outline"></ion-icon>
+            <h2>No hay capacitaciones registradas</h2>
+            <p>Comienza creando tu primera capacitación</p>
+            <ion-button (click)="openCreateModal()">
+                <ion-icon slot="start" name="add-outline"></ion-icon>
+                Crear Capacitación
+            </ion-button>
+        </div>
+        }
+    </div>
+</ion-content>
+
+<!-- Mobile FAB -->
+<ion-fab slot="fixed" vertical="bottom" horizontal="end" class="mobile-only">
+    <ion-fab-button (click)="openCreateModal()" color="dark">
+        <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+</ion-fab>

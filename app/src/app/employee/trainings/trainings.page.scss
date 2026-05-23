@@ -1,0 +1,166 @@
+.trainings-content {
+    --background: var(--app-hover-bg);
+}
+
+.page-container {
+    padding: 16px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.page-title-section {
+    margin-bottom: 20px;
+
+    h1 {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        margin: 0 0 4px;
+
+        ion-icon {
+            font-size: 1.4rem;
+            color: var(--ion-color-primary);
+        }
+    }
+
+    p {
+        color: var(--ion-color-medium);
+        margin: 0;
+        font-size: 0.9rem;
+    }
+}
+
+.mandatory-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: rgba(var(--ion-color-danger-rgb), 0.1);
+    border: 1px solid var(--ion-color-danger);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    color: var(--ion-color-danger);
+    font-size: 0.9rem;
+
+    ion-icon {
+        font-size: 1.2rem;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+}
+
+.loading-state,
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 12px;
+    color: var(--ion-color-medium);
+
+    ion-icon {
+        font-size: 3rem;
+    }
+
+    p {
+        margin: 0;
+        font-size: 1rem;
+    }
+}
+
+.trainings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.training-card {
+    background: var(--app-card-bg);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:active {
+        transform: scale(0.98);
+        box-shadow: 0 1px 4px var(--app-shadow);
+    }
+}
+
+.card-header {
+    margin-bottom: 12px;
+}
+
+.card-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+
+    h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--app-text-primary);
+        flex: 1;
+    }
+
+    .badges {
+        display: flex;
+        gap: 4px;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+}
+
+.card-description {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--ion-color-medium);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-progress {
+    margin-bottom: 12px;
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: var(--ion-color-medium);
+        margin-bottom: 6px;
+    }
+}
+
+.card-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: var(--ion-color-medium);
+
+    .date-info,
+    .completed-info {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        ion-icon {
+            font-size: 0.9rem;
+        }
+    }
+
+    .completed-info {
+        color: var(--ion-color-success);
+    }
+}

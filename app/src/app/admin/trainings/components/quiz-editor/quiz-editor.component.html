@@ -1,0 +1,153 @@
+<div class="quiz-editor" [formGroup]="form">
+    <div class="editor-header">
+        <h3>{{ quiz ? 'Editar Quiz' : 'Crear Quiz' }}</h3>
+    </div>
+
+    <!-- Passing Score -->
+    <div class="field-group">
+        <label class="field-label">Puntaje mínimo para aprobar: <strong>{{ passingScore }}%</strong></label>
+        <div class="score-input-row">
+            <ion-range
+                formControlName="passingScore"
+                [min]="1"
+                [max]="100"
+                [step]="1"
+                color="primary"
+                class="score-range">
+            </ion-range>
+            <input
+                type="number"
+                formControlName="passingScore"
+                [min]="1"
+                [max]="100"
+                class="score-number-input">
+        </div>
+    </div>
+
+    <!-- Questions -->
+    <div class="questions-section">
+        <div class="questions-header">
+            <h4>Preguntas ({{ questionsArray.length }})</h4>
+            <ion-button fill="outline" size="small" (click)="addQuestion()">
+                <ion-icon slot="start" name="add-outline"></ion-icon>
+                Agregar Pregunta
+            </ion-button>
+        </div>
+
+        <div formArrayName="questions" class="questions-list">
+            @for (question of questionsArray.controls; track $index; let qi = $index) {
+            <div [formGroupName]="qi" class="question-card">
+                <div class="question-header">
+                    <span class="question-number">Pregunta {{ qi + 1 }}</span>
+                    <ion-button
+                        fill="clear"
+                        size="small"
+                        color="danger"
+                        [disabled]="questionsArray.length <= 1"
+                        (click)="removeQuestion(qi)">
+                        <ion-icon name="trash-outline"></ion-icon>
+                    </ion-button>
+                </div>
+
+                <!-- Question Text -->
+                <div class="field-group">
+                    <label class="field-label">Enunciado *</label>
+                    <textarea
+                        formControlName="text"
+                        placeholder="Escribe el enunciado de la pregunta..."
+                        rows="2"
+                        class="text-area-input">
+                    </textarea>
+                </div>
+
+                <!-- Question Score -->
+                <div class="field-group score-field">
+                    <label class="field-label">Puntaje (opcional)</label>
+                    <input
+                        type="number"
+                        formControlName="score"
+                        placeholder="Auto"
+                        [min]="0"
+                        class="number-input">
+                    <span class="field-hint">Si no se especifica, se distribuye automáticamente (100 / N preguntas)</span>
+                </div>
+
+                <!-- Options -->
+                <div class="options-section">
+                    <div class="options-header">
+                        <label class="field-label">Opciones (selecciona la correcta)</label>
+                        <ion-button
+                            fill="clear"
+                            size="small"
+                            [disabled]="getOptionsArray(qi).length >= 6"
+                            (click)="addOption(qi)">
+                            <ion-icon slot="start" name="add-outline"></ion-icon>
+                            Agregar
+                        </ion-button>
+                    </div>
+
+                    <div [formArrayName]="'options'" class="options-list">
+                        @for (option of getOptionsArray(qi).controls; track $index; let oi = $index) {
+                        <div [formGroupName]="oi" class="option-row">
+                            <button
+                                type="button"
+                                class="correct-radio"
+                                [class.is-correct]="isCorrectOption(qi, oi)"
+                                (click)="setCorrectOption(qi, oi)"
+                                [attr.aria-label]="'Marcar opción ' + (oi + 1) + ' como correcta'">
+                                @if (isCorrectOption(qi, oi)) {
+                                <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+                                } @else {
+                                <ion-icon name="close-circle-outline" color="medium"></ion-icon>
+                                }
+                            </button>
+                            <input
+                                type="text"
+                                formControlName="text"
+                                [placeholder]="'Opción ' + (oi + 1)"
+                                class="option-input">
+                            <ion-button
+                                fill="clear"
+                                size="small"
+                                color="danger"
+                                [disabled]="getOptionsArray(qi).length <= 2"
+                                (click)="removeOption(qi, oi)">
+                                <ion-icon name="trash-outline"></ion-icon>
+                            </ion-button>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="editor-actions">
+        @if (quiz) {
+        <ion-button
+            fill="outline"
+            color="danger"
+            [disabled]="isDeleting || isSaving"
+            (click)="confirmDelete()">
+            @if (isDeleting) {
+            <ion-spinner name="crescent" slot="start"></ion-spinner>
+            } @else {
+            <ion-icon slot="start" name="trash-outline"></ion-icon>
+            }
+            Eliminar Quiz
+        </ion-button>
+        }
+        <ion-button
+            [disabled]="form.invalid || isSaving || isDeleting"
+            (click)="onSave()">
+            @if (isSaving) {
+            <ion-spinner name="crescent" slot="start"></ion-spinner>
+            } @else {
+            <ion-icon slot="start" name="save-outline"></ion-icon>
+            }
+            Guardar Quiz
+        </ion-button>
+    </div>
+</div>

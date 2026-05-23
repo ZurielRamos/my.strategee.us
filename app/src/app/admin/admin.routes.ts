@@ -62,6 +62,14 @@ export const routes: Routes = [
                 loadComponent: () => import('./settings/settings.page').then(m => m.AdminSettingsPage)
             },
             {
+                path: 'trainings',
+                loadComponent: () => import('./trainings/trainings.page').then(m => m.TrainingsPage)
+            },
+            {
+                path: 'trainings/:id',
+                loadComponent: () => import('./trainings/training-detail/training-detail.page').then(m => m.TrainingDetailPage)
+            },
+            {
                 path: '',
                 redirectTo: 'dashboard',
                 pathMatch: 'full'

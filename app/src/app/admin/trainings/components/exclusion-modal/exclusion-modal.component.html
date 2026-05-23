@@ -1,0 +1,211 @@
+<app-base-modal
+    [title]="assignmentMode === 'selected' ? 'Gestionar Empleados Asignados' : 'Gestionar Exclusiones'"
+    [subtitle]="assignmentMode === 'selected' ? 'Agrega o quita empleados de esta capacitación' : 'Administra qué empleados están excluidos de esta capacitación'"
+    [showFooter]="false"
+    (modalDismiss)="onDismiss()">
+
+    @if (isLoading) {
+    <div class="loading-container">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Cargando empleados...</p>
+    </div>
+    }
+
+    @if (!isLoading) {
+    <div class="exclusion-content">
+
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <!-- MODO: selected — Agregar empleados                                 -->
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        @if (assignmentMode === 'selected') {
+
+        <div class="section">
+            <div class="section-header">
+                <h3>
+                    <ion-icon name="person-add-outline"></ion-icon>
+                    Agregar empleados
+                </h3>
+                @if (hasSelection) {
+                <ion-button size="small" [disabled]="isSaving" (click)="addSelected()">
+                    @if (isSaving) { <ion-spinner name="crescent" slot="start"></ion-spinner> }
+                    @else { <ion-icon slot="start" name="person-add-outline"></ion-icon> }
+                    Agregar ({{ selectedIds.size }})
+                </ion-button>
+                }
+            </div>
+
+            <div class="search-box">
+                <ion-icon name="search-outline" class="search-icon"></ion-icon>
+                <input
+                    type="text"
+                    placeholder="Buscar por nombre..."
+                    [value]="addQuery"
+                    (input)="onAddQueryChange($any($event.target).value)"
+                    class="search-input" />
+                @if (addQuery) {
+                <ion-icon name="close-outline" class="clear-icon" (click)="clearAddSearch()"></ion-icon>
+                }
+            </div>
+
+            @if (isSearchingAdd) {
+            <div class="search-state">
+                <ion-spinner name="crescent"></ion-spinner>
+                <span>Buscando...</span>
+            </div>
+            } @else if (addQuery && addResults.length === 0) {
+            <div class="empty-section"><p>No se encontraron empleados con contrato activo.</p></div>
+            } @else if (addQuery && addResults.length > 0) {
+            <div class="employees-list">
+                @for (emp of addResults; track emp.id) {
+                <div class="employee-row" [class.selected]="isSelected(emp.id)" (click)="toggle(emp.id)">
+                    <ion-checkbox [checked]="isSelected(emp.id)" (click)="$event.stopPropagation()"></ion-checkbox>
+                    <div class="employee-info">
+                        <span class="employee-name">{{ fullName(emp) }}</span>
+                        <span class="employee-doc">{{ emp.documentNumber }}</span>
+                    </div>
+                </div>
+                }
+            </div>
+            } @else {
+            <div class="search-hint">
+                <ion-icon name="search-outline"></ion-icon>
+                <span>Escribe un nombre para buscar empleados con contrato activo</span>
+            </div>
+            }
+        </div>
+
+        <!-- Empleados ya asignados -->
+        <div class="section excluded-section">
+            <div class="section-header">
+                <h3>
+                    <ion-icon name="person-remove-outline"></ion-icon>
+                    Empleados asignados ({{ assignedEmployees.length }})
+                </h3>
+            </div>
+
+            @if (assignedEmployees.length === 0) {
+            <div class="empty-section"><p>No hay empleados asignados.</p></div>
+            }
+
+            <div class="employees-list">
+                @for (emp of assignedEmployees; track emp.employeeId) {
+                <div class="employee-row excluded-row">
+                    <div class="employee-info">
+                        <span class="employee-name">{{ fullName(emp) }}</span>
+                        <ion-badge color="primary">Asignado</ion-badge>
+                    </div>
+                    <ion-button fill="outline" size="small" color="danger"
+                        [disabled]="revertingId === emp.employeeId"
+                        (click)="removeAssigned(emp.employeeId)">
+                        @if (revertingId === emp.employeeId) { <ion-spinner name="crescent" slot="start"></ion-spinner> }
+                        @else { <ion-icon slot="start" name="person-remove-outline"></ion-icon> }
+                        Quitar
+                    </ion-button>
+                </div>
+                }
+            </div>
+        </div>
+
+        }
+
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <!-- MODO: all_with_exclusions — Excluir empleados                      -->
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        @if (assignmentMode !== 'selected') {
+
+        <!-- Buscador para excluir -->
+        <div class="section">
+            <div class="section-header">
+                <h3>
+                    <ion-icon name="person-remove-outline"></ion-icon>
+                    Excluir empleado
+                </h3>
+                @if (hasSelection) {
+                <ion-button size="small" color="warning" [disabled]="isSaving" (click)="excludeSelected()">
+                    @if (isSaving) { <ion-spinner name="crescent" slot="start"></ion-spinner> }
+                    @else { <ion-icon slot="start" name="person-remove-outline"></ion-icon> }
+                    Excluir ({{ selectedIds.size }})
+                </ion-button>
+                }
+            </div>
+
+            <div class="search-box">
+                <ion-icon name="search-outline" class="search-icon"></ion-icon>
+                <input
+                    type="text"
+                    placeholder="Buscar empleado para excluir..."
+                    [value]="excludeQuery"
+                    (input)="onExcludeQueryChange($any($event.target).value)"
+                    class="search-input" />
+                @if (excludeQuery) {
+                <ion-icon name="close-outline" class="clear-icon" (click)="clearExcludeSearch()"></ion-icon>
+                }
+            </div>
+
+            @if (isSearchingExclude) {
+            <div class="search-state">
+                <ion-spinner name="crescent"></ion-spinner>
+                <span>Buscando...</span>
+            </div>
+            } @else if (excludeQuery && excludeResults.length === 0) {
+            <div class="empty-section"><p>No se encontraron empleados con contrato activo.</p></div>
+            } @else if (excludeQuery && excludeResults.length > 0) {
+            <div class="employees-list">
+                @for (emp of excludeResults; track emp.id) {
+                <div class="employee-row" [class.selected]="isSelected(emp.id)" (click)="toggle(emp.id)">
+                    <ion-checkbox [checked]="isSelected(emp.id)" (click)="$event.stopPropagation()"></ion-checkbox>
+                    <div class="employee-info">
+                        <span class="employee-name">{{ fullName(emp) }}</span>
+                        <span class="employee-doc">{{ emp.documentNumber }}</span>
+                    </div>
+                </div>
+                }
+            </div>
+            } @else {
+            <div class="search-hint">
+                <ion-icon name="search-outline"></ion-icon>
+                <span>Escribe un nombre para buscar empleados con contrato activo</span>
+            </div>
+            }
+        </div>
+
+        <!-- Empleados ya excluidos -->
+        <div class="section excluded-section">
+            <div class="section-header">
+                <h3>
+                    <ion-icon name="person-remove-outline"></ion-icon>
+                    Empleados excluidos ({{ excludedEmployees.length }})
+                </h3>
+            </div>
+
+            @if (excludedEmployees.length === 0) {
+            <div class="empty-section"><p>No hay empleados excluidos.</p></div>
+            }
+
+            <div class="employees-list">
+                @for (exc of excludedEmployees; track exc.employeeId) {
+                <div class="employee-row excluded-row">
+                    <div class="employee-info">
+                        <span class="employee-name">{{ fullName(exc) }}</span>
+                        <ion-badge color="warning">Excluido</ion-badge>
+                    </div>
+                    <ion-button fill="outline" size="small" color="success"
+                        [disabled]="revertingId === exc.employeeId"
+                        (click)="revertExclusion(exc.employeeId)">
+                        @if (revertingId === exc.employeeId) { <ion-spinner name="crescent" slot="start"></ion-spinner> }
+                        @else { <ion-icon slot="start" name="refresh-outline"></ion-icon> }
+                        Reincorporar
+                    </ion-button>
+                </div>
+                }
+            </div>
+        </div>
+
+        }
+
+        <div class="modal-close-row">
+            <ion-button fill="outline" (click)="onDismiss()">Cerrar</ion-button>
+        </div>
+    </div>
+    }
+</app-base-modal>

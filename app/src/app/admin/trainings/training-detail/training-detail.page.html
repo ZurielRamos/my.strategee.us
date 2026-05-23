@@ -1,0 +1,173 @@
+<app-page-header></app-page-header>
+
+<ion-content [fullscreen]="true" class="detail-content">
+    <div class="page-container">
+
+        <!-- Back Button -->
+        <div class="back-row">
+            <ion-button fill="clear" class="back-button" (click)="goBack()">
+                <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+                Volver
+            </ion-button>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        @if (!isLoading && training) {
+        <!-- Header Section -->
+        <div class="detail-header">
+            <div class="header-info">
+                <div class="title-row">
+                    <h1>{{ training.title }}</h1>
+                    <div class="badges">
+                        <ion-badge [color]="statusBadgeColor">{{ statusLabel }}</ion-badge>
+                        @if (training.isMandatory) {
+                        <ion-badge color="warning">Obligatoria</ion-badge>
+                        }
+                    </div>
+                </div>
+                @if (training.description) {
+                <p class="description">{{ training.description }}</p>
+                }
+                <div class="meta-row">
+                    <span class="meta-item">
+                        <ion-icon name="calendar-outline"></ion-icon>
+                        Inicio: {{ formatDate(training.startsAt) }}
+                    </span>
+                    <span class="meta-item">
+                        <ion-icon name="calendar-outline"></ion-icon>
+                        Fin: {{ formatDate(training.endsAt) }}
+                    </span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <ion-button fill="outline" (click)="openEditModal()">
+                    <ion-icon slot="start" name="create-outline"></ion-icon>
+                    Editar
+                </ion-button>
+                <ion-button fill="outline" color="danger" (click)="confirmDelete()">
+                    <ion-icon slot="start" name="trash-outline"></ion-icon>
+                    Eliminar
+                </ion-button>
+            </div>
+        </div>
+
+        <!-- Segment Tabs -->
+        <ion-segment [(ngModel)]="activeSegment" class="detail-segment">
+            <ion-segment-button value="materials">
+                <ion-label>Materiales</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="tracking">
+                <ion-label>Seguimiento</ion-label>
+            </ion-segment-button>
+        </ion-segment>
+
+        <!-- Materials Tab -->
+        @if (activeSegment === 'materials') {
+        <div class="materials-section">
+            <div class="section-header">
+                <h2>Materiales ({{ sortedMaterials.length }})</h2>
+                <div class="section-actions">
+                    <ion-button fill="outline" (click)="openExclusionModal()">
+                        <ion-icon slot="start" name="people-outline"></ion-icon>
+                        Gestionar Empleados
+                    </ion-button>
+                    <ion-button (click)="openUploadModal()">
+                        <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
+                        Subir Material
+                    </ion-button>
+                </div>
+            </div>
+
+            @if (sortedMaterials.length === 0) {
+            <div class="empty-materials">
+                <ion-icon name="document-text-outline"></ion-icon>
+                <p>No hay materiales. Sube el primer material para esta capacitación.</p>
+            </div>
+            }
+
+            <div class="materials-list">
+                @for (material of sortedMaterials; track material.id; let i = $index) {
+                <div class="material-item">
+                    <div class="material-main">
+                        <div class="material-order">
+                            <div class="order-buttons">
+                                <ion-button
+                                    fill="clear"
+                                    size="small"
+                                    [disabled]="i === 0"
+                                    (click)="moveMaterialUp(i)">
+                                    <ion-icon name="chevron-up-outline"></ion-icon>
+                                </ion-button>
+                                <ion-button
+                                    fill="clear"
+                                    size="small"
+                                    [disabled]="i === sortedMaterials.length - 1"
+                                    (click)="moveMaterialDown(i)">
+                                    <ion-icon name="chevron-down-outline"></ion-icon>
+                                </ion-button>
+                            </div>
+                            <span class="order-number">{{ i + 1 }}</span>
+                        </div>
+
+                        <div class="material-info">
+                            <div class="material-title-row">
+                                <ion-icon [name]="getMaterialTypeIcon(material.attachment?.mimeType)"></ion-icon>
+                                <span class="material-title">{{ material.title }}</span>
+                                <ion-badge color="medium" class="type-badge">
+                                    {{ getMaterialTypeLabel(material.attachment?.mimeType) }}
+                                </ion-badge>
+                            </div>
+                        </div>
+
+                        <div class="material-actions">
+                            <ion-button
+                                fill="outline"
+                                size="small"
+                                [color]="material.quiz ? 'primary' : 'medium'"
+                                (click)="toggleQuizEditor(material.id)">
+                                <ion-icon slot="start" name="help-circle-outline"></ion-icon>
+                                {{ material.quiz ? 'Editar Quiz' : 'Agregar Quiz' }}
+                            </ion-button>
+                            <ion-button
+                                fill="outline"
+                                size="small"
+                                color="danger"
+                                (click)="confirmDeleteMaterial(material)">
+                                <ion-icon name="trash-outline"></ion-icon>
+                            </ion-button>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Editor (inline, expandable) -->
+                    @if (expandedQuizMaterialId === material.id) {
+                    <div class="quiz-editor-wrapper">
+                        <app-quiz-editor
+                            [materialId]="material.id"
+                            [quiz]="material.quiz"
+                            (quizSaved)="onQuizSaved(material.id)"
+                            (quizDeleted)="onQuizDeleted(material.id)">
+                        </app-quiz-editor>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+        }
+
+        <!-- Tracking Tab -->
+        @if (activeSegment === 'tracking') {
+        <div class="tracking-section">
+            <app-completion-list [trainingId]="training.id"></app-completion-list>
+        </div>
+        }
+        }
+
+    </div>
+</ion-content>

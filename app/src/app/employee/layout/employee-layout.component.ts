@@ -11,7 +11,8 @@ import {
     cubeOutline, cubeSharp,
     settingsOutline, settingsSharp,
     documentTextOutline, documentTextSharp,
-    keyOutline, keySharp
+    keyOutline, keySharp,
+    schoolOutline, schoolSharp
 } from 'ionicons/icons';
 import { UserProfileComponent } from '../../shared/components/user-profile/user-profile.component';
 
@@ -30,6 +31,7 @@ export class EmployeeLayoutComponent {
     public appPages: Array<{ title: string; url: string; icon: string; badge?: string }> = [
         { title: 'Dashboard', url: '/employee/dashboard', icon: 'grid' },
         { title: 'Solicitudes', url: '/employee/requests', icon: 'document-text' },
+        { title: 'Capacitaciones', url: '/employee/trainings', icon: 'school' },
         { title: 'Password Vault', url: '/employee/password-vault', icon: 'key' },
         { title: 'Ajustes', url: '/employee/settings', icon: 'settings' }
     ];
@@ -40,7 +42,8 @@ export class EmployeeLayoutComponent {
             cubeOutline, cubeSharp,
             settingsOutline, settingsSharp,
             documentTextOutline, documentTextSharp,
-            keyOutline, keySharp
+            keyOutline, keySharp,
+            schoolOutline, schoolSharp
         });
     }
 }

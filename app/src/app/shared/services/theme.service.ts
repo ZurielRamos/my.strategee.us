@@ -30,8 +30,11 @@ export class ThemeService {
 
     async setTheme(theme: Theme, save: boolean = true) {
         // Actualizar el tema en el DOM
-        document.body.classList.remove('light', 'dark');
+        document.body.classList.remove('light', 'dark', 'ion-palette-dark');
         document.body.classList.add(theme);
+        if (theme === 'dark') {
+            document.body.classList.add('ion-palette-dark');
+        }
         
         // Actualizar el subject
         this.currentThemeSubject.next(theme);

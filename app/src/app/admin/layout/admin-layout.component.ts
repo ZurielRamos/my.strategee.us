@@ -17,7 +17,8 @@ import {
     imagesOutline, imagesSharp,
     documentTextOutline, documentTextSharp,
     settingsOutline, settingsSharp,
-    notificationsOutline, notificationsSharp
+    notificationsOutline, notificationsSharp,
+    schoolOutline, schoolSharp
 } from 'ionicons/icons';
 import { UserProfileComponent } from '../../shared/components/user-profile/user-profile.component';
 import { AdminRequestsService } from '../requests/services/admin-requests.service';
@@ -47,6 +48,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         { title: 'Personal', url: '/admin/employees', icon: 'people' },
         { title: 'Solicitudes', url: '/admin/requests', icon: 'document-text', badge: 0 },
         { title: 'Finanzas', url: '/admin/finance', icon: 'cash' },
+        { title: 'Capacitaciones', url: '/admin/trainings', icon: 'school' },
         { title: 'Biblioteca', url: '/admin/media', icon: 'images' },
         { title: 'Configuraciones', url: '/admin/settings', icon: 'settings' }
     ];
@@ -64,7 +66,8 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
             imagesOutline, imagesSharp,
             documentTextOutline, documentTextSharp,
             settingsOutline, settingsSharp,
-            notificationsOutline, notificationsSharp
+            notificationsOutline, notificationsSharp,
+            schoolOutline, schoolSharp
         });
     }
 

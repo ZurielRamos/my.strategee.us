@@ -15,6 +15,7 @@ import { Role } from '../authorization/enums/role.enum';
 import { SessionsService } from './services/sessions.service';
 import { DeviceDetectorService } from './services/device-detector.service';
 import { Request } from 'express';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class AuthenticationService {
@@ -103,6 +104,72 @@ export class AuthenticationService {
         );
 
         // Extract employeeId if set or retrieved from relation
+        const employeeId = user.employeeId || user.employee?.id || null;
+
+        // Generate tokens with sessionId
+        const tokens = await this.generateTokens(
+            user.id,
+            user.email,
+            user.roles,
+            employeeId,
+            session.id,
+        );
+
+        // Update session with real refresh token
+        await this.sessionsService.updateRefreshToken(
+            session.id,
+            tokens.refreshToken,
+            expiresAt,
+        );
+
+        return {
+            user: {
+                id: user.id,
+                email: user.email,
+                roles: user.roles,
+                employeeId: employeeId,
+            },
+            ...tokens,
+        };
+    }
+
+    async signInWithGoogle(idToken: string, request: Request) {
+        // Verify the Firebase ID token
+        let decodedToken: admin.auth.DecodedIdToken;
+        try {
+            decodedToken = await admin.auth().verifyIdToken(idToken);
+        } catch {
+            throw new UnauthorizedException('Token de Google inválido o expirado');
+        }
+
+        const email = decodedToken.email;
+        if (!email) {
+            throw new UnauthorizedException('No se pudo obtener el correo electrónico de la cuenta de Google');
+        }
+
+        // Find user by email — only registered users can sign in
+        const user = await this.usersService.findByEmail(email);
+        if (!user) {
+            throw new UnauthorizedException('Este correo no está registrado en el sistema');
+        }
+
+        // Check if user is active
+        if (!user.isActive) {
+            throw new UnauthorizedException('Usuario inactivo');
+        }
+
+        // Extract device info
+        const deviceInfo = this.deviceDetectorService.extractDeviceInfo(request);
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+        // Create session
+        const session = await this.sessionsService.createSession(
+            user.id,
+            'temporary',
+            deviceInfo,
+            expiresAt,
+        );
+
         const employeeId = user.employeeId || user.employee?.id || null;
 
         // Generate tokens with sessionId
