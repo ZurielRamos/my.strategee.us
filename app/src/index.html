@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="utf-8" />
-  <title>Ionic App</title>
+  <title>My Strategee</title>
 
   <base href="/" />
 
@@ -12,21 +12,51 @@
   <meta name="format-detection" content="telephone=no" />
   <meta name="msapplication-tap-highlight" content="no" />
 
+  <!-- PWA Meta -->
+  <meta name="application-name" content="My Strategee" />
+  <meta name="description" content="My Strategee - Plataforma de gestión empresarial" />
+  <meta name="theme-color" content="#ffffff" />
+
   <!-- Content Security Policy -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval' 'unsafe-inline';
-    style-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com;
     media-src *;
     img-src 'self' data: content: blob: https:;
-    connect-src 'self' http://localhost:* ws://localhost:* https://*.googleapis.com https://*.firebaseio.com https://*.cloudfunctions.net;
-    script-src 'self' 'unsafe-inline' 'unsafe-eval';
+    connect-src 'self' http://localhost:* ws://localhost:* https://*.googleapis.com https://*.firebaseio.com https://*.cloudfunctions.net https://accounts.google.com https://securetoken.googleapis.com https://identitytoolkit.googleapis.com;
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://accounts.google.com;
+    frame-src https://accounts.google.com https://*.firebaseapp.com https://mystrategee.firebaseapp.com;
   ">
 
-  <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icon/favicon-16x16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/icon/favicon-48x48.png" />
+  <link rel="shortcut icon" href="assets/icon/favicon.png" />
 
-  <!-- add to homescreen for ios -->
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <!-- iOS PWA -->
   <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="My Strategee" />
+
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" href="assets/icon/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="120x120" href="assets/icon/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="assets/icon/apple-touch-icon-152x152.png" />
+  <link rel="apple-touch-icon" sizes="167x167" href="assets/icon/apple-touch-icon-167x167.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icon/apple-touch-icon-180x180.png" />
+
+  <!-- iOS Splash Screens -->
+  <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="assets/icon/splash/splash-640x1136.png" />
+  <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="assets/icon/splash/splash-750x1334.png" />
+
+  <!-- Microsoft Tiles -->
+  <meta name="msapplication-TileColor" content="#ffffff" />
+  <meta name="msapplication-TileImage" content="assets/icon/icon-144x144.png" />
 </head>
 
 <body>

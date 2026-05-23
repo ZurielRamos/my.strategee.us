@@ -29,6 +29,11 @@
                 "output": "assets"
               },
               {
+                "glob": "pdf.worker.min.mjs",
+                "input": "node_modules/pdfjs-dist/build",
+                "output": "assets"
+              },
+              {
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
@@ -40,6 +45,11 @@
               },
               {
                 "glob": "firebase-messaging-sw.js",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "manifest.webmanifest",
                 "input": "src",
                 "output": "/"
               }
@@ -67,7 +77,8 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "serviceWorker": "src/ngsw-config.json"
             },
             "development": {
               "optimization": false,
