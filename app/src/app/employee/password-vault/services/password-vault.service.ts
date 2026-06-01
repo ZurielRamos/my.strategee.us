@@ -42,6 +42,7 @@ export class PasswordVaultService {
     search?: string;
   }): Observable<CredentialListItem[]> {
     let httpParams = new HttpParams();
+    httpParams = httpParams.set('limit', '1000');
     if (params?.vaultId) {
       httpParams = httpParams.set('vaultId', params.vaultId);
     }
