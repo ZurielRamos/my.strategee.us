@@ -572,6 +572,16 @@ export class PasswordVaultService {
 
         if (foreignVaults.length === 0) return [];
 
+        // Cargar también los vaults propios (necesarios para resolver herencia
+        // cuando un vault ajeno tiene INHERIT y su padre es del empleado)
+        const ownVaults = await this.vaultRepository
+            .createQueryBuilder('vault')
+            .leftJoinAndSelect('vault.visibilityEmployees', 'vve')
+            .leftJoinAndSelect('vault.visibilityCompanies', 'vvc')
+            .leftJoinAndSelect('vault.visibilityPositions', 'vvp')
+            .where('vault.ownerId = :employeeId', { employeeId })
+            .getMany();
+
         // Obtener empresa y puesto activo del empleado
         const activeMemorandum = await this.dataSource.query(
             `SELECT m.position_id, d.company_id
@@ -589,9 +599,13 @@ export class PasswordVaultService {
         const employeePositionId: string | null = activeMemorandum[0]?.position_id ?? null;
         const employeeCompanyId: string | null = activeMemorandum[0]?.company_id ?? null;
 
-        // Mapa id -> vault para recorrer jerarquía
+        // Mapa id -> vault para recorrer jerarquía (incluye propios y ajenos)
         const vaultMap = new Map<string, typeof foreignVaults[0]>();
+        ownVaults.forEach(v => vaultMap.set(v.id, v));
         foreignVaults.forEach(v => vaultMap.set(v.id, v));
+
+        // IDs de vaults propios (el empleado siempre tiene acceso a estos)
+        const ownVaultIds = new Set(ownVaults.map(v => v.id));
 
         const hasDirectAccess = (vault: typeof foreignVaults[0]): boolean => {
             switch (vault.visibilityLevel) {
@@ -613,6 +627,8 @@ export class PasswordVaultService {
         const isAccessible = (vaultId: string, visited = new Set<string>()): boolean => {
             if (visited.has(vaultId)) return false;
             visited.add(vaultId);
+            // Si es un vault propio, el empleado siempre tiene acceso
+            if (ownVaultIds.has(vaultId)) return true;
             const vault = vaultMap.get(vaultId);
             if (!vault) return false;
             if (vault.visibilityLevel === VisibilityLevel.PRIVATE) return false;
@@ -717,16 +733,39 @@ export class PasswordVaultService {
             throw new ForbiddenException('No tienes permisos para eliminar este vault');
         }
 
-        // Verificar que el vault no contenga credenciales
-        const credentialCount = await this.credentialRepository.count({
-            where: { vaultId },
-        });
-
-        // Lanzar error si contiene credenciales
-        if (credentialCount > 0) {
-            throw new BadRequestException(
-                'No se puede eliminar un vault que contiene credenciales',
-            );
+        // Eliminar credenciales del vault y sus registros de visibilidad
+        const credentials = await this.credentialRepository.find({ where: { vaultId } });
+        if (credentials.length > 0) {
+            const credentialIds = credentials.map(c => c.id);
+            // Eliminar registros de visibilidad de las credenciales
+            await this.credentialVisibilityCompanyRepository
+                .createQueryBuilder()
+                .delete()
+                .where('credentialId IN (:...ids)', { ids: credentialIds })
+                .execute();
+            await this.credentialVisibilityAreaRepository
+                .createQueryBuilder()
+                .delete()
+                .where('credentialId IN (:...ids)', { ids: credentialIds })
+                .execute();
+            await this.credentialVisibilityPositionRepository
+                .createQueryBuilder()
+                .delete()
+                .where('credentialId IN (:...ids)', { ids: credentialIds })
+                .execute();
+            await this.credentialVisibilityEmployeeRepository
+                .createQueryBuilder()
+                .delete()
+                .where('credentialId IN (:...ids)', { ids: credentialIds })
+                .execute();
+            // Eliminar logs de acceso
+            await this.credentialAccessLogRepository
+                .createQueryBuilder()
+                .delete()
+                .where('credentialId IN (:...ids)', { ids: credentialIds })
+                .execute();
+            // Eliminar credenciales
+            await this.credentialRepository.remove(credentials);
         }
 
         // Verificar que el vault no contenga sub-carpetas
@@ -736,7 +775,7 @@ export class PasswordVaultService {
 
         if (childCount > 0) {
             throw new BadRequestException(
-                'No se puede eliminar un vault que contiene sub-carpetas',
+                'No se puede eliminar un vault que contiene sub-carpetas. Elimina las sub-carpetas primero.',
             );
         }
 
@@ -839,10 +878,21 @@ export class PasswordVaultService {
         );
 
         // 6. Credenciales INHERIT en vaults accesibles (herencia resuelta en memoria)
-        if (accessibleVaultIds.length > 0) {
+        //    Incluir también los vaults propios del empleado (credenciales INHERIT de otros en mis vaults)
+        const ownVaultIds = await this.vaultRepository
+            .createQueryBuilder('vault')
+            .select('vault.id')
+            .where('vault.ownerId = :employeeId', { employeeId })
+            .getMany();
+        const allAccessibleVaultIds = [
+            ...ownVaultIds.map(v => v.id),
+            ...accessibleVaultIds,
+        ];
+
+        if (allAccessibleVaultIds.length > 0) {
             queryBuilder.orWhere(
-                '(credential.visibilityLevel = :inheritLevel AND credential.vaultId IN (:...accessibleVaultIds))',
-                { inheritLevel: VisibilityLevel.INHERIT, accessibleVaultIds },
+                '(credential.visibilityLevel = :inheritLevel AND credential.vaultId IN (:...allAccessibleVaultIds))',
+                { inheritLevel: VisibilityLevel.INHERIT, allAccessibleVaultIds },
             );
         }
 
