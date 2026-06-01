@@ -11,6 +11,10 @@ import { CredentialVisibilityCompany } from './entities/credential-visibility-co
 import { CredentialVisibilityArea } from './entities/credential-visibility-area.entity';
 import { CredentialVisibilityPosition } from './entities/credential-visibility-position.entity';
 import { CredentialVisibilityEmployee } from './entities/credential-visibility-employee.entity';
+import { VaultVisibilityCompany } from './entities/vault-visibility-company.entity';
+import { VaultVisibilityArea } from './entities/vault-visibility-area.entity';
+import { VaultVisibilityPosition } from './entities/vault-visibility-position.entity';
+import { VaultVisibilityEmployee } from './entities/vault-visibility-employee.entity';
 import { CredentialAccessLog } from './entities/credential-access-log.entity';
 import { CreateVaultDto } from './dto/create-vault.dto';
 import { UpdateVaultDto } from './dto/update-vault.dto';
@@ -19,6 +23,7 @@ import { UpdateCredentialDto } from './dto/update-credential.dto';
 import { EncryptionService } from './services/encryption.service';
 import { AccessControlService } from './services/access-control.service';
 import { VisibilityLevel } from './enums/visibility-level.enum';
+import { CredentialLogAction } from './enums/credential-log-action.enum';
 
 @Injectable()
 export class PasswordVaultService {
@@ -43,6 +48,14 @@ export class PasswordVaultService {
         private readonly credentialVisibilityPositionRepository: Repository<CredentialVisibilityPosition>,
         @InjectRepository(CredentialVisibilityEmployee)
         private readonly credentialVisibilityEmployeeRepository: Repository<CredentialVisibilityEmployee>,
+        @InjectRepository(VaultVisibilityCompany)
+        private readonly vaultVisibilityCompanyRepository: Repository<VaultVisibilityCompany>,
+        @InjectRepository(VaultVisibilityArea)
+        private readonly vaultVisibilityAreaRepository: Repository<VaultVisibilityArea>,
+        @InjectRepository(VaultVisibilityPosition)
+        private readonly vaultVisibilityPositionRepository: Repository<VaultVisibilityPosition>,
+        @InjectRepository(VaultVisibilityEmployee)
+        private readonly vaultVisibilityEmployeeRepository: Repository<VaultVisibilityEmployee>,
         @InjectRepository(CredentialAccessLog)
         private readonly credentialAccessLogRepository: Repository<CredentialAccessLog>,
         private readonly encryptionService: EncryptionService,
@@ -68,15 +81,55 @@ export class PasswordVaultService {
             throw new ForbiddenException('El empleado no está activo');
         }
 
-        // Crear vault con ownerId del empleado autenticado
-        const vault = this.vaultRepository.create({
-            name: createVaultDto.name,
-            description: createVaultDto.description,
-            ownerId: employeeId,
-        });
+        // Validar que el vault padre existe y el empleado tiene acceso (si se especifica)
+        if (createVaultDto.parentId) {
+            const parentVault = await this.vaultRepository.findOne({
+                where: { id: createVaultDto.parentId },
+            });
 
-        // Guardar y retornar vault creado (timestamps se establecen automáticamente)
-        return await this.vaultRepository.save(vault);
+            if (!parentVault) {
+                throw new NotFoundException('Vault padre no encontrado');
+            }
+
+            const hasAccess = await this.accessControlService.canAccessVault(employeeId, createVaultDto.parentId);
+            if (!hasAccess) {
+                throw new ForbiddenException('No tienes permisos para crear dentro de este directorio');
+            }
+        }
+
+        // Validar entidades de visibilidad si se especifican
+        if (createVaultDto.visibilityLevel) {
+            await this.validateVaultVisibilityEntities(createVaultDto);
+        }
+
+        // Usar transacción para crear vault + registros de visibilidad
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            // Crear vault con ownerId del empleado autenticado
+            const vault = this.vaultRepository.create({
+                name: createVaultDto.name,
+                description: createVaultDto.description,
+                ownerId: employeeId,
+                parentId: createVaultDto.parentId || null,
+                visibilityLevel: createVaultDto.visibilityLevel || VisibilityLevel.INHERIT,
+            });
+
+            const savedVault = await queryRunner.manager.save(vault);
+
+            // Crear registros de visibilidad del vault
+            await this.createVaultVisibilityRecords(queryRunner, savedVault.id, createVaultDto);
+
+            await queryRunner.commitTransaction();
+            return savedVault;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     /**
@@ -100,7 +153,7 @@ export class PasswordVaultService {
             throw new ForbiddenException('El empleado no está activo');
         }
 
-        // Validar que el vault existe y pertenece al empleado
+        // Validar que el vault existe y el empleado tiene acceso
         const vault = await this.vaultRepository.findOne({
             where: { id: createCredentialDto.vaultId },
         });
@@ -109,20 +162,21 @@ export class PasswordVaultService {
             throw new NotFoundException('Vault no encontrado');
         }
 
-        if (vault.ownerId !== employeeId) {
-            throw new ForbiddenException('El vault no pertenece al empleado');
+        const hasVaultAccess = await this.accessControlService.canAccessVault(employeeId, createCredentialDto.vaultId);
+        if (!hasVaultAccess) {
+            throw new ForbiddenException('No tienes permisos para crear credenciales en este directorio');
         }
 
         // Validar existencia de entidades según visibilityLevel
         await this.validateVisibilityEntities(createCredentialDto);
 
-        // Cifrar username y password
-        const encryptedUsername = this.encryptionService.encrypt(
-            createCredentialDto.username,
-        );
-        const encryptedPassword = this.encryptionService.encrypt(
-            createCredentialDto.password,
-        );
+        // Cifrar username y password solo si se proporcionan
+        const encryptedUsername = createCredentialDto.username
+            ? this.encryptionService.encrypt(createCredentialDto.username)
+            : null;
+        const encryptedPassword = createCredentialDto.password
+            ? this.encryptionService.encrypt(createCredentialDto.password)
+            : null;
 
         // Usar transacción para garantizar atomicidad
         const queryRunner = this.dataSource.createQueryRunner();
@@ -131,21 +185,22 @@ export class PasswordVaultService {
 
         try {
             // Crear credencial con ownerId del empleado autenticado
-            const credential = this.credentialRepository.create({
+            const credentialData: Partial<Credential> = {
                 title: createCredentialDto.title,
-                url: createCredentialDto.url,
-                encryptedUsername,
-                encryptedPassword,
+                url: createCredentialDto.url ?? undefined,
+                encryptedUsername: encryptedUsername ?? undefined,
+                encryptedPassword: encryptedPassword ?? undefined,
                 directLoginUrl: createCredentialDto.directLoginUrl,
                 notes: createCredentialDto.notes,
                 logoId: createCredentialDto.logoId,
-                visibilityLevel: createCredentialDto.visibilityLevel,
+                visibilityLevel: createCredentialDto.visibilityLevel || VisibilityLevel.INHERIT,
                 ownerId: employeeId,
                 vaultId: createCredentialDto.vaultId,
-            });
+            };
+            const credential = this.credentialRepository.create(credentialData as Credential);
 
             // Guardar credencial (timestamps se establecen automáticamente)
-            const savedCredential = await queryRunner.manager.save(credential);
+            const savedCredential: Credential = await queryRunner.manager.save(Credential, credential);
 
             // Crear registros de visibilidad según visibilityLevel
             await this.createVisibilityRecords(
@@ -156,6 +211,9 @@ export class PasswordVaultService {
 
             // Commit de la transacción
             await queryRunner.commitTransaction();
+
+            // Registrar log de creación
+            await this.logCredentialAction(savedCredential.id, employeeId, CredentialLogAction.CREATED);
 
             // Retornar credencial creada
             return savedCredential;
@@ -310,14 +368,96 @@ export class PasswordVaultService {
     }
 
     /**
+     * Valida que las entidades de visibilidad del vault existan
+     */
+    private async validateVaultVisibilityEntities(dto: CreateVaultDto): Promise<void> {
+        const { visibilityLevel, companyIds, areaIds, positionIds, employeeIds } = dto;
+
+        if (visibilityLevel === VisibilityLevel.BY_COMPANY && companyIds && companyIds.length > 0) {
+            const companies = await this.companyRepository.findByIds(companyIds);
+            if (companies.length !== companyIds.length) {
+                throw new BadRequestException('Una o más empresas especificadas no existen');
+            }
+        }
+
+        if (visibilityLevel === VisibilityLevel.BY_AREA && areaIds && areaIds.length > 0) {
+            const areas = await this.areaRepository.findByIds(areaIds);
+            if (areas.length !== areaIds.length) {
+                throw new BadRequestException('Una o más áreas especificadas no existen');
+            }
+        }
+
+        if (visibilityLevel === VisibilityLevel.BY_POSITION && positionIds && positionIds.length > 0) {
+            const positions = await this.positionRepository.findByIds(positionIds);
+            if (positions.length !== positionIds.length) {
+                throw new BadRequestException('Uno o más puestos especificados no existen');
+            }
+        }
+
+        if (visibilityLevel === VisibilityLevel.BY_EMPLOYEE_LIST && employeeIds && employeeIds.length > 0) {
+            const employees = await this.employeeRepository.findByIds(employeeIds);
+            if (employees.length !== employeeIds.length) {
+                throw new BadRequestException('Uno o más empleados especificados no existen');
+            }
+        }
+    }
+
+    /**
+     * Crea registros de visibilidad para un vault
+     */
+    private async createVaultVisibilityRecords(
+        queryRunner: any,
+        vaultId: string,
+        dto: CreateVaultDto,
+    ): Promise<void> {
+        const { visibilityLevel, companyIds, areaIds, positionIds, employeeIds } = dto;
+
+        if (visibilityLevel === VisibilityLevel.BY_COMPANY && companyIds && companyIds.length > 0) {
+            const records = companyIds.map((companyId) =>
+                this.vaultVisibilityCompanyRepository.create({ vaultId, companyId }),
+            );
+            await queryRunner.manager.save(records);
+        }
+
+        if (visibilityLevel === VisibilityLevel.BY_AREA && areaIds && areaIds.length > 0) {
+            const records = areaIds.map((areaId) =>
+                this.vaultVisibilityAreaRepository.create({ vaultId, areaId }),
+            );
+            await queryRunner.manager.save(records);
+        }
+
+        if (visibilityLevel === VisibilityLevel.BY_POSITION && positionIds && positionIds.length > 0) {
+            const records = positionIds.map((positionId) =>
+                this.vaultVisibilityPositionRepository.create({ vaultId, positionId }),
+            );
+            await queryRunner.manager.save(records);
+        }
+
+        if (visibilityLevel === VisibilityLevel.BY_EMPLOYEE_LIST && employeeIds && employeeIds.length > 0) {
+            const records = employeeIds.map((employeeId) =>
+                this.vaultVisibilityEmployeeRepository.create({ vaultId, employeeId }),
+            );
+            await queryRunner.manager.save(records);
+        }
+    }
+
+    /**
      * Lista todos los vaults del empleado autenticado con conteo de credenciales,
-     * incluyendo vaults ajenos que contienen credenciales accesibles para él.
+     * incluyendo vaults ajenos compartidos con él (por visibilidad de vault o credencial).
+     * Retorna estructura plana con parentId para que el frontend construya el árbol.
      * Requisitos: 14.1, 14.2, 14.3, 14.4
      */
-    async findAllVaults(employeeId: string, search?: string): Promise<Vault[]> {
-        // 1. Vaults propios del empleado
+    async findAllVaults(employeeId: string, search?: string): Promise<Vault[]> {        // 1. Vaults propios del empleado (include visibility relations for editing)
         const ownQueryBuilder = this.vaultRepository
             .createQueryBuilder('vault')
+            .leftJoinAndSelect('vault.visibilityCompanies', 'visibilityCompanies')
+            .leftJoinAndSelect('visibilityCompanies.company', 'company')
+            .leftJoinAndSelect('vault.visibilityAreas', 'visibilityAreas')
+            .leftJoinAndSelect('visibilityAreas.area', 'area')
+            .leftJoinAndSelect('vault.visibilityPositions', 'visibilityPositions')
+            .leftJoinAndSelect('visibilityPositions.position', 'position')
+            .leftJoinAndSelect('vault.visibilityEmployees', 'visibilityEmployees')
+            .leftJoinAndSelect('visibilityEmployees.employee', 'employee')
             .where('vault.ownerId = :employeeId', { employeeId })
             .loadRelationCountAndMap('vault.credentialCount', 'vault.credentials');
 
@@ -330,8 +470,21 @@ export class PasswordVaultService {
         ownQueryBuilder.orderBy('vault.name', 'ASC');
         const ownVaults = await ownQueryBuilder.getMany();
 
-        // 2. Vaults ajenos que contienen credenciales compartidas con este empleado
-        const sharedVaultIds = await this.credentialRepository
+        // 2. Vaults ajenos accesibles por visibilidad directa o heredada del padre.
+        const sharedIds = await this.resolveAccessibleVaultIds(employeeId);
+
+        let sharedVaults: Vault[] = [];
+        if (sharedIds.length > 0) {
+            sharedVaults = await this.vaultRepository
+                .createQueryBuilder('vault')
+                .where('vault.id IN (:...sharedIds)', { sharedIds })
+                .loadRelationCountAndMap('vault.credentialCount', 'vault.credentials')
+                .orderBy('vault.name', 'ASC')
+                .getMany();
+        }
+
+        // 3. Vaults ajenos que contienen credenciales compartidas directamente con este empleado
+        const sharedVaultIdsByCredential = await this.credentialRepository
             .createQueryBuilder('credential')
             .select('DISTINCT credential.vaultId', 'vaultId')
             .innerJoin(
@@ -343,23 +496,134 @@ export class PasswordVaultService {
             .where('credential.ownerId != :employeeId', { employeeId })
             .getRawMany();
 
-        const sharedIds = sharedVaultIds.map((r) => r.vaultId).filter(Boolean);
+        const sharedCredVaultIds = sharedVaultIdsByCredential.map((r) => r.vaultId).filter(Boolean);
 
-        if (sharedIds.length === 0) {
-            return ownVaults;
+        let sharedVaultsByCredential: Vault[] = [];
+        if (sharedCredVaultIds.length > 0) {
+            sharedVaultsByCredential = await this.vaultRepository
+                .createQueryBuilder('vault')
+                .where('vault.id IN (:...sharedIds)', { sharedIds: sharedCredVaultIds })
+                .loadRelationCountAndMap('vault.credentialCount', 'vault.credentials')
+                .orderBy('vault.name', 'ASC')
+                .getMany();
         }
 
-        const sharedVaults = await this.vaultRepository
+        // Merge deduplicando por id
+        const allVaults = [...ownVaults, ...sharedVaults, ...sharedVaultsByCredential];
+        const seen = new Set<string>();
+        const merged: Vault[] = [];
+        for (const vault of allVaults) {
+            if (!seen.has(vault.id)) {
+                seen.add(vault.id);
+                merged.push(vault);
+            }
+        }
+
+        return merged;
+    }
+
+    /**
+     * Obtiene un vault con todas sus relaciones de visibilidad.
+     */
+    async findOneVault(employeeId: string, vaultId: string): Promise<Vault> {
+        const vault = await this.vaultRepository.findOne({
+            where: { id: vaultId },
+            relations: [
+                'visibilityCompanies',
+                'visibilityCompanies.company',
+                'visibilityAreas',
+                'visibilityAreas.area',
+                'visibilityPositions',
+                'visibilityPositions.position',
+                'visibilityEmployees',
+                'visibilityEmployees.employee',
+            ],
+        });
+
+        if (!vault) {
+            throw new NotFoundException('Vault no encontrado');
+        }
+
+        // Verificar acceso
+        const hasAccess = await this.accessControlService.canAccessVault(employeeId, vaultId);
+        if (!hasAccess) {
+            throw new ForbiddenException('No tienes permisos para acceder a este vault');
+        }
+
+        return vault;
+    }
+
+    /**
+     * Resuelve los IDs de todos los vaults ajenos accesibles para un empleado,
+     * incluyendo herencia de visibilidad por la jerarquía de directorios.
+     * Usado tanto por findAllVaults como por findAllCredentials.
+     */
+    private async resolveAccessibleVaultIds(employeeId: string): Promise<string[]> {
+        const now = new Date();
+
+        // Cargar todos los vaults ajenos con sus relaciones de visibilidad
+        const foreignVaults = await this.vaultRepository
             .createQueryBuilder('vault')
-            .where('vault.id IN (:...sharedIds)', { sharedIds })
-            .loadRelationCountAndMap('vault.credentialCount', 'vault.credentials')
-            .orderBy('vault.name', 'ASC')
+            .leftJoinAndSelect('vault.visibilityEmployees', 'vve')
+            .leftJoinAndSelect('vault.visibilityCompanies', 'vvc')
+            .leftJoinAndSelect('vault.visibilityPositions', 'vvp')
+            .where('vault.ownerId != :employeeId', { employeeId })
             .getMany();
 
-        // Merge deduplicando por id
-        const ownIds = new Set(ownVaults.map((v) => v.id));
-        const merged = [...ownVaults, ...sharedVaults.filter((v) => !ownIds.has(v.id))];
-        return merged;
+        if (foreignVaults.length === 0) return [];
+
+        // Obtener empresa y puesto activo del empleado
+        const activeMemorandum = await this.dataSource.query(
+            `SELECT m.position_id, d.company_id
+             FROM memorandums m
+             INNER JOIN contracts c ON m.contract_id = c.id
+             INNER JOIN positions p ON m.position_id = p.id
+             INNER JOIN departments d ON p.department_id = d.id
+             WHERE c.employee_id = ?
+               AND c.status = 'active'
+               AND m.start_date <= ?
+               AND (m.end_date IS NULL OR m.end_date >= ?)
+             LIMIT 1`,
+            [employeeId, now, now],
+        );
+        const employeePositionId: string | null = activeMemorandum[0]?.position_id ?? null;
+        const employeeCompanyId: string | null = activeMemorandum[0]?.company_id ?? null;
+
+        // Mapa id -> vault para recorrer jerarquía
+        const vaultMap = new Map<string, typeof foreignVaults[0]>();
+        foreignVaults.forEach(v => vaultMap.set(v.id, v));
+
+        const hasDirectAccess = (vault: typeof foreignVaults[0]): boolean => {
+            switch (vault.visibilityLevel) {
+                case VisibilityLevel.PUBLIC:
+                    return true;
+                case VisibilityLevel.BY_EMPLOYEE_LIST:
+                    return vault.visibilityEmployees?.some(e => e.employeeId === employeeId) ?? false;
+                case VisibilityLevel.BY_COMPANY:
+                    return employeeCompanyId !== null &&
+                        (vault.visibilityCompanies?.some(c => c.companyId === employeeCompanyId) ?? false);
+                case VisibilityLevel.BY_POSITION:
+                    return employeePositionId !== null &&
+                        (vault.visibilityPositions?.some(p => p.positionId === employeePositionId) ?? false);
+                default:
+                    return false;
+            }
+        };
+
+        const isAccessible = (vaultId: string, visited = new Set<string>()): boolean => {
+            if (visited.has(vaultId)) return false;
+            visited.add(vaultId);
+            const vault = vaultMap.get(vaultId);
+            if (!vault) return false;
+            if (vault.visibilityLevel === VisibilityLevel.PRIVATE) return false;
+            if (vault.visibilityLevel !== VisibilityLevel.INHERIT) return hasDirectAccess(vault);
+            if (vault.parentId) return isAccessible(vault.parentId, visited);
+            return false;
+        };
+
+        return foreignVaults
+            .filter(v => isAccessible(v.id))
+            .map(v => v.id);
     }
 
     /**
@@ -371,7 +635,7 @@ export class PasswordVaultService {
         vaultId: string,
         updateVaultDto: UpdateVaultDto,
     ): Promise<Vault> {
-        // Buscar el vault con su propietario
+        // Buscar el vault
         const vault = await this.vaultRepository.findOne({
             where: { id: vaultId },
         });
@@ -381,26 +645,59 @@ export class PasswordVaultService {
             throw new NotFoundException('Vault no encontrado');
         }
 
-        // Validar que el empleado sea el propietario del vault
-        if (vault.ownerId !== employeeId) {
+        // Validar que el empleado tenga acceso al vault
+        const hasAccess = await this.accessControlService.canAccessVault(employeeId, vaultId);
+        if (!hasAccess) {
             throw new ForbiddenException('No tienes permisos para actualizar este vault');
         }
 
-        // Actualizar campos proporcionados
-        if (updateVaultDto.name !== undefined) {
-            vault.name = updateVaultDto.name;
+        // Validar entidades de visibilidad si se cambia el nivel
+        if (updateVaultDto.visibilityLevel !== undefined) {
+            await this.validateVaultVisibilityEntities(updateVaultDto as CreateVaultDto);
         }
 
-        if (updateVaultDto.description !== undefined) {
-            vault.description = updateVaultDto.description;
-        }
+        // Usar transacción para actualizar vault + registros de visibilidad
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
 
-        // Guardar y retornar vault actualizado (updatedAt se establece automáticamente)
-        return await this.vaultRepository.save(vault);
+        try {
+            // Actualizar campos proporcionados
+            if (updateVaultDto.name !== undefined) {
+                vault.name = updateVaultDto.name;
+            }
+
+            if (updateVaultDto.description !== undefined) {
+                vault.description = updateVaultDto.description;
+            }
+
+            // Si cambia visibilityLevel, actualizar registros de visibilidad
+            if (updateVaultDto.visibilityLevel !== undefined) {
+                vault.visibilityLevel = updateVaultDto.visibilityLevel;
+
+                // Eliminar registros antiguos de visibilidad del vault
+                await queryRunner.manager.delete(VaultVisibilityCompany, { vaultId: vault.id });
+                await queryRunner.manager.delete(VaultVisibilityArea, { vaultId: vault.id });
+                await queryRunner.manager.delete(VaultVisibilityPosition, { vaultId: vault.id });
+                await queryRunner.manager.delete(VaultVisibilityEmployee, { vaultId: vault.id });
+
+                // Crear nuevos registros de visibilidad
+                await this.createVaultVisibilityRecords(queryRunner, vault.id, updateVaultDto as CreateVaultDto);
+            }
+
+            const updatedVault = await queryRunner.manager.save(vault);
+            await queryRunner.commitTransaction();
+            return updatedVault;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     /**
-     * Elimina un vault vacío
+     * Elimina un vault vacío (sin credenciales ni sub-carpetas)
      * Requisitos: 16.1, 16.2, 16.3, 16.4
      */
     async deleteVault(employeeId: string, vaultId: string): Promise<void> {
@@ -414,8 +711,9 @@ export class PasswordVaultService {
             throw new NotFoundException('Vault no encontrado');
         }
 
-        // Validar que el empleado sea el propietario del vault
-        if (vault.ownerId !== employeeId) {
+        // Validar que el empleado tenga acceso al vault
+        const hasAccess = await this.accessControlService.canAccessVault(employeeId, vaultId);
+        if (!hasAccess) {
             throw new ForbiddenException('No tienes permisos para eliminar este vault');
         }
 
@@ -428,6 +726,17 @@ export class PasswordVaultService {
         if (credentialCount > 0) {
             throw new BadRequestException(
                 'No se puede eliminar un vault que contiene credenciales',
+            );
+        }
+
+        // Verificar que el vault no contenga sub-carpetas
+        const childCount = await this.vaultRepository.count({
+            where: { parentId: vaultId },
+        });
+
+        if (childCount > 0) {
+            throw new BadRequestException(
+                'No se puede eliminar un vault que contiene sub-carpetas',
             );
         }
 
@@ -466,6 +775,10 @@ export class PasswordVaultService {
         const limit = filters?.limit || 10;
         const skip = (page - 1) * limit;
 
+        // Resolver los IDs de vaults accesibles para el empleado (herencia incluida)
+        // Reutilizamos la misma lógica en memoria que findAllVaults
+        const accessibleVaultIds = await this.resolveAccessibleVaultIds(employeeId);
+
         // Construir query base con relaciones necesarias
         const queryBuilder = this.credentialRepository
             .createQueryBuilder('credential')
@@ -477,14 +790,16 @@ export class PasswordVaultService {
             .leftJoinAndSelect('credential.visibilityPositions', 'visibilityPositions')
             .leftJoinAndSelect('credential.visibilityEmployees', 'visibilityEmployees');
 
-        // Construir condiciones de visibilidad con OR
+        const now = new Date();
+
+        // Condición base: credenciales propias O con visibilidad explícita
         queryBuilder.where(
             '(' +
             // 1. Credenciales propias del empleado
             'credential.ownerId = :employeeId OR ' +
-            // 2. Credenciales públicas
+            // 2. Credenciales públicas (visibilidad propia)
             'credential.visibilityLevel = :publicLevel OR ' +
-            // 3. Credenciales por empresa (requiere join con contratos activos)
+            // 3. Credenciales por empresa (visibilidad propia)
             'EXISTS (' +
             '  SELECT 1 FROM memorandums m ' +
             '  INNER JOIN contracts c ON m.contract_id = c.id ' +
@@ -497,9 +812,7 @@ export class PasswordVaultService {
             '  AND (m.end_date IS NULL OR m.end_date >= :now) ' +
             '  AND cvc.company_id = d.company_id' +
             ') OR ' +
-            // 4. Credenciales por área (actualmente no soportado en el esquema)
-            // TODO: Implementar cuando se agregue areaId a memorandums
-            // 5. Credenciales por puesto (requiere join con contratos activos)
+            // 4. Credenciales por puesto (visibilidad propia)
             'EXISTS (' +
             '  SELECT 1 FROM memorandums m ' +
             '  INNER JOIN contracts c ON m.contract_id = c.id ' +
@@ -510,7 +823,7 @@ export class PasswordVaultService {
             '  AND (m.end_date IS NULL OR m.end_date >= :now) ' +
             '  AND cvp.position_id = m.position_id' +
             ') OR ' +
-            // 6. Credenciales por lista de empleados
+            // 5. Credenciales por lista de empleados (visibilidad propia)
             'EXISTS (' +
             '  SELECT 1 FROM credential_visibility_employees cve ' +
             '  WHERE cve.credential_id = credential.id ' +
@@ -521,9 +834,17 @@ export class PasswordVaultService {
                 employeeId,
                 publicLevel: VisibilityLevel.PUBLIC,
                 activeStatus: 'active',
-                now: new Date(),
+                now,
             },
         );
+
+        // 6. Credenciales INHERIT en vaults accesibles (herencia resuelta en memoria)
+        if (accessibleVaultIds.length > 0) {
+            queryBuilder.orWhere(
+                '(credential.visibilityLevel = :inheritLevel AND credential.vaultId IN (:...accessibleVaultIds))',
+                { inheritLevel: VisibilityLevel.INHERIT, accessibleVaultIds },
+            );
+        }
 
         // Aplicar filtro de búsqueda si se proporciona
         if (filters?.search && filters.search.trim()) {
@@ -570,7 +891,7 @@ export class PasswordVaultService {
     async findOneCredential(
         employeeId: string,
         credentialId: string,
-    ): Promise<Credential & { username: string; password: string }> {
+    ): Promise<Credential & { username: string | null; password: string | null }> {
         // Cargar credencial con todas las relaciones de visibilidad
         const credential = await this.credentialRepository.findOne({
             where: { id: credentialId },
@@ -608,15 +929,15 @@ export class PasswordVaultService {
         }
 
         // Descifrar username y password usando EncryptionService
-        const username = this.encryptionService.decrypt(credential.encryptedUsername);
-        const password = this.encryptionService.decrypt(credential.encryptedPassword);
+        const username = credential.encryptedUsername
+            ? this.encryptionService.decrypt(credential.encryptedUsername)
+            : null;
+        const password = credential.encryptedPassword
+            ? this.encryptionService.decrypt(credential.encryptedPassword)
+            : null;
 
         // Registrar acceso en CredentialAccessLog
-        const accessLog = this.credentialAccessLogRepository.create({
-            credentialId: credential.id,
-            employeeId,
-        });
-        await this.credentialAccessLogRepository.save(accessLog);
+        await this.logCredentialAction(credential.id, employeeId, CredentialLogAction.ACCESSED);
 
         // Retornar credencial con datos descifrados
         return {
@@ -638,6 +959,12 @@ export class PasswordVaultService {
         // Buscar la credencial
         const credential = await this.credentialRepository.findOne({
             where: { id: credentialId },
+            relations: [
+                'visibilityCompanies',
+                'visibilityAreas',
+                'visibilityPositions',
+                'visibilityEmployees',
+            ],
         });
 
         // Validar que la credencial existe
@@ -645,8 +972,9 @@ export class PasswordVaultService {
             throw new NotFoundException('Credencial no encontrada');
         }
 
-        // Validar que el empleado sea el propietario
-        if (credential.ownerId !== employeeId) {
+        // Validar que el empleado tenga acceso a la credencial
+        const hasAccess = await this.accessControlService.canAccessCredential(employeeId, credential);
+        if (!hasAccess) {
             throw new ForbiddenException('No tienes permisos para actualizar esta credencial');
         }
 
@@ -735,6 +1063,9 @@ export class PasswordVaultService {
             // Commit de la transacción
             await queryRunner.commitTransaction();
 
+            // Registrar log de actualización
+            await this.logCredentialAction(updatedCredential.id, employeeId, CredentialLogAction.UPDATED);
+
             // Retornar credencial actualizada
             return updatedCredential;
         } catch (error) {
@@ -755,6 +1086,12 @@ export class PasswordVaultService {
         // Buscar la credencial
         const credential = await this.credentialRepository.findOne({
             where: { id: credentialId },
+            relations: [
+                'visibilityCompanies',
+                'visibilityAreas',
+                'visibilityPositions',
+                'visibilityEmployees',
+            ],
         });
 
         // Validar que la credencial existe
@@ -762,8 +1099,9 @@ export class PasswordVaultService {
             throw new NotFoundException('Credencial no encontrada');
         }
 
-        // Validar que el empleado sea el propietario
-        if (credential.ownerId !== employeeId) {
+        // Validar que el empleado tenga acceso a la credencial
+        const hasAccess = await this.accessControlService.canAccessCredential(employeeId, credential);
+        if (!hasAccess) {
             throw new ForbiddenException('No tienes permisos para eliminar esta credencial');
         }
 
@@ -841,5 +1179,56 @@ export class PasswordVaultService {
             page,
             limit,
         };
+    }
+
+    /**
+     * Registra una acción sobre una credencial en el log de auditoría.
+     */
+    private async logCredentialAction(
+        credentialId: string,
+        employeeId: string,
+        action: CredentialLogAction,
+    ): Promise<void> {
+        const log = this.credentialAccessLogRepository.create({
+            credentialId,
+            employeeId,
+            action,
+        });
+        await this.credentialAccessLogRepository.save(log);
+    }
+
+    /**
+     * Obtiene el historial de accesos de una credencial específica.
+     * Solo el propietario de la credencial puede ver sus logs.
+     */
+    async findCredentialAccessLogs(
+        employeeId: string,
+        credentialId: string,
+        page: number = 1,
+        limit: number = 50,
+    ): Promise<CredentialAccessLog[]> {
+        // Verificar que la credencial existe y pertenece al empleado
+        const credential = await this.credentialRepository.findOne({
+            where: { id: credentialId },
+        });
+
+        if (!credential) {
+            throw new NotFoundException('Credencial no encontrada');
+        }
+
+        if (credential.ownerId !== employeeId) {
+            throw new ForbiddenException('No tienes permisos para ver los logs de esta credencial');
+        }
+
+        const skip = (page - 1) * limit;
+
+        return this.credentialAccessLogRepository
+            .createQueryBuilder('log')
+            .leftJoinAndSelect('log.employee', 'employee')
+            .where('log.credentialId = :credentialId', { credentialId })
+            .orderBy('log.accessedAt', 'DESC')
+            .skip(skip)
+            .take(limit)
+            .getMany();
     }
 }

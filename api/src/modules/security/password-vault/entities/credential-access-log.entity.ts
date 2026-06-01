@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Credential } from './credential.entity';
 import { Employee } from '@modules/core/employees/entities/employee.entity';
+import { CredentialLogAction } from '../enums/credential-log-action.enum';
 
 @Entity('credential_access_logs')
 export class CredentialAccessLog {
@@ -27,6 +28,13 @@ export class CredentialAccessLog {
 
     @Column({ type: 'uuid' })
     employeeId: string;
+
+    @Column({
+        type: 'enum',
+        enum: CredentialLogAction,
+        default: CredentialLogAction.ACCESSED,
+    })
+    action: CredentialLogAction;
 
     @CreateDateColumn()
     accessedAt: Date;

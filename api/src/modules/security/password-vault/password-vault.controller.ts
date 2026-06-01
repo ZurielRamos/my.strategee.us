@@ -67,16 +67,7 @@ export class PasswordVaultController {
         @ActiveUser('employeeId') employeeId: string,
         @Param('id') id: string,
     ): Promise<Vault> {
-        // Note: The service doesn't have a findOneVault method yet, but we'll use findAllVaults
-        // and filter by ID, or we can add the method to the service later
-        const vaults = await this.passwordVaultService.findAllVaults(employeeId);
-        const vault = vaults.find((v) => v.id === id);
-        
-        if (!vault) {
-            throw new NotFoundException('Vault no encontrado');
-        }
-        
-        return vault;
+        return this.passwordVaultService.findOneVault(employeeId, id);
     }
 
     @Patch('vaults/:id')
@@ -161,6 +152,26 @@ export class PasswordVaultController {
         @Body() updateCredentialDto: UpdateCredentialDto,
     ): Promise<Credential> {
         return this.passwordVaultService.updateCredential(employeeId, id, updateCredentialDto);
+    }
+
+    @Get('credentials/:id/access-logs')
+    @Roles(Role.EMPLOYEE, Role.ADMIN, Role.HR_MANAGER)
+    @ApiOperation({ summary: 'Listar logs de acceso de una credencial específica' })
+    @ApiResponse({ status: 200, description: 'Lista de logs de acceso de la credencial' })
+    @ApiResponse({ status: 403, description: 'No tienes permisos para ver estos logs' })
+    @ApiResponse({ status: 404, description: 'Credencial no encontrada' })
+    async findCredentialAccessLogs(
+        @ActiveUser('employeeId') employeeId: string,
+        @Param('id') credentialId: string,
+        @Query('page') page?: number,
+        @Query('limit') limit?: number,
+    ): Promise<any[]> {
+        return this.passwordVaultService.findCredentialAccessLogs(
+            employeeId,
+            credentialId,
+            page || 1,
+            limit || 50,
+        );
     }
 
     @Delete('credentials/:id')

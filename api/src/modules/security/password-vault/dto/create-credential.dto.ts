@@ -14,42 +14,44 @@ import { VisibilityLevel } from '../enums/visibility-level.enum';
 
 export class CreateCredentialDto {
   @ApiProperty({
+    example: 'Mi Credencial',
+    description: 'Título de la credencial',
+    maxLength: 200,
+  })
+  @IsString({ message: 'El título debe ser un texto' })
+  @IsNotEmpty({ message: 'El título es requerido' })
+  @MaxLength(200, { message: 'El título debe tener máximo 200 caracteres' })
+  title: string;
+
+  @ApiProperty({
     example: 'https://example.com',
     description: 'URL del servicio',
+    required: false,
   })
   @IsString({ message: 'El URL debe ser un texto' })
   @IsUrl({ require_protocol: true, require_valid_protocol: true, protocols: ['http', 'https'], require_tld: false }, { message: 'El URL debe tener un formato válido' })
-  @IsNotEmpty({ message: 'El URL es requerido' })
-  url: string;
+  @IsOptional()
+  url?: string;
 
   @ApiProperty({
     example: 'usuario@example.com',
     description: 'Nombre de usuario',
+    required: false,
   })
   @IsString({ message: 'El nombre de usuario debe ser un texto' })
   @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
-  @IsNotEmpty({ message: 'El nombre de usuario es requerido' })
-  username: string;
+  @IsOptional()
+  username?: string;
 
   @ApiProperty({
     example: 'P@ssw0rd123',
     description: 'Contraseña',
+    required: false,
   })
   @IsString({ message: 'La contraseña debe ser un texto' })
   @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
-  @IsNotEmpty({ message: 'La contraseña es requerida' })
-  password: string;
-
-  @ApiProperty({
-    example: 'Mi Credencial',
-    description: 'Título de la credencial',
-    required: false,
-    maxLength: 200,
-  })
-  @IsString({ message: 'El título debe ser un texto' })
   @IsOptional()
-  @MaxLength(200, { message: 'El título debe tener máximo 200 caracteres' })
-  title?: string;
+  password?: string;
 
   @ApiProperty({
     example: 'https://example.com/login',
@@ -81,12 +83,14 @@ export class CreateCredentialDto {
 
   @ApiProperty({
     example: VisibilityLevel.PRIVATE,
-    description: 'Nivel de visibilidad de la credencial',
+    description: 'Nivel de visibilidad de la credencial. Si no se especifica, hereda la del vault.',
     enum: VisibilityLevel,
+    required: false,
+    default: VisibilityLevel.PRIVATE,
   })
   @IsEnum(VisibilityLevel, { message: 'El nivel de visibilidad debe ser un valor válido' })
-  @IsNotEmpty({ message: 'El nivel de visibilidad es requerido' })
-  visibilityLevel: VisibilityLevel;
+  @IsOptional()
+  visibilityLevel?: VisibilityLevel;
 
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174000',

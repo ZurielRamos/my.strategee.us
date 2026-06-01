@@ -22,16 +22,16 @@ export class Credential {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ type: 'varchar', length: 200, nullable: true })
+    @Column({ type: 'varchar', length: 200 })
     title: string;
 
-    @Column({ type: 'varchar', length: 500 })
+    @Column({ type: 'varchar', length: 500, nullable: true })
     url: string;
 
-    @Column({ type: 'text' })
+    @Column({ type: 'text', nullable: true })
     encryptedUsername: string;
 
-    @Column({ type: 'text' })
+    @Column({ type: 'text', nullable: true })
     encryptedPassword: string;
 
     @Column({ type: 'varchar', length: 500, nullable: true })
@@ -47,7 +47,7 @@ export class Credential {
     @JoinColumn({ name: 'logo_id' })
     logo: Attachment;
 
-    @Column({ type: 'enum', enum: VisibilityLevel })
+    @Column({ type: 'enum', enum: VisibilityLevel, default: VisibilityLevel.INHERIT })
     visibilityLevel: VisibilityLevel;
 
     @ManyToOne(() => Employee)

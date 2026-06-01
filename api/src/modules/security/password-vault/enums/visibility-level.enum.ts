@@ -1,4 +1,5 @@
 export enum VisibilityLevel {
+  INHERIT = 'inherit',
   PRIVATE = 'private',
   PUBLIC = 'public',
   BY_COMPANY = 'by_company',
