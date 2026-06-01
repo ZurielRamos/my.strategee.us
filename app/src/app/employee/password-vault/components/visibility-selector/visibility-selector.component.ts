@@ -33,7 +33,8 @@ export class VisibilitySelectorComponent implements OnInit {
   @Input() credential?: Credential;
 
   visibilityLevels = [
-    { value: VisibilityLevel.PRIVATE, label: 'Privada' },
+    { value: VisibilityLevel.INHERIT, label: 'Sin configuración (hereda del directorio)' },
+    { value: VisibilityLevel.PRIVATE, label: 'Privada (solo yo)' },
     { value: VisibilityLevel.PUBLIC, label: 'Pública' },
     { value: VisibilityLevel.BY_COMPANY, label: 'Por Empresa' },
     { value: VisibilityLevel.BY_AREA, label: 'Por Área' },

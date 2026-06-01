@@ -34,7 +34,7 @@ export class CredentialCardComponent {
   }
 
   getDisplayTitle(): string {
-    return this.credential.title || this.credential.url;
+    return this.credential.title;
   }
 
   hasValidLogo(): boolean {

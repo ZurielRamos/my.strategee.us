@@ -43,6 +43,7 @@ interface TreeNode {
   expanded: boolean;
   children?: TreeNode[];
   isOwner: boolean;
+  depth: number;
 }
 
 @Component({
@@ -106,10 +107,8 @@ export class TreeViewPage implements OnInit {
       const vaults = await firstValueFrom(this.vaultService.getVaults());
       const credentials = await firstValueFrom(this.vaultService.getCredentials());
 
-      // Build tree structure
-      this.treeNodes = vaults
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map(vault => this.buildVaultNode(vault, credentials));
+      // Build tree structure with nested vaults
+      this.treeNodes = this.buildTree(vaults, credentials);
 
       this.applyFilter();
     } catch (error) {
@@ -120,23 +119,56 @@ export class TreeViewPage implements OnInit {
     }
   }
 
-  private buildVaultNode(vault: Vault, allCredentials: CredentialListItem[]): TreeNode {
+  private buildTree(vaults: Vault[], allCredentials: CredentialListItem[]): TreeNode[] {
+    // Separate root vaults (no parentId) from child vaults
+    const rootVaults = vaults.filter(v => !v.parentId);
+    const childVaultsMap = new Map<string, Vault[]>();
+
+    vaults.forEach(v => {
+      if (v.parentId) {
+        const siblings = childVaultsMap.get(v.parentId) || [];
+        siblings.push(v);
+        childVaultsMap.set(v.parentId, siblings);
+      }
+    });
+
+    return rootVaults
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(vault => this.buildVaultNode(vault, allCredentials, childVaultsMap, 0));
+  }
+
+  private buildVaultNode(
+    vault: Vault, 
+    allCredentials: CredentialListItem[], 
+    childVaultsMap: Map<string, Vault[]>,
+    depth: number
+  ): TreeNode {
     const vaultCredentials = allCredentials
       .filter(c => c.vault.id === vault.id)
-      .sort((a, b) => {
-        const nameA = a.title || a.url;
-        const nameB = b.title || b.url;
-        return nameA.localeCompare(nameB);
+      .sort((a, b) => a.title.localeCompare(b.title));
+
+    const children: TreeNode[] = [];
+
+    // Add child vaults (sub-folders) first
+    const childVaults = childVaultsMap.get(vault.id) || [];
+    childVaults
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .forEach(childVault => {
+        children.push(this.buildVaultNode(childVault, allCredentials, childVaultsMap, depth + 1));
       });
 
-    const children: TreeNode[] = vaultCredentials.map(credential => ({
-      id: credential.id,
-      type: 'credential' as const,
-      name: credential.title || credential.url,
-      data: credential,
-      expanded: false,
-      isOwner: credential.ownerId === this.currentEmployeeId
-    }));
+    // Then add credentials
+    vaultCredentials.forEach(credential => {
+      children.push({
+        id: credential.id,
+        type: 'credential' as const,
+        name: credential.title,
+        data: credential,
+        expanded: false,
+        isOwner: credential.ownerId === this.currentEmployeeId,
+        depth: depth + 1
+      });
+    });
 
     return {
       id: vault.id,
@@ -145,7 +177,8 @@ export class TreeViewPage implements OnInit {
       data: vault,
       expanded: false,
       children,
-      isOwner: vault.ownerId === this.currentEmployeeId
+      isOwner: vault.ownerId === this.currentEmployeeId,
+      depth
     };
   }
 
@@ -156,20 +189,28 @@ export class TreeViewPage implements OnInit {
     }
 
     const term = this.searchTerm.toLowerCase();
-    this.filteredNodes = this.treeNodes
-      .map(vaultNode => {
-        const vaultMatches = vaultNode.name.toLowerCase().includes(term);
-        const matchingChildren = vaultNode.children?.filter(credNode =>
-          credNode.name.toLowerCase().includes(term)
-        ) || [];
+    this.filteredNodes = this.filterNodesRecursive(this.treeNodes, term);
+  }
 
-        if (vaultMatches || matchingChildren.length > 0) {
-          return {
-            ...vaultNode,
-            children: vaultMatches ? vaultNode.children : matchingChildren,
-            expanded: matchingChildren.length > 0 // Auto-expand if children match
-          };
+  private filterNodesRecursive(nodes: TreeNode[], term: string): TreeNode[] {
+    return nodes
+      .map(node => {
+        const nameMatches = node.name.toLowerCase().includes(term);
+
+        if (node.type === 'vault' && node.children) {
+          const matchingChildren = this.filterNodesRecursive(node.children, term);
+
+          if (nameMatches || matchingChildren.length > 0) {
+            return {
+              ...node,
+              children: nameMatches ? node.children : matchingChildren,
+              expanded: matchingChildren.length > 0
+            };
+          }
+        } else if (nameMatches) {
+          return node;
         }
+
         return null;
       })
       .filter(node => node !== null) as TreeNode[];
@@ -200,10 +241,14 @@ export class TreeViewPage implements OnInit {
     }
   }
 
-  async openCreateVaultModal() {
+  async openCreateVaultModal(parentNode?: TreeNode) {
     const result = await this.modalService.open(
       VaultFormModalComponent,
-      { mode: 'create' }
+      { 
+        mode: 'create',
+        parentId: parentNode?.id,
+        parentName: parentNode?.name
+      }
     );
 
     if (result.role === 'save') {

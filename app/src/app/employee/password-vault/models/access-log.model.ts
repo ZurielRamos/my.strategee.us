@@ -1,3 +1,5 @@
+export type CredentialLogAction = 'created' | 'accessed' | 'updated';
+
 export interface AccessLog {
   id: string;
   credentialId: string;
@@ -7,5 +9,6 @@ export interface AccessLog {
     firstName: string;
     lastName: string;
   };
+  action: CredentialLogAction;
   accessedAt: Date;
 }

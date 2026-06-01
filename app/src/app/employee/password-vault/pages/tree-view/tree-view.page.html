@@ -47,75 +47,91 @@
     } @else {
       <div class="tree-view">
         <ion-list class="tree-list">
-          @for (vaultNode of filteredNodes; track vaultNode.id) {
-            <!-- Vault Node -->
-            <ion-item 
-              class="tree-node vault-node"
-              [class.expanded]="vaultNode.expanded"
-              button
-              detail="false">
-              
-              <div class="node-content" (click)="toggleNode(vaultNode)">
-                <ion-icon 
-                  class="chevron-icon" 
-                  [name]="getChevronIcon(vaultNode)">
-                </ion-icon>
-                <ion-icon 
-                  class="node-icon" 
-                  [name]="getNodeIcon(vaultNode)">
-                </ion-icon>
-                <ion-label>{{ vaultNode.name }}</ion-label>
-                <span class="credential-count">{{ vaultNode.children?.length || 0 }}</span>
-              </div>
-
-              @if (vaultNode.isOwner) {
-                <div class="node-actions" slot="end">
-                  <ion-button 
-                    fill="clear" 
-                    size="small"
-                    (click)="openCreateCredentialModal(vaultNode); $event.stopPropagation()">
-                    <ion-icon slot="icon-only" name="add-outline"></ion-icon>
-                  </ion-button>
-                  <ion-button 
-                    fill="clear" 
-                    size="small"
-                    (click)="openEditVaultModal(vaultNode); $event.stopPropagation()">
-                    <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-                  </ion-button>
-                  <ion-button 
-                    fill="clear" 
-                    size="small" 
-                    color="danger"
-                    (click)="deleteVault(vaultNode); $event.stopPropagation()">
-                    <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-                  </ion-button>
-                </div>
-              }
-            </ion-item>
-
-            <!-- Credential Nodes (children) -->
-            @if (vaultNode.expanded && vaultNode.children) {
-              @for (credNode of vaultNode.children; track credNode.id) {
-                <ion-item 
-                  class="tree-node credential-node"
-                  button
-                  detail="false"
-                  (click)="toggleNode(credNode)">
-                  
-                  <div class="node-content">
-                    <div class="indent"></div>
-                    <ion-icon 
-                      class="node-icon" 
-                      [name]="getNodeIcon(credNode)">
-                    </ion-icon>
-                    <ion-label>{{ credNode.name }}</ion-label>
-                  </div>
-                </ion-item>
-              }
-            }
-          }
+          <ng-container *ngTemplateOutlet="recursiveTree; context: { nodes: filteredNodes }"></ng-container>
         </ion-list>
       </div>
     }
   </div>
 </ion-content>
+
+<!-- Recursive tree template -->
+<ng-template #recursiveTree let-nodes="nodes">
+  @for (node of nodes; track node.id) {
+    @if (node.type === 'vault') {
+      <!-- Vault Node -->
+      <ion-item 
+        class="tree-node vault-node"
+        [class.expanded]="node.expanded"
+        [style.padding-left.px]="node.depth * 24"
+        button
+        detail="false">
+        
+        <div class="node-content" (click)="toggleNode(node)">
+          <ion-icon 
+            class="chevron-icon" 
+            [name]="getChevronIcon(node)">
+          </ion-icon>
+          <ion-icon 
+            class="node-icon" 
+            [name]="getNodeIcon(node)">
+          </ion-icon>
+          <ion-label>{{ node.name }}</ion-label>
+          <span class="credential-count">{{ node.children?.length || 0 }}</span>
+        </div>
+
+        <div class="node-actions" slot="end">
+          <ion-button 
+            fill="clear" 
+            size="small"
+            title="Nueva sub-carpeta"
+            (click)="openCreateVaultModal(node); $event.stopPropagation()">
+            <ion-icon slot="icon-only" name="folder-outline"></ion-icon>
+          </ion-button>
+          <ion-button 
+            fill="clear" 
+            size="small"
+            title="Nueva credencial"
+            (click)="openCreateCredentialModal(node); $event.stopPropagation()">
+            <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+          </ion-button>
+          <ion-button 
+            fill="clear" 
+            size="small"
+            (click)="openEditVaultModal(node); $event.stopPropagation()">
+            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          </ion-button>
+          <ion-button 
+            fill="clear" 
+            size="small" 
+            color="danger"
+            (click)="deleteVault(node); $event.stopPropagation()">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-item>
+
+      <!-- Children (sub-vaults and credentials) rendered recursively -->
+      @if (node.expanded && node.children) {
+        <ng-container *ngTemplateOutlet="recursiveTree; context: { nodes: node.children }"></ng-container>
+      }
+    } @else {
+      <!-- Credential Node -->
+      <ion-item 
+        class="tree-node credential-node"
+        [style.padding-left.px]="node.depth * 24"
+        button
+        detail="false"
+        (click)="toggleNode(node)">
+        
+        <div class="node-content">
+          <div class="indent"></div>
+          <ion-icon 
+            class="node-icon" 
+            [name]="getNodeIcon(node)">
+          </ion-icon>
+          <ion-label>{{ node.name }}</ion-label>
+        </div>
+      </ion-item>
+    }
+  }
+</ng-template>

@@ -2,10 +2,10 @@ import { VisibilityLevel } from './visibility.model';
 
 export interface Credential {
   id: string;
-  title?: string;
-  url: string;
-  username: string;
-  password: string;
+  title: string;
+  url?: string;
+  username?: string;
+  password?: string;
   directLoginUrl?: string;
   notes?: string;
   logoId?: string;
@@ -49,8 +49,8 @@ export interface Credential {
 
 export interface CredentialListItem {
   id: string;
-  title?: string;
-  url: string;
+  title: string;
+  url?: string;
   logoId?: string;
   logo?: {
     id: string;
@@ -71,14 +71,14 @@ export interface CredentialListItem {
 }
 
 export interface CreateCredentialDto {
-  title?: string;
-  url: string;
-  username: string;
-  password: string;
+  title: string;
+  url?: string;
+  username?: string;
+  password?: string;
   directLoginUrl?: string;
   notes?: string;
   logoId?: string;
-  visibilityLevel: VisibilityLevel;
+  visibilityLevel?: VisibilityLevel;
   vaultId: string;
   companyIds?: string[];
   areaIds?: string[];

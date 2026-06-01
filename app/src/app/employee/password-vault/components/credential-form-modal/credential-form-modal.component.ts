@@ -45,14 +45,14 @@ export class CredentialFormModalComponent implements OnInit {
   ngOnInit() {
     this.form = this.fb.group({
       vaultId: [''],
-      url: ['', Validators.required],
-      username: ['', Validators.required],
-      password: ['', Validators.required],
-      title: ['', Validators.maxLength(200)],
+      title: ['', [Validators.required, Validators.maxLength(200)]],
+      url: [''],
+      username: [''],
+      password: [''],
       logoId: [''],
       notes: [''],
       directLoginUrl: [''],
-      visibilityLevel: [VisibilityLevel.PRIVATE, Validators.required],
+      visibilityLevel: [VisibilityLevel.INHERIT],
       companyIds: [[]],
       areaIds: [[]],
       positionIds: [[]],
@@ -62,14 +62,17 @@ export class CredentialFormModalComponent implements OnInit {
     if (this.mode === 'edit' && this.credential) {
       this.form.patchValue({
         vaultId: this.credential.vaultId,
-        url: this.credential.url,
-        username: this.credential.username,
-        password: this.credential.password,
         title: this.credential.title || '',
+        url: this.credential.url || '',
+        username: this.credential.username || '',
+        password: this.credential.password || '',
         logoId: this.credential.logoId || '',
         notes: this.credential.notes || '',
         directLoginUrl: this.credential.directLoginUrl || '',
-        visibilityLevel: this.credential.visibilityLevel,
+        visibilityLevel: this.credential.visibilityLevel || VisibilityLevel.INHERIT,
+        companyIds: this.credential.visibilityCompanies?.map(vc => vc.companyId) ?? [],
+        areaIds: this.credential.visibilityAreas?.map(va => va.areaId) ?? [],
+        positionIds: this.credential.visibilityPositions?.map(vp => vp.positionId) ?? [],
         employeeIds: this.credential.visibilityEmployees?.map(ve => ve.employee.id) ?? []
       });
     }
@@ -87,18 +90,25 @@ export class CredentialFormModalComponent implements OnInit {
         const formValue = this.form.value;
         
         // Clean up empty optional fields
-        const dto = {
-          ...formValue,
+        const dto: any = {
+          title: formValue.title,
           vaultId: this.mode === 'create' ? this.preselectedVaultId : formValue.vaultId,
-          title: formValue.title || undefined,
+          url: formValue.url || undefined,
+          username: formValue.username || undefined,
+          password: formValue.password || undefined,
           logoId: formValue.logoId || undefined,
           notes: formValue.notes || undefined,
           directLoginUrl: formValue.directLoginUrl || undefined,
-          companyIds: formValue.companyIds?.length > 0 ? formValue.companyIds : undefined,
-          areaIds: formValue.areaIds?.length > 0 ? formValue.areaIds : undefined,
-          positionIds: formValue.positionIds?.length > 0 ? formValue.positionIds : undefined,
-          employeeIds: formValue.employeeIds?.length > 0 ? formValue.employeeIds : undefined
         };
+
+        // Solo incluir visibilidad al editar (al crear, hereda del directorio)
+        if (this.mode === 'edit') {
+          dto.visibilityLevel = formValue.visibilityLevel;
+          dto.companyIds = formValue.companyIds?.length > 0 ? formValue.companyIds : undefined;
+          dto.areaIds = formValue.areaIds?.length > 0 ? formValue.areaIds : undefined;
+          dto.positionIds = formValue.positionIds?.length > 0 ? formValue.positionIds : undefined;
+          dto.employeeIds = formValue.employeeIds?.length > 0 ? formValue.employeeIds : undefined;
+        }
 
         if (this.mode === 'create') {
           await firstValueFrom(this.vaultService.createCredential(dto));

@@ -183,6 +183,7 @@
     color: var(--ion-color-medium);
     transition: transform 0.2s ease;
     flex-shrink: 0;
+    width: 16px;
   }
 
   .node-icon {
@@ -207,7 +208,7 @@
   }
 
   .indent {
-    width: 32px;
+    width: 16px;
     flex-shrink: 0;
   }
 }

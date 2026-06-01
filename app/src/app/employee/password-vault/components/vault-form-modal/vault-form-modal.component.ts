@@ -8,6 +8,8 @@ import { BaseModalComponent } from '../../../../shared/components/base-modal/bas
 import { ToastService } from '../../../../shared/services/toast.service';
 import { PasswordVaultService } from '../../services/password-vault.service';
 import { Vault } from '../../models/vault.model';
+import { VisibilityLevel } from '../../models/visibility.model';
+import { VisibilitySelectorComponent } from '../visibility-selector/visibility-selector.component';
 
 @Component({
   selector: 'app-vault-form-modal',
@@ -22,12 +24,15 @@ import { Vault } from '../../models/vault.model';
     IonItem,
     IonLabel,
     IonInput,
-    IonTextarea
+    IonTextarea,
+    VisibilitySelectorComponent
   ]
 })
 export class VaultFormModalComponent implements OnInit {
   @Input() mode: 'create' | 'edit' = 'create';
   @Input() vault?: Vault;
+  @Input() parentId?: string;
+  @Input() parentName?: string;
 
   form!: FormGroup;
   isSubmitting = false;
@@ -39,22 +44,43 @@ export class VaultFormModalComponent implements OnInit {
     private vaultService: PasswordVaultService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
-      description: ['']
+      description: [''],
+      visibilityLevel: [VisibilityLevel.INHERIT],
+      companyIds: [[]],
+      areaIds: [[]],
+      positionIds: [[]],
+      employeeIds: [[]]
     });
 
     if (this.mode === 'edit' && this.vault) {
+      // Cargar vault fresco del backend con relaciones de visibilidad completas
+      try {
+        const freshVault = await firstValueFrom(this.vaultService.getVault(this.vault.id));
+        this.vault = freshVault;
+      } catch (e) {
+        // Si falla, usar los datos que ya tenemos
+      }
+
       this.form.patchValue({
         name: this.vault.name,
-        description: this.vault.description || ''
+        description: this.vault.description || '',
+        visibilityLevel: this.vault.visibilityLevel || VisibilityLevel.INHERIT,
+        companyIds: this.vault.visibilityCompanies?.map(vc => vc.companyId) || [],
+        areaIds: this.vault.visibilityAreas?.map(va => va.areaId) || [],
+        positionIds: this.vault.visibilityPositions?.map(vp => vp.positionId) || [],
+        employeeIds: this.vault.visibilityEmployees?.map(ve => ve.employeeId) || []
       });
     }
   }
 
   get title(): string {
-    return this.mode === 'create' ? 'Crear Vault' : 'Editar Vault';
+    if (this.mode === 'create') {
+      return this.parentName ? `Nueva Sub-carpeta en "${this.parentName}"` : 'Crear Vault';
+    }
+    return 'Editar Vault';
   }
 
   async onConfirm() {
@@ -62,11 +88,16 @@ export class VaultFormModalComponent implements OnInit {
       this.isSubmitting = true;
 
       try {
+        const formValue = this.form.value;
         if (this.mode === 'create') {
-          await firstValueFrom(this.vaultService.createVault(this.form.value));
+          const dto = {
+            ...formValue,
+            ...(this.parentId ? { parentId: this.parentId } : {})
+          };
+          await firstValueFrom(this.vaultService.createVault(dto));
           await this.toastService.success('Vault creado exitosamente');
         } else if (this.vault) {
-          await firstValueFrom(this.vaultService.updateVault(this.vault.id, this.form.value));
+          await firstValueFrom(this.vaultService.updateVault(this.vault.id, formValue));
           await this.toastService.success('Vault actualizado exitosamente');
         }
         this.modalCtrl.dismiss(null, 'save');

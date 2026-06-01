@@ -35,21 +35,54 @@
 
 .access-log-item {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding: 1rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
   background: var(--ion-color-light);
   border-radius: 8px;
-  border-left: 3px solid var(--ion-color-primary);
 
-  .employee-name {
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--ion-color-dark);
+  .log-action-badge {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.25rem 0.625rem;
+    border-radius: 20px;
+    min-width: 90px;
+    text-align: center;
+
+    &.action-created {
+      background: rgba(var(--ion-color-success-rgb), 0.15);
+      color: var(--ion-color-success-shade);
+    }
+
+    &.action-accessed {
+      background: rgba(var(--ion-color-primary-rgb), 0.12);
+      color: var(--ion-color-primary-shade);
+    }
+
+    &.action-updated {
+      background: rgba(var(--ion-color-warning-rgb), 0.15);
+      color: var(--ion-color-warning-shade);
+    }
   }
 
-  .access-date {
-    font-size: 0.875rem;
-    color: var(--ion-color-medium);
+  .log-info {
+    flex: 1;
+    min-width: 0;
+
+    .employee-name {
+      font-weight: 600;
+      font-size: 0.9375rem;
+      color: var(--ion-color-dark);
+    }
+
+    .access-date {
+      font-size: 0.8125rem;
+      color: var(--ion-color-medium);
+      margin-top: 2px;
+    }
   }
 }

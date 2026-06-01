@@ -273,30 +273,18 @@ export class DashboardPage implements OnInit {
     }
 
     get firstName(): string {
-        console.log('Getting firstName...');
-        console.log('employeeProfile:', this.employeeProfile);
-        console.log('currentUser:', this.currentUser);
-        
-        // Primero intentar con el perfil cargado del empleado
         if (this.employeeProfile?.firstName) {
-            console.log('Using employeeProfile.firstName:', this.employeeProfile.firstName);
             return this.employeeProfile.firstName;
         }
         
-        // Luego intentar con el perfil del currentUser (estructura: profile.employee.firstName)
         if (this.currentUser?.profile?.employee?.firstName) {
-            console.log('Using currentUser.profile.employee.firstName:', this.currentUser.profile.employee.firstName);
             return this.currentUser.profile.employee.firstName;
         }
         
-        // Fallback a profile.firstName por si acaso
         if (this.currentUser?.profile?.firstName) {
-            console.log('Using currentUser.profile.firstName:', this.currentUser.profile.firstName);
             return this.currentUser.profile.firstName;
         }
         
-        // Si no hay perfil, usar "Usuario"
-        console.log('No firstName found, using fallback');
         return 'Usuario';
     }
 

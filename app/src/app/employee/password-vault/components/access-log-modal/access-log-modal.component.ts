@@ -62,6 +62,15 @@ export class AccessLogModalComponent implements OnInit {
     return `${log.employee.firstName} ${log.employee.lastName}`;
   }
 
+  getActionLabel(action: string): string {
+    const labels: Record<string, string> = {
+      created: 'Creación',
+      accessed: 'Acceso',
+      updated: 'Modificación',
+    };
+    return labels[action] ?? action;
+  }
+
   formatDate(date: Date): string {
     return new Date(date).toLocaleString('es-ES', {
       year: 'numeric',

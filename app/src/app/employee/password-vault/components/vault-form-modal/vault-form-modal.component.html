@@ -35,5 +35,13 @@
         rows="3">
       </ion-textarea>
     </ion-item>
+
+    <!-- Compartir acceso al directorio (solo al editar, o al crear un directorio raíz) -->
+    @if (mode === 'edit' || !parentId) {
+      <app-visibility-selector [formGroup]="form" [credential]="$any(vault)"></app-visibility-selector>
+      @if (mode === 'edit' && parentId) {
+        <p class="visibility-hint">Si se deja en "Sin configuración", la carpeta hereda la visibilidad de su directorio padre. "Privada" significa que solo tú puedes verla.</p>
+      }
+    }
   </form>
 </app-base-modal>

@@ -167,7 +167,7 @@ export class CredentialDetailModalComponent implements OnInit {
   }
 
   getDisplayTitle(): string {
-    return this.credential?.title || this.credential?.url || 'Credencial';
+    return this.credential?.title || 'Credencial';
   }
 
   getOwnerName(): string {

@@ -1,5 +1,5 @@
 <app-base-modal 
-  title="Historial de Accesos"
+  title="Historial de Actividad"
   [showFooter]="false"
   (modalDismiss)="onDismiss()">
   
@@ -10,14 +10,19 @@
     </div>
   } @else if (accessLogs.length === 0) {
     <div class="empty-state">
-      <p>No hay historial de accesos registrado</p>
+      <p>No hay actividad registrada</p>
     </div>
   } @else {
     <div class="access-log-list">
       @for (log of accessLogs; track log.id) {
         <div class="access-log-item">
-          <div class="employee-name">{{ getEmployeeName(log) }}</div>
-          <div class="access-date">{{ formatDate(log.accessedAt) }}</div>
+          <div class="log-action-badge" [class]="'action-' + log.action">
+            {{ getActionLabel(log.action) }}
+          </div>
+          <div class="log-info">
+            <div class="employee-name">{{ getEmployeeName(log) }}</div>
+            <div class="access-date">{{ formatDate(log.accessedAt) }}</div>
+          </div>
         </div>
       }
     </div>
