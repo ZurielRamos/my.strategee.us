@@ -35,7 +35,7 @@ export class DashboardPage implements OnInit {
     todayLabel = new Date().toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
     quickActions = [
-        { title: 'Empleados', icon: 'people-outline', route: '/admin/organization/employees', color: 'primary' },
+        { title: 'Empleados', icon: 'people-outline', route: '/admin/employees', color: 'primary' },
         { title: 'Solicitudes', icon: 'document-text-outline', route: '/admin/operations/requests', color: 'secondary' },
         { title: 'Contratos', icon: 'briefcase-outline', route: '/admin/finance/contracts', color: 'tertiary' },
         { title: 'Compensaciones', icon: 'cash-outline', route: '/admin/finance/compensation', color: 'success' }
