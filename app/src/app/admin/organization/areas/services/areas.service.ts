@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Area, CreateAreaDto, UpdateAreaDto } from '../models/area.model';
 import { environment } from 'src/environments/environment';
@@ -12,12 +12,8 @@ export class AreasService {
 
     constructor(private http: HttpClient) { }
 
-    getAll(companyId?: string): Observable<Area[]> {
-        let params = new HttpParams();
-        if (companyId) {
-            params = params.set('companyId', companyId);
-        }
-        return this.http.get<Area[]>(this.apiUrl, { params });
+    getAll(): Observable<Area[]> {
+        return this.http.get<Area[]>(this.apiUrl);
     }
 
     getById(id: string): Observable<Area> {

@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { DepartmentsService } from './departments.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
@@ -26,11 +26,10 @@ export class DepartmentsController {
 
     @Get()
     @Roles(Role.ADMIN, Role.HR_MANAGER)
-    @ApiOperation({ summary: 'Listar todos los departamentos, opcionalmente filtrados por empresa' })
-    @ApiQuery({ name: 'companyId', required: false, description: 'Filtrar por ID de empresa' })
+    @ApiOperation({ summary: 'Listar todos los departamentos/áreas' })
     @ApiResponse({ status: 200, description: 'Lista de departamentos', type: [Department] })
-    findAll(@Query('companyId') companyId?: string) {
-        return this.departmentsService.findAll(companyId);
+    findAll() {
+        return this.departmentsService.findAll();
     }
 
     @Get(':id')
@@ -54,24 +53,6 @@ export class DepartmentsController {
     @Roles(Role.ADMIN)
     @ApiOperation({ summary: 'Eliminar un departamento' })
     @ApiResponse({ status: 200, description: 'Departamento eliminado' })
-    @ApiResponse({
-        status: 409,
-        description: 'No se puede eliminar - tiene dependencias',
-        schema: {
-            example: {
-                statusCode: 409,
-                message: 'No se puede eliminar el departamento porque está siendo utilizado',
-                error: 'Conflict',
-                dependencies: [
-                    {
-                        entity: 'positions',
-                        count: 8,
-                        examples: ['Desarrollador Senior', 'Analista de Datos', 'Gerente de Proyecto']
-                    }
-                ]
-            }
-        }
-    })
     remove(@Param('id') id: string) {
         return this.departmentsService.remove(id);
     }

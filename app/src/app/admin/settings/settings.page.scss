@@ -155,6 +155,16 @@
             cursor: not-allowed;
         }
     }
+
+    .devices-btn {
+        --border-radius: 12px;
+        --border-color: var(--ion-color-primary);
+        --color: var(--ion-color-primary);
+        height: 48px;
+        font-weight: 600;
+        text-transform: none;
+        margin-top: 12px;
+    }
 }
 
 .settings-warning {
@@ -181,3 +191,149 @@
         line-height: 1.5;
     }
 }
+
+// API Keys styles
+.api-keys-description {
+    font-size: 14px;
+    color: var(--app-text-secondary);
+    line-height: 1.6;
+    margin: 0 0 20px 0;
+}
+
+.api-keys-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.api-key-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: var(--app-input-bg);
+    border-radius: 12px;
+    border: 1px solid var(--app-border);
+
+    .api-key-info {
+        flex: 1;
+        min-width: 0;
+
+        h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--app-text-primary);
+            margin: 0 0 4px 0;
+        }
+
+        .api-key-value {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            color: var(--app-text-secondary);
+            margin: 0 0 4px 0;
+            word-break: break-all;
+        }
+
+        .api-key-meta {
+            font-size: 12px;
+            color: var(--app-text-tertiary);
+            margin: 0;
+        }
+    }
+
+    .api-key-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+
+        ion-button {
+            --padding-start: 8px;
+            --padding-end: 8px;
+
+            ion-icon {
+                font-size: 18px;
+            }
+        }
+    }
+}
+
+.api-keys-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px;
+    margin-bottom: 16px;
+
+    ion-icon {
+        font-size: 48px;
+        color: var(--app-text-tertiary);
+        margin-bottom: 12px;
+    }
+
+    p {
+        font-size: 14px;
+        color: var(--app-text-secondary);
+        margin: 0;
+    }
+}
+
+.add-key-button {
+    --color: var(--ion-color-primary);
+    --padding-start: 8px;
+    --padding-end: 8px;
+    margin: 0;
+
+    ion-icon {
+        font-size: 24px;
+    }
+
+    &:hover {
+        --color: var(--ion-color-primary-shade);
+    }
+}
+
+// Bahamas styles
+.bahamas-description {
+    font-size: 14px;
+    color: var(--app-text-secondary);
+    line-height: 1.6;
+    margin: 0 0 20px 0;
+}
+
+.time-section {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--app-border);
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        margin: 0 0 16px 0;
+
+        ion-icon {
+            font-size: 20px;
+            color: var(--ion-color-primary);
+        }
+    }
+}
+
+.time-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+
+    @media (max-width: 600px) {
+        grid-template-columns: 1fr;
+    }
+
+    .time-item {
+        margin-bottom: 0;
+    }
+}
+

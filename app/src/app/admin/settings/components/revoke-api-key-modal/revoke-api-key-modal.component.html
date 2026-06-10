@@ -1,0 +1,17 @@
+<app-base-modal
+    title="Revocar API Key"
+    subtitle="Esta acción no se puede deshacer"
+    confirmText="Revocar"
+    cancelText="Cancelar"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+
+    <div class="revoke-warning">
+        <div class="warning-icon-container">
+            <ion-icon name="warning-outline"></ion-icon>
+        </div>
+        <h3>¿Estás seguro?</h3>
+        <p>Estás a punto de revocar la API Key <strong>"{{ keyName }}"</strong>.</p>
+        <p class="warning-detail">Cualquier integración que utilice esta clave dejará de funcionar inmediatamente.</p>
+    </div>
+</app-base-modal>

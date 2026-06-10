@@ -1,6 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
-import { Company } from '../../companies/entities/company.entity';
-import { Position } from '../../positions/entities/position.entity';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('departments')
 export class Department {
@@ -15,13 +13,4 @@ export class Department {
 
     @Column({ nullable: true, type: 'text' })
     description: string;
-
-    @ManyToOne(() => Company, (company) => company.departments, { onDelete: 'CASCADE' })
-    company: Company;
-
-    @Column()
-    companyId: string;
-
-    @OneToMany(() => Position, (position) => position.department)
-    positions: Position[];
 }

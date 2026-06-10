@@ -1,5 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Department } from '../../departments/entities/department.entity';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { RiskLevel } from '../enums/risk-level.enum';
 
 @Entity('positions')
@@ -15,10 +14,4 @@ export class Position {
         enum: RiskLevel,
     })
     riskLevel: RiskLevel;
-
-    @ManyToOne(() => Department, (department) => department.positions, { onDelete: 'CASCADE' })
-    department: Department;
-
-    @Column()
-    departmentId: string;
 }

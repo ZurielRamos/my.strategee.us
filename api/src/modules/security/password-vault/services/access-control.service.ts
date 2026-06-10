@@ -223,14 +223,11 @@ export class AccessControlService {
         const memorandum = await this.memorandumRepository
             .createQueryBuilder('memorandum')
             .innerJoin('memorandum.contract', 'contract')
-            .innerJoin('memorandum.position', 'position')
-            .innerJoin('position.department', 'department')
-            .innerJoin('department.company', 'company')
             .where('contract.employeeId = :employeeId', { employeeId })
             .andWhere('contract.status = :status', { status: 'active' })
             .andWhere('memorandum.startDate <= :now', { now: new Date() })
             .andWhere('(memorandum.endDate IS NULL OR memorandum.endDate >= :now)', { now: new Date() })
-            .select('company.id', 'companyId')
+            .select('contract.companyId', 'companyId')
             .getRawOne();
 
         if (!memorandum) return false;

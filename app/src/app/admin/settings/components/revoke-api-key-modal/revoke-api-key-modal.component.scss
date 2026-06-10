@@ -1,0 +1,42 @@
+.revoke-warning {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 16px 0;
+
+    .warning-icon-container {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: rgba(235, 68, 90, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+
+        ion-icon {
+            font-size: 32px;
+            color: var(--ion-color-danger);
+        }
+    }
+
+    h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        margin: 0 0 12px 0;
+    }
+
+    p {
+        font-size: 14px;
+        color: var(--app-text-secondary);
+        margin: 0 0 8px 0;
+        line-height: 1.5;
+    }
+
+    .warning-detail {
+        color: var(--ion-color-danger);
+        font-weight: 500;
+    }
+}

@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular/standalone';
 import { Position } from '../../models/position.model';
-import { Area } from '../../../areas/models/area.model';
-import { AreasService } from '../../../areas/services/areas.service';
 import { PositionsService } from '../../services/positions.service';
 import { BaseModalComponent } from '../../../../../shared/components/base-modal/base-modal.component';
 import { FormSelectComponent, SelectOption } from '../../../../../shared/components/form-select/form-select.component';
@@ -31,7 +29,6 @@ export class PositionModalComponent implements OnInit {
 
     positionForm!: FormGroup;
     isSubmitting = false;
-    departments: Area[] = [];
 
     riskLevels = [
         { value: 'I', label: 'Clase I - Riesgo Mínimo' },
@@ -44,46 +41,23 @@ export class PositionModalComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private modalCtrl: ModalController,
-        private areasService: AreasService,
         private positionsService: PositionsService,
         private toastService: ToastService
     ) {}
 
     ngOnInit() {
         this.initForm();
-        this.loadDepartments();
     }
 
     initForm() {
-        const departmentId = this.position?.departmentId || this.position?.department?.id || '';
-        
         this.positionForm = this.fb.group({
             name: [this.position?.name || '', [Validators.required]],
-            riskLevel: [this.position?.riskLevel || '', [Validators.required]],
-            departmentId: [departmentId, [Validators.required]]
-        });
-    }
-
-    loadDepartments() {
-        this.areasService.getAll().subscribe({
-            next: (data) => {
-                this.departments = data;
-            },
-            error: (error) => {
-                console.error('Error loading departments:', error);
-            }
+            riskLevel: [this.position?.riskLevel || '', [Validators.required]]
         });
     }
 
     get title(): string {
         return this.mode === 'create' ? 'Nuevo Cargo' : 'Editar Cargo';
-    }
-
-    get departmentOptions(): SelectOption[] {
-        return this.departments.map(d => ({
-            value: d.id,
-            label: d.name
-        }));
     }
 
     get riskLevelOptions(): SelectOption[] {

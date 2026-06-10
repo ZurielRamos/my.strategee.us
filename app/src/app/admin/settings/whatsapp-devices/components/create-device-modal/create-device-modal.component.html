@@ -1,0 +1,36 @@
+<app-base-modal
+    title="Nuevo Dispositivo WhatsApp"
+    subtitle="Crea una nueva instancia para conectar WhatsApp"
+    cancelText="Cancelar"
+    confirmText="Crear Dispositivo"
+    [confirmDisabled]="!isValid"
+    [loading]="loading"
+    (modalDismiss)="dismiss()"
+    (modalConfirm)="confirm()">
+
+    <ion-list lines="none" class="form-list">
+        <ion-item class="form-item">
+            <ion-label position="stacked">Nombre del Dispositivo</ion-label>
+            <ion-input 
+                [(ngModel)]="name" 
+                placeholder="Ej: WhatsApp Soporte"
+                autocapitalize="sentences">
+            </ion-input>
+        </ion-item>
+
+        <ion-item class="form-item">
+            <ion-label position="stacked">Nombre de Instancia</ion-label>
+            <ion-input 
+                [(ngModel)]="instanceName" 
+                placeholder="Ej: soporte-principal"
+                autocapitalize="off">
+            </ion-input>
+        </ion-item>
+    </ion-list>
+
+    <p class="hint-text">
+        El nombre de instancia debe ser único y se usará para identificar el dispositivo en Evolution API.
+        Use solo letras minúsculas, números y guiones.
+    </p>
+
+</app-base-modal>

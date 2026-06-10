@@ -5,11 +5,8 @@ import { ModalController } from '@ionic/angular/standalone';
 import { BaseModalComponent } from '../../../../../shared/components/base-modal/base-modal.component';
 import { TextInputComponent } from '../../../../../shared/components/text-input/text-input.component';
 import { TextareaInputComponent } from '../../../../../shared/components/textarea-input/textarea-input.component';
-import { FormSelectComponent, SelectOption } from '../../../../../shared/components/form-select/form-select.component';
 import { ToastService } from '../../../../../shared/services/toast.service';
 import { Area } from '../../models/area.model';
-import { Company } from '../../../companies/models/company.model';
-import { CompaniesService } from '../../../companies/services/companies.service';
 import { AreasService } from '../../services/areas.service';
 
 @Component({
@@ -23,8 +20,7 @@ import { AreasService } from '../../services/areas.service';
         ReactiveFormsModule,
         BaseModalComponent,
         TextInputComponent,
-        TextareaInputComponent,
-        FormSelectComponent
+        TextareaInputComponent
     ]
 })
 export class AreaModalComponent implements OnInit {
@@ -33,54 +29,28 @@ export class AreaModalComponent implements OnInit {
 
     areaForm!: FormGroup;
     isSubmitting = false;
-    companies: Company[] = [];
 
     constructor(
         private fb: FormBuilder,
         private modalCtrl: ModalController,
-        private companiesService: CompaniesService,
         private areasService: AreasService,
         private toastService: ToastService
     ) {}
 
     ngOnInit() {
-        this.loadCompanies();
         this.initForm();
     }
 
-    loadCompanies() {
-        this.companiesService.getAll().subscribe({
-            next: (data) => {
-                this.companies = data;
-            },
-            error: (error) => {
-                console.error('Error loading companies:', error);
-            }
-        });
-    }
-
     initForm() {
-        // Si el área tiene company como objeto, extraer el ID
-        const companyId = this.area?.companyId || this.area?.company?.id || '';
-        
         this.areaForm = this.fb.group({
             name: [this.area?.name || '', [Validators.required]],
             costCenterCode: [this.area?.costCenterCode || ''],
-            description: [this.area?.description || ''],
-            companyId: [companyId, [Validators.required]]
+            description: [this.area?.description || '']
         });
     }
 
     get title(): string {
         return this.mode === 'edit' ? 'Editar Área' : 'Nueva Área';
-    }
-
-    // Getter para formatear opciones del select
-    get companyOptions(): SelectOption[] {
-        return this.companies.map(company => ({
-            value: company.id,
-            label: company.name
-        }));
     }
 
     onDismiss() {

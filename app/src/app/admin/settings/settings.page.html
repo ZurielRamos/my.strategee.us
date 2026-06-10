@@ -8,38 +8,6 @@
         </app-page-title>
 
         <div class="settings-grid">
-            <!-- Company Information -->
-            <ion-card class="settings-card">
-                <ion-card-header>
-                    <ion-card-title>
-                        <ion-icon name="business-outline"></ion-icon>
-                        Información de la Empresa
-                    </ion-card-title>
-                </ion-card-header>
-                <ion-card-content>
-                    <ion-list lines="none">
-                        <ion-item class="settings-item">
-                            <ion-label position="stacked">Nombre de la Empresa</ion-label>
-                            <ion-input [(ngModel)]="companyName" placeholder="Ingrese el nombre"></ion-input>
-                        </ion-item>
-
-                        <ion-item class="settings-item">
-                            <ion-label position="stacked">Email Corporativo</ion-label>
-                            <ion-input [(ngModel)]="companyEmail" type="email" placeholder="contacto@empresa.com"></ion-input>
-                        </ion-item>
-
-                        <ion-item class="settings-item">
-                            <ion-label position="stacked">Sitio Web</ion-label>
-                            <ion-input [(ngModel)]="companyWebsite" placeholder="www.empresa.com"></ion-input>
-                        </ion-item>
-                    </ion-list>
-
-                    <ion-button expand="block" (click)="saveCompanySettings()" class="save-btn">
-                        Guardar Cambios
-                    </ion-button>
-                </ion-card-content>
-            </ion-card>
-
             <!-- System Settings -->
             <ion-card class="settings-card">
                 <ion-card-header>
@@ -175,6 +143,195 @@
 
                     <ion-button expand="block" (click)="saveSecuritySettings()" class="save-btn">
                         Guardar Cambios
+                    </ion-button>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- API Keys -->
+            <ion-card class="settings-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="key-outline"></ion-icon>
+                        API Keys
+                    </ion-card-title>
+                    <ion-button fill="clear" (click)="createApiKey()" class="add-key-button">
+                        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+                    </ion-button>
+                </ion-card-header>
+                <ion-card-content>
+                    <p class="api-keys-description">
+                        Administra las claves de acceso para integraciones externas. Las API keys permiten autenticar solicitudes a endpoints protegidos.
+                    </p>
+
+                    <div class="api-keys-list" *ngIf="apiKeys.length > 0">
+                        <div class="api-key-item" *ngFor="let key of apiKeys">
+                            <div class="api-key-info">
+                                <h4>{{ key.name }}</h4>
+                                <p class="api-key-value">
+                                    <span *ngIf="!key.visible">{{ key.maskedKey }}</span>
+                                    <span *ngIf="key.visible">{{ key.fullKey }}</span>
+                                </p>
+                                <p class="api-key-meta">
+                                    Creada: {{ key.createdAt | date:'dd/MM/yyyy' }}
+                                    <span *ngIf="key.lastUsedAt"> · Último uso: {{ key.lastUsedAt | date:'dd/MM/yyyy' }}</span>
+                                </p>
+                            </div>
+                            <div class="api-key-actions">
+                                <ion-button fill="clear" size="small" (click)="toggleKeyVisibility(key)">
+                                    <ion-icon slot="icon-only" [name]="key.visible ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+                                </ion-button>
+                                <ion-button fill="clear" size="small" (click)="copyApiKey(key)" color="medium">
+                                    <ion-icon slot="icon-only" name="copy-outline"></ion-icon>
+                                </ion-button>
+                                <ion-button fill="clear" size="small" (click)="revokeApiKey(key)" color="danger">
+                                    <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                                </ion-button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="api-keys-empty" *ngIf="apiKeys.length === 0">
+                        <ion-icon name="key-outline"></ion-icon>
+                        <p>No hay API keys configuradas</p>
+                    </div>
+
+                    <ion-button expand="block" (click)="createApiKey()" class="save-btn">
+                        <ion-icon slot="start" name="add-outline"></ion-icon>
+                        Generar Nueva API Key
+                    </ion-button>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- WhatsApp Configuration -->
+            <ion-card class="settings-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="logo-whatsapp"></ion-icon>
+                        WhatsApp (Evolution API)
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-list lines="none">
+                        <ion-item class="settings-item">
+                            <ion-label position="stacked">
+                                <h3>URL de Evolution API</h3>
+                                <p>Dirección del servidor de Evolution API</p>
+                            </ion-label>
+                            <ion-input [(ngModel)]="whatsappApiUrl" placeholder="https://evolution.example.com"></ion-input>
+                        </ion-item>
+
+                        <ion-item class="settings-item">
+                            <ion-label position="stacked">
+                                <h3>API Key</h3>
+                                <p>Clave de autenticación de Evolution API</p>
+                            </ion-label>
+                            <ion-input [(ngModel)]="whatsappApiKey" type="password" placeholder="Ingrese la API Key"></ion-input>
+                        </ion-item>
+                    </ion-list>
+
+                    <ion-button expand="block" (click)="saveWhatsappConfig()" [disabled]="whatsappLoading" class="save-btn">
+                        {{ whatsappLoading ? 'Guardando...' : 'Guardar Configuración' }}
+                    </ion-button>
+
+                    <ion-button expand="block" fill="outline" (click)="goToWhatsappDevices()" class="devices-btn">
+                        <ion-icon slot="start" name="phone-portrait-outline"></ion-icon>
+                        Gestionar Dispositivos
+                    </ion-button>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- Bahamas Configuration -->
+            <ion-card class="settings-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="restaurant-outline"></ion-icon>
+                        Bahamas
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <p class="bahamas-description">
+                        Configuración de horarios para pedidos de Bahamas. Define las ventanas de tiempo para toma de pedidos y entrega.
+                    </p>
+
+                    <ion-list lines="none">
+                        <ion-item class="settings-item">
+                            <ion-label position="stacked">
+                                <h3>Dispositivo WhatsApp</h3>
+                                <p>Dispositivo para enviar notificaciones de Bahamas</p>
+                            </ion-label>
+                            <ion-select 
+                                [(ngModel)]="bahamasDeviceId" 
+                                placeholder="Seleccione dispositivo"
+                                interface="popover">
+                                @for (device of whatsappDevices; track device.id) {
+                                    <ion-select-option [value]="device.id">{{ device.name }}</ion-select-option>
+                                }
+                            </ion-select>
+                        </ion-item>
+
+                        <div class="time-section">
+                            <h4 class="section-title">
+                                <ion-icon name="sunny-outline"></ion-icon>
+                                Jornada Mañana
+                            </h4>
+
+                            <div class="time-row">
+                                <ion-item class="settings-item time-item">
+                                    <ion-label position="stacked">
+                                        <h3>Hora Inicio</h3>
+                                    </ion-label>
+                                    <ion-input [(ngModel)]="bahamasMorningStart" type="time"></ion-input>
+                                </ion-item>
+
+                                <ion-item class="settings-item time-item">
+                                    <ion-label position="stacked">
+                                        <h3>Hora Fin</h3>
+                                    </ion-label>
+                                    <ion-input [(ngModel)]="bahamasMorningEnd" type="time"></ion-input>
+                                </ion-item>
+
+                                <ion-item class="settings-item time-item">
+                                    <ion-label position="stacked">
+                                        <h3>Hora Entrega</h3>
+                                    </ion-label>
+                                    <ion-input [(ngModel)]="bahamasMorningDelivery" type="time"></ion-input>
+                                </ion-item>
+                            </div>
+                        </div>
+
+                        <div class="time-section">
+                            <h4 class="section-title">
+                                <ion-icon name="moon-outline"></ion-icon>
+                                Jornada Tarde
+                            </h4>
+
+                            <div class="time-row">
+                                <ion-item class="settings-item time-item">
+                                    <ion-label position="stacked">
+                                        <h3>Hora Inicio</h3>
+                                    </ion-label>
+                                    <ion-input [(ngModel)]="bahamasAfternoonStart" type="time"></ion-input>
+                                </ion-item>
+
+                                <ion-item class="settings-item time-item">
+                                    <ion-label position="stacked">
+                                        <h3>Hora Fin</h3>
+                                    </ion-label>
+                                    <ion-input [(ngModel)]="bahamasAfternoonEnd" type="time"></ion-input>
+                                </ion-item>
+
+                                <ion-item class="settings-item time-item">
+                                    <ion-label position="stacked">
+                                        <h3>Hora Entrega</h3>
+                                    </ion-label>
+                                    <ion-input [(ngModel)]="bahamasAfternoonDelivery" type="time"></ion-input>
+                                </ion-item>
+                            </div>
+                        </div>
+                    </ion-list>
+
+                    <ion-button expand="block" (click)="saveBahamasConfig()" [disabled]="bahamasLoading" class="save-btn">
+                        {{ bahamasLoading ? 'Guardando...' : 'Guardar Configuración' }}
                     </ion-button>
                 </ion-card-content>
             </ion-card>

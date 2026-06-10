@@ -1,0 +1,23 @@
+<app-base-modal
+    title="Crear API Key"
+    subtitle="Genera una nueva clave de acceso para integraciones externas"
+    confirmText="Generar API Key"
+    [confirmDisabled]="form.invalid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+
+    <form [formGroup]="form">
+        <app-text-input
+            formControlName="name"
+            label="Nombre de la API Key"
+            placeholder="Ej: Integración ERP, Webhook CRM"
+            [required]="true">
+        </app-text-input>
+
+        <div class="info-note">
+            <ion-icon name="information-circle-outline"></ion-icon>
+            <p>La API key solo se mostrará una vez después de crearla. Asegúrate de copiarla en un lugar seguro.</p>
+        </div>
+    </form>
+</app-base-modal>

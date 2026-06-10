@@ -1,0 +1,30 @@
+<app-base-modal
+    title="API Key Generada"
+    subtitle="Copia y guarda esta clave en un lugar seguro"
+    confirmText="Entendido"
+    [showFooter]="true"
+    cancelText=""
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+
+    <div class="warning-banner">
+        <ion-icon name="warning-outline"></ion-icon>
+        <p>Esta es la <strong>única vez</strong> que podrás ver la API key completa. No será posible recuperarla después de cerrar este diálogo.</p>
+    </div>
+
+    <div class="key-details">
+        <span class="key-label">{{ keyName }}</span>
+    </div>
+
+    <div class="key-display">
+        <code class="key-value">{{ apiKey }}</code>
+        <ion-button fill="clear" size="small" (click)="copyKey()" class="copy-btn">
+            <ion-icon slot="icon-only" [name]="copied ? 'checkmark-outline' : 'copy-outline'"></ion-icon>
+        </ion-button>
+    </div>
+
+    <div class="usage-hint">
+        <p><strong>Uso:</strong> Incluye esta key en el header de tus peticiones:</p>
+        <code class="usage-code">x-api-key: {{ apiKey }}</code>
+    </div>
+</app-base-modal>

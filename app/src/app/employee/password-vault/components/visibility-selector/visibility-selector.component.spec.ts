@@ -28,12 +28,12 @@ describe('VisibilitySelectorComponent', () => {
       { id: '2', name: 'Company 2', legalName: 'Company 2 Legal', nit: '456', address: 'Address 2', createdAt: new Date(), updatedAt: new Date() }
     ] as any));
     mockAreasService.getAll.and.returnValue(of([
-      { id: '1', name: 'Area 1', companyId: '1', createdAt: new Date(), updatedAt: new Date() },
-      { id: '2', name: 'Area 2', companyId: '1', createdAt: new Date(), updatedAt: new Date() }
+      { id: '1', name: 'Area 1', createdAt: new Date(), updatedAt: new Date() },
+      { id: '2', name: 'Area 2', createdAt: new Date(), updatedAt: new Date() }
     ] as any));
     mockPositionsService.getAll.and.returnValue(of([
-      { id: '1', name: 'Position 1', riskLevel: 'LOW', departmentId: '1', createdAt: new Date(), updatedAt: new Date() },
-      { id: '2', name: 'Position 2', riskLevel: 'LOW', departmentId: '1', createdAt: new Date(), updatedAt: new Date() }
+      { id: '1', name: 'Position 1', riskLevel: 'LOW', createdAt: new Date(), updatedAt: new Date() },
+      { id: '2', name: 'Position 2', riskLevel: 'LOW', createdAt: new Date(), updatedAt: new Date() }
     ] as any));
     mockEmployeesService.getAll.and.returnValue(of({
       data: [

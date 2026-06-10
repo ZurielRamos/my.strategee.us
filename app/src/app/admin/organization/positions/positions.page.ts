@@ -78,9 +78,7 @@ export class PositionsPage implements OnInit {
             const term = this.searchTerm.toLowerCase().trim();
             this.filteredPositions = this.positions.filter(position =>
                 position.name.toLowerCase().includes(term) ||
-                position.riskLevel.toLowerCase().includes(term) ||
-                position.department?.name.toLowerCase().includes(term) ||
-                position.department?.company?.name.toLowerCase().includes(term)
+                position.riskLevel.toLowerCase().includes(term)
             );
         }
     }

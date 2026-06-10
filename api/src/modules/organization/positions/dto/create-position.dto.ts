@@ -1,5 +1,5 @@
-import { IsString, IsNotEmpty, IsOptional, IsEnum, IsNumber, Min, IsUUID } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsString, IsNotEmpty, IsEnum } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import { RiskLevel } from '../enums/risk-level.enum';
 
 export class CreatePositionDto {
@@ -12,10 +12,4 @@ export class CreatePositionDto {
     @IsEnum(RiskLevel)
     @IsNotEmpty()
     riskLevel: RiskLevel;
-
-    @ApiProperty({ description: 'ID del departamento al que pertenece', example: 'uuid-department-id' })
-    @IsUUID()
-    @IsNotEmpty()
-    departmentId: string;
-
 }

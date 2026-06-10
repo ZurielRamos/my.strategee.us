@@ -11,18 +11,6 @@
                     Clase {{ position.riskLevel }}
                 </span>
             </div>
-            @if (position.department) {
-            <div class="info-row">
-                <span class="label">Área:</span>
-                <span class="value">{{ position.department.name }}</span>
-            </div>
-            }
-            @if (position.department?.company) {
-            <div class="info-row">
-                <span class="label">Empresa:</span>
-                <span class="value">{{ position.department?.company?.name }}</span>
-            </div>
-            }
         </div>
     </ion-card-content>
 </ion-card>

@@ -955,7 +955,6 @@ export class PasswordVaultService {
                 'visibilityAreas.area',
                 'visibilityPositions',
                 'visibilityPositions.position',
-                'visibilityPositions.position.department',
                 'visibilityEmployees',
                 'visibilityEmployees.employee',
                 'visibilityEmployees.employee.profilePhoto',

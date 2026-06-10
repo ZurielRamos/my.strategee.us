@@ -5,7 +5,6 @@ import { Company } from './entities/company.entity';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { CompanyResponseDto } from './dto/company-response.dto';
-import { Department } from '../departments/entities/department.entity';
 import { Contract } from '../../core/contracts/entities/contract.entity';
 import { DependencyConflictException, EntityDependency } from '@common/exceptions/dependency-conflict.exception';
 
@@ -14,8 +13,6 @@ export class CompaniesService {
     constructor(
         @InjectRepository(Company)
         private readonly companiesRepository: Repository<Company>,
-        @InjectRepository(Department)
-        private readonly departmentsRepository: Repository<Department>,
         @InjectRepository(Contract)
         private readonly contractsRepository: Repository<Contract>,
     ) { }
@@ -142,28 +139,10 @@ export class CompaniesService {
     }
 
     /**
-     * Check if the company has any dependencies (departments or contracts)
+     * Check if the company has any dependencies (contracts)
      */
     private async checkDependencies(companyId: string): Promise<EntityDependency[]> {
         const dependencies: EntityDependency[] = [];
-
-        // Check departments
-        const departments = await this.departmentsRepository.find({
-            where: { companyId },
-            take: 3,
-        });
-
-        if (departments.length > 0) {
-            const totalDepartments = await this.departmentsRepository.count({
-                where: { companyId },
-            });
-
-            dependencies.push({
-                entity: 'departments',
-                count: totalDepartments,
-                examples: departments.map(d => d.name),
-            });
-        }
 
         // Check contracts
         const contracts = await this.contractsRepository.find({

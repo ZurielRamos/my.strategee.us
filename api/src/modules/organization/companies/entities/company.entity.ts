@@ -1,5 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
-import { Department } from '../../departments/entities/department.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Attachment } from '../../../infrastructure/attachments/entities/attachment.entity';
 
 @Entity('companies')
@@ -31,7 +30,4 @@ export class Company {
 
     @UpdateDateColumn()
     updatedAt: Date;
-
-    @OneToMany(() => Department, (department) => department.company)
-    departments: Department[];
 }

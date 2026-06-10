@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { Position } from './entities/position.entity';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
-import { DepartmentsService } from '../departments/departments.service';
 import { Contract } from '../../core/contracts/entities/contract.entity';
 import { DependencyConflictException, EntityDependency } from '@common/exceptions/dependency-conflict.exception';
 
@@ -15,33 +14,20 @@ export class PositionsService {
         private readonly positionsRepository: Repository<Position>,
         @InjectRepository(Contract)
         private readonly contractsRepository: Repository<Contract>,
-        private readonly departmentsService: DepartmentsService,
     ) { }
 
     async create(createPositionDto: CreatePositionDto): Promise<Position> {
-        // Validar existence of department
-        await this.departmentsService.findOne(createPositionDto.departmentId);
-
         const position = this.positionsRepository.create(createPositionDto);
         return this.positionsRepository.save(position);
     }
 
-    async findAll(departmentId?: string): Promise<Position[]> {
-        if (departmentId) {
-            return this.positionsRepository.find({ 
-                where: { departmentId },
-                relations: ['department', 'department.company']
-            });
-        }
-        return this.positionsRepository.find({ 
-            relations: ['department', 'department.company'] 
-        });
+    async findAll(): Promise<Position[]> {
+        return this.positionsRepository.find();
     }
 
     async findOne(id: string): Promise<Position> {
         const position = await this.positionsRepository.findOne({
-            where: { id },
-            relations: ['department', 'department.company']
+            where: { id }
         });
         if (!position) {
             throw new NotFoundException(`Cargo con ID ${id} no encontrado`);
@@ -50,7 +36,6 @@ export class PositionsService {
     }
 
     async update(id: string, updatePositionDto: UpdatePositionDto): Promise<Position> {
-        // Find without relations to avoid conflicts
         const position = await this.positionsRepository.findOne({
             where: { id }
         });
@@ -59,14 +44,8 @@ export class PositionsService {
             throw new NotFoundException(`Cargo con ID ${id} no encontrado`);
         }
 
-        if (updatePositionDto.departmentId) {
-            await this.departmentsService.findOne(updatePositionDto.departmentId);
-        }
-
-        // Update using query builder to ensure DB update
         await this.positionsRepository.update(id, updatePositionDto);
         
-        // Reload with updated relations
         return this.findOne(id);
     }
 
@@ -120,5 +99,3 @@ export class PositionsService {
         return dependencies;
     }
 }
-
-

@@ -62,6 +62,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./settings/settings.page').then(m => m.AdminSettingsPage)
             },
             {
+                path: 'settings/whatsapp-devices',
+                loadComponent: () => import('./settings/whatsapp-devices/whatsapp-devices.page').then(m => m.WhatsappDevicesPage)
+            },
+            {
                 path: 'trainings',
                 loadComponent: () => import('./trainings/trainings.page').then(m => m.TrainingsPage)
             },

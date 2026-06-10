@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Position, CreatePositionDto, UpdatePositionDto } from '../models/position.model';
 import { environment } from 'src/environments/environment';
@@ -12,12 +12,8 @@ export class PositionsService {
 
     constructor(private http: HttpClient) { }
 
-    getAll(departmentId?: string): Observable<Position[]> {
-        let params = new HttpParams();
-        if (departmentId) {
-            params = params.set('departmentId', departmentId);
-        }
-        return this.http.get<Position[]>(this.apiUrl, { params });
+    getAll(): Observable<Position[]> {
+        return this.http.get<Position[]>(this.apiUrl);
     }
 
     getById(id: string): Observable<Position> {

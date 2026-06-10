@@ -1,0 +1,39 @@
+.form-list {
+    background: transparent;
+    padding: 0;
+}
+
+.form-item {
+    --background: transparent;
+    --padding-start: 0;
+    --padding-end: 0;
+    --inner-padding-end: 0;
+    margin-bottom: 20px;
+
+    ion-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--app-text-secondary);
+        margin-bottom: 8px;
+    }
+
+    ion-input {
+        --background: var(--app-input-bg);
+        --color: var(--app-text-primary);
+        --placeholder-color: var(--app-text-tertiary);
+        --padding-start: 16px;
+        --padding-end: 16px;
+        border-radius: 12px;
+        margin-top: 8px;
+        font-size: 15px;
+        font-weight: 500;
+        min-height: 48px;
+    }
+}
+
+.hint-text {
+    margin: 8px 0 0 0;
+    font-size: 13px;
+    color: var(--app-text-secondary);
+    line-height: 1.5;
+}

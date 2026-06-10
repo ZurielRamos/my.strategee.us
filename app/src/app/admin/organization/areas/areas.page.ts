@@ -78,8 +78,7 @@ export class AreasPage implements OnInit {
             const term = this.searchTerm.toLowerCase().trim();
             this.filteredAreas = this.areas.filter(area =>
                 area.name.toLowerCase().includes(term) ||
-                area.costCenterCode?.toLowerCase().includes(term) ||
-                area.company?.name.toLowerCase().includes(term)
+                area.costCenterCode?.toLowerCase().includes(term)
             );
         }
     }

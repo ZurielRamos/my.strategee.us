@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { PositionsService } from './positions.service';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
@@ -26,11 +26,10 @@ export class PositionsController {
 
     @Get()
     @Roles(Role.ADMIN, Role.HR_MANAGER)
-    @ApiOperation({ summary: 'Listar todos los cargos, opcionalmente filtrados por departamento' })
-    @ApiQuery({ name: 'departmentId', required: false, description: 'Filtrar por ID de departamento' })
+    @ApiOperation({ summary: 'Listar todos los cargos' })
     @ApiResponse({ status: 200, description: 'Lista de cargos', type: [Position] })
-    findAll(@Query('departmentId') departmentId?: string) {
-        return this.positionsService.findAll(departmentId);
+    findAll() {
+        return this.positionsService.findAll();
     }
 
     @Get(':id')

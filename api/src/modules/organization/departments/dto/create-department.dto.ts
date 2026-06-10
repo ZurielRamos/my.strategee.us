@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateDepartmentDto {
@@ -16,9 +16,4 @@ export class CreateDepartmentDto {
     @IsString()
     @IsOptional()
     description?: string;
-
-    @ApiProperty({ description: 'ID de la empresa a la que pertenece', example: 'uuid-company-id' })
-    @IsUUID()
-    @IsNotEmpty()
-    companyId: string;
 }

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
     IonContent,
     IonCard,
@@ -14,23 +15,52 @@ import {
     IonToggle,
     IonButton,
     IonIcon,
+    IonSelect,
+    IonSelectOption,
     ModalController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
-    businessOutline,
     notificationsOutline,
     documentTextOutline,
     shieldCheckmarkOutline,
     timeOutline,
-    warningOutline
+    warningOutline,
+    logoWhatsapp,
+    phonePortraitOutline,
+    keyOutline,
+    addCircleOutline,
+    addOutline,
+    eyeOutline,
+    eyeOffOutline,
+    copyOutline,
+    trashOutline,
+    restaurantOutline,
+    sunnyOutline,
+    moonOutline
 } from 'ionicons/icons';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { PageTitleComponent } from '../../shared/components/page-title/page-title.component';
 import { AdminSettingsService } from './services/admin-settings.service';
+import { WhatsappService, WhatsappDevice } from './services/whatsapp.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { RequestSettingsConfirmationModalComponent } from './components/request-settings-confirmation-modal/request-settings-confirmation-modal.component';
 import { AuditHistoryModalComponent } from '../../shared/components/audit-history-modal/audit-history-modal.component';
+import { ApiKeyService } from './services/api-key.service';
+import { BahamasService } from './services/bahamas.service';
+import { CreateApiKeyModalComponent } from './components/create-api-key-modal/create-api-key-modal.component';
+import { ApiKeyCreatedModalComponent } from './components/api-key-created-modal/api-key-created-modal.component';
+import { RevokeApiKeyModalComponent } from './components/revoke-api-key-modal/revoke-api-key-modal.component';
+
+export interface ApiKey {
+    id: number;
+    name: string;
+    maskedKey: string;
+    fullKey?: string;
+    visible: boolean;
+    createdAt: Date;
+    lastUsedAt?: Date;
+}
 
 @Component({
     selector: 'app-admin-settings',
@@ -53,16 +83,13 @@ import { AuditHistoryModalComponent } from '../../shared/components/audit-histor
         IonToggle,
         IonButton,
         IonIcon,
+        IonSelect,
+        IonSelectOption,
         PageHeaderComponent,
         PageTitleComponent
     ]
 })
 export class AdminSettingsPage implements OnInit {
-    // Company Settings
-    companyName = '';
-    companyEmail = '';
-    companyWebsite = '';
-
     // System Settings
     autoApproveVacations = false;
     requireManagerApproval = true;
@@ -79,26 +106,67 @@ export class AdminSettingsPage implements OnInit {
     requirePasswordChange = false;
     passwordExpirationDays = 90;
 
+    // WhatsApp Settings
+    whatsappApiUrl = '';
+    whatsappApiKey = '';
+    whatsappLoading = false;
+    whatsappDevices: WhatsappDevice[] = [];
+
+    // Bahamas Settings
+    bahamasDeviceId = '';
+    bahamasMorningStart = '';
+    bahamasMorningEnd = '';
+    bahamasMorningDelivery = '';
+    bahamasAfternoonStart = '';
+    bahamasAfternoonEnd = '';
+    bahamasAfternoonDelivery = '';
+    bahamasLoading = false;
+
+    // API Keys
+    apiKeys: ApiKey[] = [];
+    apiKeysLoading = false;
+    private apiKeyService: ApiKeyService;
+    private bahamasService: BahamasService;
+
     loading = false;
     systemSettingsId: number | null = null;
 
     constructor(
         private adminSettingsService: AdminSettingsService,
+        private whatsappService: WhatsappService,
         private toastService: ToastService,
-        private modalController: ModalController
+        private modalController: ModalController,
+        private router: Router
     ) {
+        this.apiKeyService = inject(ApiKeyService);
+        this.bahamasService = inject(BahamasService);
         addIcons({
-            businessOutline,
             notificationsOutline,
             documentTextOutline,
             shieldCheckmarkOutline,
             timeOutline,
-            warningOutline
+            warningOutline,
+            logoWhatsapp,
+            phonePortraitOutline,
+            keyOutline,
+            addCircleOutline,
+            addOutline,
+            eyeOutline,
+            eyeOffOutline,
+            copyOutline,
+            trashOutline,
+            restaurantOutline,
+            sunnyOutline,
+            moonOutline
         });
     }
 
     ngOnInit() {
         this.loadSettings();
+        this.loadWhatsappConfig();
+        this.loadWhatsappDevices();
+        this.loadBahamasConfig();
+        this.loadApiKeys();
     }
 
     async loadSettings() {
@@ -121,11 +189,6 @@ export class AdminSettingsPage implements OnInit {
             console.error('Error loading settings:', error);
             this.toastService.show('Error al cargar la configuración');
         }
-    }
-
-    saveCompanySettings() {
-        console.log('Saving company settings');
-        this.toastService.show('Configuración de la empresa guardada');
     }
 
     saveSystemSettings() {
@@ -196,5 +259,214 @@ export class AdminSettingsPage implements OnInit {
         });
 
         await modal.present();
+    }
+
+    // ===================== WhatsApp =====================
+
+    loadWhatsappConfig() {
+        this.whatsappService.getConfig().subscribe({
+            next: (config) => {
+                if (config) {
+                    this.whatsappApiUrl = config.apiUrl;
+                    this.whatsappApiKey = config.apiKey;
+                }
+            },
+            error: (error) => {
+                console.error('Error loading WhatsApp config:', error);
+            }
+        });
+    }
+
+    saveWhatsappConfig() {
+        if (!this.whatsappApiUrl || !this.whatsappApiKey) {
+            this.toastService.show({ message: 'Complete todos los campos de WhatsApp', type: 'warning' });
+            return;
+        }
+
+        this.whatsappLoading = true;
+        this.whatsappService.updateConfig({
+            apiUrl: this.whatsappApiUrl,
+            apiKey: this.whatsappApiKey
+        }).subscribe({
+            next: () => {
+                this.toastService.show({ message: 'Configuración de WhatsApp guardada', type: 'success' });
+                this.whatsappLoading = false;
+            },
+            error: (error) => {
+                console.error('Error saving WhatsApp config:', error);
+                this.toastService.show({ message: 'Error al guardar la configuración de WhatsApp', type: 'error' });
+                this.whatsappLoading = false;
+            }
+        });
+    }
+
+    goToWhatsappDevices() {
+        this.router.navigate(['/admin/settings/whatsapp-devices']);
+    }
+
+    loadWhatsappDevices() {
+        this.whatsappService.getDevices().subscribe({
+            next: (devices) => {
+                this.whatsappDevices = devices;
+            },
+            error: (error) => {
+                console.error('Error loading WhatsApp devices:', error);
+            }
+        });
+    }
+
+    // ===================== Bahamas =====================
+
+    loadBahamasConfig() {
+        this.bahamasService.getConfig().subscribe({
+            next: (config) => {
+                if (config) {
+                    this.bahamasDeviceId = config.whatsappDeviceId || '';
+                    this.bahamasMorningStart = config.morningStart || '';
+                    this.bahamasMorningEnd = config.morningEnd || '';
+                    this.bahamasMorningDelivery = config.morningDelivery || '';
+                    this.bahamasAfternoonStart = config.afternoonStart || '';
+                    this.bahamasAfternoonEnd = config.afternoonEnd || '';
+                    this.bahamasAfternoonDelivery = config.afternoonDelivery || '';
+                }
+            },
+            error: (error) => {
+                console.error('Error loading Bahamas config:', error);
+            }
+        });
+    }
+
+    saveBahamasConfig() {
+        if (!this.bahamasDeviceId) {
+            this.toastService.show({ message: 'Seleccione un dispositivo de WhatsApp', type: 'warning' });
+            return;
+        }
+
+        this.bahamasLoading = true;
+        this.bahamasService.updateConfig({
+            whatsappDeviceId: this.bahamasDeviceId,
+            morningStart: this.bahamasMorningStart,
+            morningEnd: this.bahamasMorningEnd,
+            morningDelivery: this.bahamasMorningDelivery,
+            afternoonStart: this.bahamasAfternoonStart,
+            afternoonEnd: this.bahamasAfternoonEnd,
+            afternoonDelivery: this.bahamasAfternoonDelivery,
+        }).subscribe({
+            next: () => {
+                this.toastService.show({ message: 'Configuración de Bahamas guardada', type: 'success' });
+                this.bahamasLoading = false;
+            },
+            error: (error) => {
+                console.error('Error saving Bahamas config:', error);
+                this.toastService.show({ message: 'Error al guardar la configuración de Bahamas', type: 'error' });
+                this.bahamasLoading = false;
+            }
+        });
+    }
+
+    // ===================== API Keys =====================
+
+    loadApiKeys() {
+        this.apiKeysLoading = true;
+        this.apiKeyService.getApiKeys().subscribe({
+            next: (keys) => {
+                this.apiKeys = keys.map((k: any) => ({
+                    ...k,
+                    visible: false,
+                    maskedKey: k.maskedKey || this.maskKey(k.key || '')
+                }));
+                this.apiKeysLoading = false;
+            },
+            error: (error) => {
+                console.error('Error loading API keys:', error);
+                this.apiKeysLoading = false;
+            }
+        });
+    }
+
+    createApiKey() {
+        this.openCreateApiKeyModal();
+    }
+
+    async openCreateApiKeyModal() {
+        const modal = await this.modalController.create({
+            component: CreateApiKeyModalComponent,
+        });
+
+        await modal.present();
+
+        const { data, role } = await modal.onWillDismiss();
+
+        if (role === 'save' && data) {
+            // Show the generated key in a separate modal
+            await this.showCreatedKeyModal(data.key, data.name);
+
+            // Add to list
+            this.apiKeys.unshift({
+                id: data.id,
+                name: data.name,
+                maskedKey: this.maskKey(data.key),
+                fullKey: data.key,
+                visible: false,
+                createdAt: new Date(data.createdAt),
+            });
+        }
+    }
+
+    private async showCreatedKeyModal(key: string, name: string) {
+        const modal = await this.modalController.create({
+            component: ApiKeyCreatedModalComponent,
+            componentProps: { apiKey: key, keyName: name },
+            backdropDismiss: false,
+        });
+
+        await modal.present();
+        await modal.onWillDismiss();
+    }
+
+    toggleKeyVisibility(key: ApiKey) {
+        key.visible = !key.visible;
+    }
+
+    copyApiKey(key: ApiKey) {
+        const textToCopy = key.fullKey || key.maskedKey;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            this.toastService.show({ message: 'API Key copiada al portapapeles', type: 'success' });
+        }).catch(() => {
+            this.toastService.show({ message: 'No se pudo copiar la API Key', type: 'error' });
+        });
+    }
+
+    revokeApiKey(key: ApiKey) {
+        this.openRevokeApiKeyModal(key);
+    }
+
+    async openRevokeApiKeyModal(key: ApiKey) {
+        const modal = await this.modalController.create({
+            component: RevokeApiKeyModalComponent,
+            componentProps: { keyName: key.name },
+        });
+
+        await modal.present();
+
+        const { data } = await modal.onWillDismiss();
+
+        if (data?.confirmed) {
+            this.apiKeyService.revokeApiKey(key.id).subscribe({
+                next: () => {
+                    this.apiKeys = this.apiKeys.filter(k => k.id !== key.id);
+                    this.toastService.show({ message: 'API Key revocada exitosamente', type: 'success' });
+                },
+                error: (error) => {
+                    console.error('Error revoking API key:', error);
+                    this.toastService.show({ message: 'Error al revocar la API Key', type: 'error' });
+                }
+            });
+        }
+    }
+
+    private maskKey(key: string): string {
+        if (!key || key.length < 8) return '••••••••';
+        return key.substring(0, 4) + '••••••••' + key.substring(key.length - 4);
     }
 }
