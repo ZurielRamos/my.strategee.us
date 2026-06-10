@@ -584,11 +584,9 @@ export class PasswordVaultService {
 
         // Obtener empresa y puesto activo del empleado
         const activeMemorandum = await this.dataSource.query(
-            `SELECT m.position_id, d.company_id
+            `SELECT m.position_id, c.company_id
              FROM memorandums m
              INNER JOIN contracts c ON m.contract_id = c.id
-             INNER JOIN positions p ON m.position_id = p.id
-             INNER JOIN departments d ON p.department_id = d.id
              WHERE c.employee_id = ?
                AND c.status = 'active'
                AND m.start_date <= ?
@@ -842,14 +840,12 @@ export class PasswordVaultService {
             'EXISTS (' +
             '  SELECT 1 FROM memorandums m ' +
             '  INNER JOIN contracts c ON m.contract_id = c.id ' +
-            '  INNER JOIN positions p ON m.position_id = p.id ' +
-            '  INNER JOIN departments d ON p.department_id = d.id ' +
             '  INNER JOIN credential_visibility_companies cvc ON cvc.credential_id = credential.id ' +
             '  WHERE c.employee_id = :employeeId ' +
             '  AND c.status = :activeStatus ' +
             '  AND m.start_date <= :now ' +
             '  AND (m.end_date IS NULL OR m.end_date >= :now) ' +
-            '  AND cvc.company_id = d.company_id' +
+            '  AND cvc.company_id = c.company_id' +
             ') OR ' +
             // 4. Credenciales por puesto (visibilidad propia)
             'EXISTS (' +
