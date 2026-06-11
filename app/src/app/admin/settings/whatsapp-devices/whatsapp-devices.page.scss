@@ -11,6 +11,22 @@
 
 .admin-container {
     @include admin-page-container;
+    padding-top: 40px;
+
+    @media (min-width: 768px) {
+        padding-top: 48px;
+    }
+}
+
+.back-row {
+    margin-bottom: 16px;
+
+    .back-button {
+        --color: var(--app-text-secondary);
+        --padding-start: 0;
+        font-weight: 500;
+        text-transform: none;
+    }
 }
 
 .create-section {

@@ -49,6 +49,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         { title: 'Solicitudes', url: '/admin/requests', icon: 'document-text', badge: 0 },
         { title: 'Finanzas', url: '/admin/finance', icon: 'cash' },
         { title: 'Capacitaciones', url: '/admin/trainings', icon: 'school' },
+        { title: 'Inventario', url: '/admin/inventory', icon: 'cube' },
         { title: 'Biblioteca', url: '/admin/media', icon: 'images' },
         { title: 'Configuraciones', url: '/admin/settings', icon: 'settings' }
     ];

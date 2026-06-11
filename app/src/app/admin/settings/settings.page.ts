@@ -109,6 +109,7 @@ export class AdminSettingsPage implements OnInit {
     // WhatsApp Settings
     whatsappApiUrl = '';
     whatsappApiKey = '';
+    whatsappNotificationDeviceId = '';
     whatsappLoading = false;
     whatsappDevices: WhatsappDevice[] = [];
 
@@ -269,6 +270,7 @@ export class AdminSettingsPage implements OnInit {
                 if (config) {
                     this.whatsappApiUrl = config.apiUrl;
                     this.whatsappApiKey = config.apiKey;
+                    this.whatsappNotificationDeviceId = config.notificationDeviceId || '';
                 }
             },
             error: (error) => {
@@ -286,7 +288,8 @@ export class AdminSettingsPage implements OnInit {
         this.whatsappLoading = true;
         this.whatsappService.updateConfig({
             apiUrl: this.whatsappApiUrl,
-            apiKey: this.whatsappApiKey
+            apiKey: this.whatsappApiKey,
+            notificationDeviceId: this.whatsappNotificationDeviceId || undefined
         }).subscribe({
             next: () => {
                 this.toastService.show({ message: 'Configuración de WhatsApp guardada', type: 'success' });
@@ -342,15 +345,18 @@ export class AdminSettingsPage implements OnInit {
             return;
         }
 
+        // Normalizar horas a formato HH:mm (sin segundos)
+        const normalizeTime = (time: string) => time ? time.substring(0, 5) : '';
+
         this.bahamasLoading = true;
         this.bahamasService.updateConfig({
             whatsappDeviceId: this.bahamasDeviceId,
-            morningStart: this.bahamasMorningStart,
-            morningEnd: this.bahamasMorningEnd,
-            morningDelivery: this.bahamasMorningDelivery,
-            afternoonStart: this.bahamasAfternoonStart,
-            afternoonEnd: this.bahamasAfternoonEnd,
-            afternoonDelivery: this.bahamasAfternoonDelivery,
+            morningStart: normalizeTime(this.bahamasMorningStart),
+            morningEnd: normalizeTime(this.bahamasMorningEnd),
+            morningDelivery: normalizeTime(this.bahamasMorningDelivery),
+            afternoonStart: normalizeTime(this.bahamasAfternoonStart),
+            afternoonEnd: normalizeTime(this.bahamasAfternoonEnd),
+            afternoonDelivery: normalizeTime(this.bahamasAfternoonDelivery),
         }).subscribe({
             next: () => {
                 this.toastService.show({ message: 'Configuración de Bahamas guardada', type: 'success' });

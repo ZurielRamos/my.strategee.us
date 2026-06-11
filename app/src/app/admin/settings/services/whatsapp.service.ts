@@ -7,6 +7,7 @@ export interface WhatsappConfig {
     id: string;
     apiUrl: string;
     apiKey: string;
+    notificationDeviceId: string | null;
     createdAt: string;
     updatedAt: string;
 }
@@ -24,6 +25,7 @@ export interface WhatsappDevice {
 export interface UpdateWhatsappConfigDto {
     apiUrl: string;
     apiKey: string;
+    notificationDeviceId?: string;
 }
 
 export interface CreateWhatsappDeviceDto {

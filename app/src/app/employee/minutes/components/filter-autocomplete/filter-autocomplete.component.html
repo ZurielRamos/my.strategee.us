@@ -1,0 +1,25 @@
+<div class="filter-autocomplete-wrapper" #anchor>
+  @if (selectedOption) {
+    <div class="selected-value">
+      <ion-icon [name]="icon"></ion-icon>
+      <span class="selected-name">{{ selectedOption.name }}</span>
+      <button type="button" class="clear-btn" (click)="clear()">
+        <ion-icon name="close-circle"></ion-icon>
+      </button>
+    </div>
+  } @else {
+    <div class="input-container">
+      <ion-icon [name]="icon" class="input-icon"></ion-icon>
+      <input
+        type="text"
+        class="search-input"
+        [placeholder]="placeholder"
+        autocomplete="off"
+        [value]="searchTerm"
+        (input)="onInput($any($event).target.value)"
+        (focus)="onFocus()"
+        (blur)="onBlur()"
+      />
+    </div>
+  }
+</div>

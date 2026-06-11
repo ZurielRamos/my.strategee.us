@@ -1,0 +1,26 @@
+<app-base-modal
+    [title]="title"
+    [subtitle]="subtitle"
+    [confirmText]="mode === 'create' ? 'Crear Tipo' : 'Guardar Cambios'"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+
+    <form [formGroup]="form">
+        <app-text-input
+            formControlName="name"
+            label="Nombre"
+            placeholder="Ej: Equipo de cómputo"
+            [required]="true"
+            [maxlength]="100">
+        </app-text-input>
+
+        <app-text-input
+            formControlName="denomination"
+            label="Denominación"
+            placeholder="Ej: Equipos tecnológicos de oficina"
+            [maxlength]="255">
+        </app-text-input>
+    </form>
+</app-base-modal>

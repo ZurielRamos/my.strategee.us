@@ -1,0 +1,156 @@
+<app-page-header [backUrl]="'/employee/calendar'"></app-page-header>
+
+<ion-content [fullscreen]="true" class="event-detail-content">
+    <div class="page-container" *ngIf="event && !isLoading">
+
+        <!-- Header del evento -->
+        <div class="event-header-section">
+            <div class="event-color-indicator"></div>
+            <div class="event-title-block">
+                <h1>{{ event.title }}</h1>
+                <ion-badge *ngIf="event.allDay" color="primary" class="allday-badge">Todo el día</ion-badge>
+            </div>
+        </div>
+
+        <!-- Card principal de información -->
+        <div class="detail-card">
+            <!-- Fecha y hora -->
+            <div class="detail-row">
+                <div class="detail-icon">
+                    <ion-icon name="calendar-outline"></ion-icon>
+                </div>
+                <div class="detail-body">
+                    <span class="detail-primary capitalize">{{ getFormattedDate() }}</span>
+                    <span class="detail-secondary" *ngIf="!event.allDay">{{ getFormattedTime() }}</span>
+                    <span class="detail-meta" *ngIf="!event.allDay">Duración: {{ getDuration() }}</span>
+                </div>
+            </div>
+
+            <!-- Videollamada -->
+            <div class="detail-row clickable" *ngIf="event.conferenceLink" (click)="openConference()">
+                <div class="detail-icon conference">
+                    <ion-icon name="videocam-outline"></ion-icon>
+                </div>
+                <div class="detail-body">
+                    <span class="detail-primary link">Unirse a la videollamada</span>
+                    <span class="detail-secondary truncate">{{ event.conferenceLink }}</span>
+                </div>
+                <ion-icon name="open-outline" class="row-action-icon"></ion-icon>
+            </div>
+
+            <!-- Ubicación -->
+            <div class="detail-row clickable" *ngIf="event.location" (click)="openLocation()">
+                <div class="detail-icon">
+                    <ion-icon name="location-outline"></ion-icon>
+                </div>
+                <div class="detail-body">
+                    <span class="detail-primary">{{ event.location }}</span>
+                </div>
+                <ion-icon name="open-outline" class="row-action-icon"></ion-icon>
+            </div>
+
+            <!-- Organizador -->
+            <div class="detail-row" *ngIf="event.organizer">
+                <div class="detail-icon">
+                    <ion-icon name="person-outline"></ion-icon>
+                </div>
+                <div class="detail-body">
+                    <span class="detail-label">Organizador</span>
+                    <span class="detail-primary">{{ event.organizer.name || event.organizer.email }}</span>
+                    <span class="detail-secondary" *ngIf="event.organizer.name">{{ event.organizer.email }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de descripción -->
+        <div class="detail-card" *ngIf="event.description">
+            <div class="detail-row">
+                <div class="detail-icon">
+                    <ion-icon name="document-text-outline"></ion-icon>
+                </div>
+                <div class="detail-body">
+                    <span class="detail-label">Descripción</span>
+                    <div class="event-description" [innerHTML]="event.description"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de participantes -->
+        <div class="detail-card" *ngIf="event.attendees && event.attendees.length > 0">
+            <div class="detail-row">
+                <div class="detail-icon">
+                    <ion-icon name="people-outline"></ion-icon>
+                </div>
+                <div class="detail-body">
+                    <span class="detail-label">{{ event.attendees.length }} participante{{ event.attendees.length > 1 ? 's' : '' }}</span>
+                </div>
+            </div>
+
+            <div class="attendees-list">
+                <div class="attendee-item" *ngFor="let attendee of event.attendees">
+                    <div class="attendee-avatar" [ngClass]="'status-' + attendee.responseStatus">
+                        <ion-icon [name]="getStatusIcon(attendee.responseStatus)"></ion-icon>
+                    </div>
+                    <div class="attendee-info">
+                        <span class="attendee-name">{{ attendee.name || attendee.email }}</span>
+                        <span class="attendee-status">{{ getStatusLabel(attendee.responseStatus) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Acta vinculada -->
+        <div class="detail-card acta-card">
+            <!-- Acta vinculada -->
+            <div class="detail-row" *ngIf="eventLink">
+                <div class="detail-icon linked">
+                    <ion-icon name="document-text-outline"></ion-icon>
+                </div>
+                <div class="detail-body">
+                    <span class="detail-label">Acta vinculada</span>
+                    <span class="detail-primary link" (click)="openLinkedMinute()">
+                        Acta #{{ eventLink.minuteId }}
+                        <ion-badge *ngIf="linkedMinuteState === '1'" color="warning" class="state-badge">Borrador</ion-badge>
+                        <ion-badge *ngIf="linkedMinuteState === '0'" color="success" class="state-badge">Publicada</ion-badge>
+                    </span>
+                </div>
+                <ion-button fill="clear" size="small" color="danger" (click)="unlinkMinute()">
+                    <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                </ion-button>
+            </div>
+
+            <!-- Sin acta -->
+            <div class="detail-row" *ngIf="!eventLink">
+                <div class="detail-icon unlinked">
+                    <ion-icon name="document-text-outline"></ion-icon>
+                </div>
+                <div class="detail-body">
+                    <span class="detail-label">Acta</span>
+                    <span class="detail-primary muted">Sin acta vinculada</span>
+                </div>
+                <ion-button fill="solid" size="small" (click)="openLinkMinuteModal()">
+                    <ion-icon name="add-outline" slot="start"></ion-icon>
+                    Vincular
+                </ion-button>
+                <ion-button fill="outline" size="small" color="success" [routerLink]="['/employee/calendar/create-minute']" [queryParams]="{eventId: event.id}" (click)="saveEventToStorage()">
+                    <ion-icon name="add-outline" slot="start"></ion-icon>
+                    Crear
+                </ion-button>
+            </div>
+        </div>
+
+        <!-- Botón abrir en Google -->
+        <div class="action-section">
+            <ion-button expand="block" fill="outline" (click)="openInGoogle()" class="google-btn">
+                <ion-icon name="open-outline" slot="start"></ion-icon>
+                Abrir en Google Calendar
+            </ion-button>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-state" *ngIf="isLoading">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <p>Cargando evento...</p>
+    </div>
+</ion-content>

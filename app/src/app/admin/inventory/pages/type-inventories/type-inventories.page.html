@@ -1,0 +1,114 @@
+<app-page-header
+    [showSearch]="true"
+    [useCustomSearch]="true"
+    (searchChange)="onSearchChange($event)"
+></app-page-header>
+
+<ion-content [fullscreen]="true" class="type-inventories-content" (ionScroll)="onScroll($event)">
+    <div class="page-container">
+        <!-- Page Title & Controls -->
+        <div class="page-title-section">
+            <div class="title-text">
+                <h1>Tipos de Inventario</h1>
+                <p>Gestiona las categorías de activos de tu organización</p>
+            </div>
+            <div class="title-controls desktop-only">
+                <ion-button (click)="openCreateModal()" class="add-button">
+                    <ion-icon slot="start" name="add-outline"></ion-icon>
+                    Nuevo Tipo
+                </ion-button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading && typeInventories.length === 0) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        <!-- Error State -->
+        @if (hasError && !isLoading) {
+        <div class="empty-state error-state">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <h2>No se pudieron cargar los datos</h2>
+            <p>Ocurrió un error al conectar con el servidor</p>
+            <ion-button (click)="loadTypeInventories()">
+                <ion-icon slot="start" name="refresh-outline"></ion-icon>
+                Reintentar
+            </ion-button>
+        </div>
+        }
+
+        <!-- Type Inventories List -->
+        @if (typeInventories.length > 0) {
+        <div class="type-inventories-list">
+            @for (type of typeInventories; track type.id) {
+            <div class="type-card">
+                <div class="type-card-content" (click)="openEditModal(type)">
+                    <div class="type-info">
+                        <div class="type-name">{{ type.name }}</div>
+                        @if (type.denomination) {
+                        <div class="type-denomination">{{ type.denomination }}</div>
+                        }
+                    </div>
+                    <div class="type-actions">
+                        <span
+                            class="status-badge"
+                            [class.active]="type.isActive"
+                            [class.inactive]="!type.isActive"
+                            (click)="toggleStatus(type); $event.stopPropagation()">
+                            {{ type.isActive ? 'Activo' : 'Inactivo' }}
+                        </span>
+                        <ion-button
+                            fill="clear"
+                            size="small"
+                            class="edit-button"
+                            (click)="openEditModal(type); $event.stopPropagation()">
+                            <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+                        </ion-button>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- Loading More Indicator -->
+        @if (isLoadingMore) {
+        <div class="loading-more">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Cargando más tipos...</p>
+        </div>
+        }
+
+        <!-- Empty State -->
+        @if (!isLoading && typeInventories.length === 0 && !searchTerm) {
+        <div class="empty-state">
+            <ion-icon name="layers-outline"></ion-icon>
+            <h2>No hay tipos de inventario</h2>
+            <p>Comienza creando tu primer tipo de inventario</p>
+            <ion-button (click)="openCreateModal()">
+                <ion-icon slot="start" name="add-outline"></ion-icon>
+                Crear Tipo
+            </ion-button>
+        </div>
+        }
+
+        <!-- No Results State -->
+        @if (!isLoading && typeInventories.length === 0 && searchTerm) {
+        <div class="empty-state">
+            <ion-icon name="layers-outline"></ion-icon>
+            <h2>No se encontraron resultados</h2>
+            <p>No hay tipos que coincidan con "{{ searchTerm }}"</p>
+        </div>
+        }
+    </div>
+</ion-content>
+
+<!-- Mobile FAB -->
+<ion-fab slot="fixed" vertical="bottom" horizontal="end" class="mobile-only">
+    <ion-fab-button (click)="openCreateModal()" color="dark">
+        <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+</ion-fab>

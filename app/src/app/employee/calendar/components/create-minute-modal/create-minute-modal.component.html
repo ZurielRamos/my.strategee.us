@@ -1,0 +1,92 @@
+<app-base-modal
+    title="Crear Acta"
+    subtitle="Crea una nueva acta vinculada a este evento"
+    confirmText="Crear Acta"
+    [confirmDisabled]="!isFormValid"
+    [loading]="isSubmitting"
+    (modalConfirm)="onConfirm()"
+    (modalDismiss)="onDismiss()">
+
+    <!-- Cliente -->
+    <div class="form-section">
+        <label class="form-label">Cliente *</label>
+        <app-filter-autocomplete
+            [options]="clientOptions"
+            [value]="form.get('client_id')?.value"
+            placeholder="Seleccionar cliente..."
+            icon="business-outline"
+            (valueChange)="onClientChange($event)"
+        ></app-filter-autocomplete>
+    </div>
+
+    <!-- Proyecto -->
+    <div class="form-section">
+        <label class="form-label">Proyecto *</label>
+        <app-filter-autocomplete
+            [options]="projectOptions"
+            [value]="form.get('project_id')?.value"
+            placeholder="Seleccionar proyecto..."
+            icon="folder-outline"
+            (valueChange)="onProjectChange($event)"
+        ></app-filter-autocomplete>
+    </div>
+
+    <!-- Descripción -->
+    <div class="form-section">
+        <label class="form-label">Descripción *</label>
+        <app-textarea-input
+            [formControl]="$any(form.get('description'))"
+            placeholder="Describe el contenido del acta..."
+            [rows]="4"
+        ></app-textarea-input>
+    </div>
+
+    <!-- Funcionarios (internos) -->
+    <div class="form-section">
+        <label class="form-label">Participantes internos * <span class="hint">(mínimo 1)</span></label>
+        <app-filter-autocomplete
+            [options]="funcionarioOptions"
+            placeholder="Agregar participante..."
+            icon="person-outline"
+            (valueChange)="addFuncionario($event)"
+        ></app-filter-autocomplete>
+
+        <div class="chips-list" *ngIf="selectedFuncionarios.length > 0">
+            <ion-chip *ngFor="let user of selectedFuncionarios" (click)="removeFuncionario(user)">
+                <ion-label>{{ user.firstname }} {{ user.lastname }}</ion-label>
+                <ion-icon name="close-circle"></ion-icon>
+            </ion-chip>
+        </div>
+    </div>
+
+    <!-- Externos -->
+    <div class="form-section" *ngIf="externos.length > 0">
+        <label class="form-label">Participantes externos</label>
+        <app-filter-autocomplete
+            [options]="externoOptions"
+            placeholder="Agregar externo..."
+            icon="person-outline"
+            (valueChange)="addExterno($event)"
+        ></app-filter-autocomplete>
+
+        <div class="chips-list" *ngIf="selectedExternos.length > 0">
+            <ion-chip *ngFor="let user of selectedExternos" (click)="removeExterno(user)" color="tertiary">
+                <ion-label>{{ user.firstname }} {{ user.lastname }}</ion-label>
+                <ion-icon name="close-circle"></ion-icon>
+            </ion-chip>
+        </div>
+    </div>
+
+    <!-- Info del evento -->
+    <div class="event-info-summary">
+        <div class="info-item">
+            <span class="info-label">Evento:</span>
+            <span class="info-value">{{ event.title }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Fecha:</span>
+            <span class="info-value">{{ event.start | date:'dd/MM/yyyy HH:mm' }} - {{ event.end | date:'HH:mm' }}</span>
+        </div>
+    </div>
+
+</app-base-modal>

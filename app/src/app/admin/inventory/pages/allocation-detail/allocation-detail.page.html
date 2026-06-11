@@ -1,0 +1,181 @@
+<app-page-header
+    [pageTitle]="allocation?.inventory?.name || 'Detalle Asignación'"
+    backUrl="/admin/inventory/allocations">
+</app-page-header>
+
+<ion-content [fullscreen]="true" class="detail-content">
+    <div class="page-container">
+
+        <!-- Loading State -->
+        @if (isLoading) {
+            <div class="loading-container">
+                <ion-spinner name="crescent"></ion-spinner>
+            </div>
+        }
+
+        <!-- Error State -->
+        @if (hasError && !isLoading) {
+            <div class="empty-state error-state">
+                <ion-icon name="alert-circle-outline"></ion-icon>
+                <h2>No se pudieron cargar los datos</h2>
+                <p>Ocurrió un error al conectar con el servidor</p>
+                <ion-button (click)="loadAllocation()">
+                    <ion-icon slot="start" name="refresh-outline"></ion-icon>
+                    Reintentar
+                </ion-button>
+            </div>
+        }
+
+        @if (allocation && !isLoading) {
+            <!-- Asset Info Section -->
+            <section class="detail-section">
+                <div class="section-header">
+                    <h2>Información del Activo</h2>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Nombre</span>
+                        <span class="info-value">{{ allocation.inventory?.name || 'N/A' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Tipo</span>
+                        <span class="info-value">{{ allocation.inventory?.typeInventory?.name || 'N/A' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Valor</span>
+                        <span class="info-value">{{ formatCurrency(allocation.inventory?.value || 0) }}</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Employee Info Section -->
+            <section class="detail-section">
+                <div class="section-header">
+                    <h2>
+                        <ion-icon name="person-outline" class="section-icon"></ion-icon>
+                        Empleado Asignado
+                    </h2>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Nombre</span>
+                        <span class="info-value">{{ allocation.employee?.name || allocation.employee?.firstName || 'N/A' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Fecha de Asignación</span>
+                        <span class="info-value">{{ formatDate(allocation.createdAt) }}</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Additional Elements Section -->
+            <section class="detail-section">
+                <div class="section-header">
+                    <h2>Elementos Adicionales</h2>
+                    <ion-button (click)="openElementModal()" class="section-action-btn" size="small">
+                        <ion-icon slot="start" name="add-outline"></ion-icon>
+                        Agregar
+                    </ion-button>
+                </div>
+
+                @if (allocation.elements && allocation.elements.length > 0) {
+                    <div class="element-list">
+                        @for (element of allocation.elements; track element.id) {
+                            <div class="element-card">
+                                <div class="element-info">
+                                    <span class="element-name">{{ element.additionalElement?.name || 'Elemento' }}</span>
+                                    <span class="element-value">{{ formatCurrency(element.value) }}</span>
+                                </div>
+                                <ion-button
+                                    fill="clear"
+                                    size="small"
+                                    color="danger"
+                                    [disabled]="isFormatAccepted"
+                                    (click)="confirmDeleteElement(element)">
+                                    <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                                </ion-button>
+                            </div>
+                        }
+                    </div>
+                }
+
+                @if (!allocation.elements || allocation.elements.length === 0) {
+                    <div class="empty-section">
+                        <ion-icon name="document-text-outline"></ion-icon>
+                        <p>No hay elementos adicionales registrados</p>
+                    </div>
+                }
+            </section>
+
+            <!-- Reception Format Section -->
+            <section class="detail-section">
+                <div class="section-header">
+                    <h2>
+                        <ion-icon name="document-text-outline" class="section-icon"></ion-icon>
+                        Formato de Recepción
+                    </h2>
+                </div>
+
+                <div class="reception-status">
+                    @if (isFormatAccepted) {
+                        <div class="status-indicator accepted">
+                            <ion-icon name="checkmark-circle-outline"></ion-icon>
+                            <div class="status-text">
+                                <span class="status-label">Firmado</span>
+                                <span class="status-date">{{ formatDateTime(allocation.receptionFormat?.acceptedAt ?? null) }}</span>
+                            </div>
+                        </div>
+                    } @else if (allocation.receptionFormat?.sentAt) {
+                        <div class="status-indicator pending">
+                            <ion-icon name="time-outline"></ion-icon>
+                            <div class="status-text">
+                                <span class="status-label">Enviado - Pendiente de firma</span>
+                                <span class="status-date">Enviado: {{ formatDateTime(allocation.receptionFormat?.sentAt ?? null) }}</span>
+                            </div>
+                        </div>
+                    } @else {
+                        <div class="status-indicator not-sent">
+                            <ion-icon name="time-outline"></ion-icon>
+                            <div class="status-text">
+                                <span class="status-label">No enviado</span>
+                                <span class="status-date">El formato de recepción aún no ha sido enviado</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="reception-actions">
+                    <ion-button
+                        (click)="sendReceptionFormat()"
+                        class="reception-btn send-btn"
+                        size="small"
+                        [disabled]="isSendingFormat">
+                        @if (isSendingFormat) {
+                            <ion-spinner name="crescent" slot="start"></ion-spinner>
+                        } @else {
+                            <ion-icon slot="start" name="send-outline"></ion-icon>
+                        }
+                        Enviar formato de recepción
+                    </ion-button>
+
+                    @if (isFormatAccepted) {
+                        <ion-button
+                            (click)="downloadPdf()"
+                            class="reception-btn download-btn"
+                            size="small"
+                            [disabled]="isDownloadingPdf">
+                            @if (isDownloadingPdf) {
+                                <ion-spinner name="crescent" slot="start"></ion-spinner>
+                            } @else {
+                                <ion-icon slot="start" name="download-outline"></ion-icon>
+                            }
+                            Descargar PDF
+                        </ion-button>
+                    }
+                </div>
+            </section>
+        }
+    </div>
+</ion-content>

@@ -1,0 +1,259 @@
+<ion-content [fullscreen]="true" class="reception-content">
+    <div class="page-container">
+
+        <!-- Loading State -->
+        <div class="state-container" *ngIf="state === 'loading'">
+            <ion-spinner name="crescent" color="primary"></ion-spinner>
+            <p>Cargando información del formato...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="state-container error-state" *ngIf="state === 'error'">
+            <ion-icon name="alert-circle-outline" class="state-icon error-icon"></ion-icon>
+            <h2>No se pudo cargar el formato</h2>
+            <p>{{ errorMessage }}</p>
+        </div>
+
+        <!-- Success State -->
+        <div class="state-container success-state" *ngIf="state === 'success'">
+            <ion-icon name="checkmark-circle-outline" class="state-icon success-icon"></ion-icon>
+            <h2>¡Formato firmado exitosamente!</h2>
+            <p>Se ha registrado tu firma correctamente. Recibirás una copia del formato en tu correo electrónico.</p>
+        </div>
+
+        <!-- Valid Token: Show Data + Form -->
+        <ng-container *ngIf="state === 'valid' && data">
+            <!-- Header -->
+            <div class="format-header">
+                <ion-icon name="document-text-outline" class="header-icon"></ion-icon>
+                <h1>Formato de Recepción de Activo</h1>
+                <p>Revisa la información del activo asignado y firma al final del documento</p>
+            </div>
+
+            <!-- Asset Info Card -->
+            <ion-card class="info-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="cube-outline"></ion-icon>
+                        Información del Activo
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Nombre</span>
+                            <span class="info-value">{{ data.allocation.inventory.name }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tipo</span>
+                            <span class="info-value">{{ data.allocation.inventory.typeInventory?.name || 'N/A' }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Valor</span>
+                            <span class="info-value">{{ formatCurrency(data.allocation.inventory.value) }}</span>
+                        </div>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- Hardware Features -->
+            <ion-card class="info-card" *ngIf="hardwareFeatures.length > 0">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="hardware-chip-outline"></ion-icon>
+                        Características de Hardware
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-list lines="none">
+                        <ion-item *ngFor="let feature of hardwareFeatures">
+                            <ion-label>
+                                <h3>{{ feature.hardware?.name }}</h3>
+                                <p *ngIf="feature.description">{{ feature.description }}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-list>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- Software Features -->
+            <ion-card class="info-card" *ngIf="softwareFeatures.length > 0">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="laptop-outline"></ion-icon>
+                        Características de Software
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-list lines="none">
+                        <ion-item *ngFor="let feature of softwareFeatures">
+                            <ion-label>
+                                <h3>{{ feature.software?.name }}</h3>
+                                <p *ngIf="feature.description">{{ feature.description }}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-list>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- Additional Elements -->
+            <ion-card class="info-card" *ngIf="additionalElements.length > 0">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="cube-outline"></ion-icon>
+                        Elementos Adicionales
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-list lines="none">
+                        <ion-item *ngFor="let element of additionalElements">
+                            <ion-label>
+                                <h3>{{ element.additionalElement?.name }}</h3>
+                            </ion-label>
+                            <ion-note slot="end">{{ formatCurrency(element.value) }}</ion-note>
+                        </ion-item>
+                    </ion-list>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- Sign Form -->
+            <ion-card class="sign-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="create-outline"></ion-icon>
+                        Firmar Formato
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <p class="form-description">Complete los siguientes datos para confirmar la recepción del activo.</p>
+
+                    <div class="form-group">
+                        <ion-item class="form-item">
+                            <ion-icon name="person-outline" slot="start"></ion-icon>
+                            <ion-input
+                                label="Nombre completo"
+                                labelPlacement="floating"
+                                [(ngModel)]="form.signerName"
+                                maxlength="100"
+                                placeholder="Ingrese su nombre completo"
+                                required
+                            ></ion-input>
+                        </ion-item>
+
+                        <ion-item class="form-item">
+                            <ion-icon name="card-outline" slot="start"></ion-icon>
+                            <ion-input
+                                label="Número de documento"
+                                labelPlacement="floating"
+                                [(ngModel)]="form.signerDocument"
+                                maxlength="20"
+                                placeholder="Ingrese su número de documento"
+                                required
+                            ></ion-input>
+                        </ion-item>
+
+                        <ion-item class="form-item">
+                            <ion-icon name="mail-outline" slot="start"></ion-icon>
+                            <ion-input
+                                label="Correo electrónico"
+                                labelPlacement="floating"
+                                type="email"
+                                [(ngModel)]="form.signerEmail"
+                                maxlength="150"
+                                placeholder="Ingrese su correo electrónico"
+                                required
+                            ></ion-input>
+                        </ion-item>
+
+                        <ion-item class="form-item">
+                            <ion-icon name="create-outline" slot="start"></ion-icon>
+                            <ion-input
+                                label="Firma digital (Base64, opcional)"
+                                labelPlacement="floating"
+                                [(ngModel)]="form.signatureData"
+                                placeholder="Datos de firma en Base64"
+                            ></ion-input>
+                        </ion-item>
+                    </div>
+
+                    <ion-button
+                        expand="block"
+                        class="submit-btn"
+                        [disabled]="!isFormValid || submitting"
+                        (click)="submitSign()"
+                    >
+                        <ion-spinner *ngIf="submitting" name="crescent" slot="start"></ion-spinner>
+                        <span *ngIf="!submitting">Firmar y Confirmar Recepción</span>
+                        <span *ngIf="submitting">Procesando...</span>
+                    </ion-button>
+                </ion-card-content>
+            </ion-card>
+        </ng-container>
+
+        <!-- Already Accepted: Read-only mode -->
+        <ng-container *ngIf="state === 'accepted' && data">
+            <div class="format-header">
+                <ion-icon name="checkmark-circle-outline" class="header-icon accepted-icon"></ion-icon>
+                <h1>Formato Ya Firmado</h1>
+                <p>Este formato de recepción ya fue aceptado y firmado.</p>
+            </div>
+
+            <!-- Asset Info Card (read-only) -->
+            <ion-card class="info-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="cube-outline"></ion-icon>
+                        Información del Activo
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Nombre</span>
+                            <span class="info-value">{{ data.allocation.inventory.name }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tipo</span>
+                            <span class="info-value">{{ data.allocation.inventory.typeInventory?.name || 'N/A' }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Valor</span>
+                            <span class="info-value">{{ formatCurrency(data.allocation.inventory.value) }}</span>
+                        </div>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- Acceptance Info -->
+            <ion-card class="info-card accepted-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="person-outline"></ion-icon>
+                        Datos de Firma
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Firmante</span>
+                            <span class="info-value">{{ data.signerName }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Documento</span>
+                            <span class="info-value">{{ data.signerDocument }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Correo</span>
+                            <span class="info-value">{{ data.signerEmail }}</span>
+                        </div>
+                        <div class="info-item" *ngIf="data.acceptedAt">
+                            <span class="info-label">Fecha de firma</span>
+                            <span class="info-value">{{ data.acceptedAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+                        </div>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+        </ng-container>
+
+    </div>
+</ion-content>

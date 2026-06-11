@@ -1,0 +1,11 @@
+export { TypeInventory } from './type-inventory.model';
+export { Supplier } from './supplier.model';
+export { Hardware } from './hardware.model';
+export { Software } from './software.model';
+export { AdditionalElement } from './additional-element.model';
+export { Inventory } from './inventory.model';
+export { InventoryFeature } from './inventory-feature.model';
+export { InventoryAllocation } from './inventory-allocation.model';
+export { AllocationElement } from './allocation-element.model';
+export { Maintenance } from './maintenance.model';
+export { ReceptionFormat } from './reception-format.model';

@@ -1,0 +1,100 @@
+<app-page-header
+    [showSearch]="true"
+    [useCustomSearch]="true"
+    (searchChange)="onSearchChange($event)"
+></app-page-header>
+
+<ion-content [fullscreen]="true" class="page-content">
+    <div class="page-container">
+        <!-- Page Title & Controls -->
+        <div class="page-title-section">
+            <div class="title-text">
+                <h1>Software</h1>
+                <p>Gestiona los componentes de software disponibles</p>
+            </div>
+            <div class="title-controls">
+                <ion-button (click)="openCreateModal()" class="add-button">
+                    <ion-icon slot="start" name="add-outline"></ion-icon>
+                    Nuevo Software
+                </ion-button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        <!-- Error State -->
+        @if (hasError && !isLoading) {
+        <div class="empty-state error-state">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <h2>No se pudieron cargar los datos</h2>
+            <p>Ocurrió un error al conectar con el servidor</p>
+            <ion-button (click)="loadItems()">
+                <ion-icon slot="start" name="refresh-outline"></ion-icon>
+                Reintentar
+            </ion-button>
+        </div>
+        }
+
+        <!-- Items List -->
+        @if (!isLoading && items.length > 0) {
+        <div class="items-list">
+            @for (item of items; track item.id) {
+            <div class="item-card" (click)="openEditModal(item)">
+                <div class="item-info">
+                    <div class="item-icon">
+                        <ion-icon name="laptop-outline"></ion-icon>
+                    </div>
+                    <div class="item-details">
+                        <h3>{{ item.name }}</h3>
+                    </div>
+                </div>
+                <div class="item-actions">
+                    <button 
+                        class="status-toggle" 
+                        [class.active]="item.isActive"
+                        (click)="toggleStatus(item, $event)"
+                        [title]="item.isActive ? 'Desactivar' : 'Activar'">
+                        <ion-icon [name]="item.isActive ? 'checkmark-circle' : 'ellipse-outline'"></ion-icon>
+                        <span>{{ item.isActive ? 'Activo' : 'Inactivo' }}</span>
+                    </button>
+                    <button class="edit-btn" (click)="openEditModal(item); $event.stopPropagation()">
+                        <ion-icon name="create-outline"></ion-icon>
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+
+        <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+            <ion-infinite-scroll-content loadingSpinner="crescent"></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+        }
+
+        <!-- Empty State -->
+        @if (!isLoading && items.length === 0 && !searchTerm) {
+        <div class="empty-state">
+            <ion-icon name="laptop-outline"></ion-icon>
+            <h2>No hay software registrado</h2>
+            <p>Comienza agregando tu primer componente de software</p>
+            <ion-button (click)="openCreateModal()">
+                <ion-icon slot="start" name="add-outline"></ion-icon>
+                Crear Software
+            </ion-button>
+        </div>
+        }
+
+        <!-- No Results State -->
+        @if (!isLoading && items.length === 0 && searchTerm) {
+        <div class="empty-state">
+            <ion-icon name="laptop-outline"></ion-icon>
+            <h2>No se encontraron resultados</h2>
+            <p>No hay software que coincida con "{{ searchTerm }}"</p>
+        </div>
+        }
+    </div>
+</ion-content>

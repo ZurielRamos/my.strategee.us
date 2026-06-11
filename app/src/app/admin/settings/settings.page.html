@@ -227,6 +227,21 @@
                             </ion-label>
                             <ion-input [(ngModel)]="whatsappApiKey" type="password" placeholder="Ingrese la API Key"></ion-input>
                         </ion-item>
+
+                        <ion-item class="settings-item">
+                            <ion-label position="stacked">
+                                <h3>Dispositivo de Notificaciones Internas</h3>
+                                <p>Dispositivo vinculado para enviar notificaciones internas</p>
+                            </ion-label>
+                            <ion-select 
+                                [(ngModel)]="whatsappNotificationDeviceId" 
+                                placeholder="Seleccione dispositivo"
+                                interface="popover">
+                                @for (device of whatsappDevices; track device.id) {
+                                    <ion-select-option [value]="device.id">{{ device.name }}</ion-select-option>
+                                }
+                            </ion-select>
+                        </ion-item>
                     </ion-list>
 
                     <ion-button expand="block" (click)="saveWhatsappConfig()" [disabled]="whatsappLoading" class="save-btn">

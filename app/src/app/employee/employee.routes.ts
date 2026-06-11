@@ -3,6 +3,10 @@ import { MandatoryTrainingGuard } from './trainings/guards/mandatory-training.gu
 
 export const routes: Routes = [
     {
+        path: 'calendar/callback',
+        loadComponent: () => import('./calendar/calendar-callback.page').then(m => m.CalendarCallbackPage)
+    },
+    {
         path: '',
         loadComponent: () => import('./layout/employee-layout.component').then(m => m.EmployeeLayoutComponent),
         children: [
@@ -40,6 +44,25 @@ export const routes: Routes = [
                 path: 'password-vault',
                 canActivate: [MandatoryTrainingGuard],
                 loadChildren: () => import('./password-vault/password-vault.routes').then(m => m.passwordVaultRoutes)
+            },
+            {
+                path: 'calendar',
+                loadChildren: () => import('./calendar/calendar.routes').then(m => m.calendarRoutes)
+            },
+            {
+                path: 'minutes',
+                canActivate: [MandatoryTrainingGuard],
+                loadComponent: () => import('./minutes/minutes.page').then(m => m.MinutesPage)
+            },
+            {
+                path: 'minutes/:id',
+                canActivate: [MandatoryTrainingGuard],
+                loadComponent: () => import('./minutes/minute-detail/minute-detail.page').then(m => m.MinuteDetailPage)
+            },
+            {
+                path: 'minutes/:id/edit',
+                canActivate: [MandatoryTrainingGuard],
+                loadComponent: () => import('./minutes/edit-minute/edit-minute.page').then(m => m.EditMinutePage)
             },
             {
                 path: 'trainings',

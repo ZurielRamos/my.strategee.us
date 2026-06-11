@@ -1,0 +1,38 @@
+<app-base-modal
+    [title]="title"
+    [subtitle]="subtitle"
+    [confirmText]="mode === 'create' ? 'Crear Asignación' : 'Guardar Cambios'"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+
+    <form [formGroup]="form">
+        @if (mode === 'create') {
+            <app-form-select
+                formControlName="inventoryId"
+                label="Activo"
+                [options]="assetOptions"
+                placeholder="Seleccione un activo"
+                [required]="true">
+            </app-form-select>
+        } @else {
+            <ion-item>
+                <ion-label position="stacked">Activo</ion-label>
+                <ion-input
+                    [value]="currentAssetName"
+                    [readonly]="true"
+                    [disabled]="true">
+                </ion-input>
+            </ion-item>
+        }
+
+        <app-form-select
+            formControlName="employeeId"
+            label="Empleado"
+            [options]="employeeOptions"
+            placeholder="Seleccione un empleado"
+            [required]="true">
+        </app-form-select>
+    </form>
+</app-base-modal>

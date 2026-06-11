@@ -1,0 +1,31 @@
+<app-base-modal
+    [title]="title"
+    subtitle="Complete los campos requeridos"
+    confirmText="Guardar"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+
+    <form [formGroup]="form">
+        <h4 class="section-title">Información del Mantenimiento</h4>
+
+        <app-date-input
+            formControlName="maintenanceDate"
+            label="Fecha de Mantenimiento"
+            placeholder="Seleccione fecha"
+            [required]="true">
+        </app-date-input>
+
+        <app-textarea-input
+            formControlName="observations"
+            label="Observaciones"
+            placeholder="Descripción del mantenimiento realizado..."
+            [rows]="4"
+            [required]="true"
+            [maxlength]="500"
+            [showCharCounter]="true">
+        </app-textarea-input>
+    </form>
+
+</app-base-modal>

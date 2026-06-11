@@ -1,0 +1,85 @@
+<app-base-modal 
+    [title]="title"
+    subtitle="Complete los campos requeridos"
+    confirmText="Guardar"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="form">
+        <h4 class="section-title">Información del Proveedor</h4>
+
+        <app-text-input
+            formControlName="name"
+            label="Nombre"
+            placeholder="Ej: Distribuidora ABC"
+            [required]="true"
+            [maxlength]="150">
+        </app-text-input>
+        @if (getError('name')) {
+            <p class="field-error">{{ getError('name') }}</p>
+        }
+
+        <app-text-input
+            formControlName="phone"
+            label="Teléfono"
+            placeholder="Ej: +57 300 123 4567"
+            type="tel"
+            [required]="true"
+            [maxlength]="20">
+        </app-text-input>
+        @if (getError('phone')) {
+            <p class="field-error">{{ getError('phone') }}</p>
+        }
+
+        <app-text-input
+            formControlName="email"
+            label="Email"
+            placeholder="Ej: contacto@proveedor.com"
+            type="email"
+            [required]="true"
+            [maxlength]="100">
+        </app-text-input>
+        @if (getError('email')) {
+            <p class="field-error">{{ getError('email') }}</p>
+        }
+
+        <app-text-input
+            formControlName="contactPerson"
+            label="Persona de Contacto"
+            placeholder="Ej: Juan Pérez"
+            [required]="true"
+            [maxlength]="150">
+        </app-text-input>
+        @if (getError('contactPerson')) {
+            <p class="field-error">{{ getError('contactPerson') }}</p>
+        }
+
+        <h4 class="section-title">Información Adicional</h4>
+
+        <app-textarea-input
+            formControlName="address"
+            label="Dirección"
+            placeholder="Ej: Calle 123 #45-67, Bogotá"
+            [rows]="2"
+            [maxlength]="255">
+        </app-textarea-input>
+        @if (getError('address')) {
+            <p class="field-error">{{ getError('address') }}</p>
+        }
+
+        <app-textarea-input
+            formControlName="observations"
+            label="Observaciones"
+            placeholder="Notas adicionales sobre el proveedor..."
+            [rows]="3"
+            [maxlength]="500"
+            [showCharCounter]="true">
+        </app-textarea-input>
+        @if (getError('observations')) {
+            <p class="field-error">{{ getError('observations') }}</p>
+        }
+    </form>
+    
+</app-base-modal>

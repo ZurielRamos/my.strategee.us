@@ -1,0 +1,190 @@
+<app-page-header [backUrl]="'/employee/dashboard'"></app-page-header>
+
+<ion-content [fullscreen]="true" class="calendar-content">
+    <div class="page-container">
+        <!-- Header con controles -->
+        <div class="calendar-toolbar">
+            <div class="toolbar-left">
+                <ion-button fill="solid" size="small" class="today-btn" (click)="goToToday()">
+                    Hoy
+                </ion-button>
+                <ion-button fill="clear" size="small" (click)="navigateDate('prev')">
+                    <ion-icon name="chevron-back-outline" slot="icon-only"></ion-icon>
+                </ion-button>
+                <ion-button fill="clear" size="small" (click)="navigateDate('next')">
+                    <ion-icon name="chevron-forward-outline" slot="icon-only"></ion-icon>
+                </ion-button>
+                <span class="toolbar-date">{{ getFormattedDateRange() }}</span>
+            </div>
+            <div class="toolbar-right">
+                <ion-segment [value]="viewMode" (ionChange)="onViewChange($event)">
+                    <ion-segment-button value="today">
+                        <ion-label>Día</ion-label>
+                    </ion-segment-button>
+                    <ion-segment-button value="week">
+                        <ion-label>Semana</ion-label>
+                    </ion-segment-button>
+                </ion-segment>
+            </div>
+        </div>
+
+        <!-- Estado: No conectado -->
+        <div class="connect-section" *ngIf="!status.connected && !isLoading">
+            <ion-card class="connect-card">
+                <ion-card-content>
+                    <div class="connect-content">
+                        <ion-icon name="calendar-outline" class="connect-icon"></ion-icon>
+                        <h2>Conecta tu Google Calendar</h2>
+                        <p>Vincula tu cuenta de Google para visualizar tus eventos y reuniones programadas.</p>
+                        <ion-button
+                            (click)="connectCalendar()"
+                            [disabled]="isConnecting"
+                            expand="block"
+                            class="connect-btn">
+                            <ion-icon name="logo-google" slot="start"></ion-icon>
+                            {{ isConnecting ? 'Conectando...' : 'Conectar Google Calendar' }}
+                        </ion-button>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+        </div>
+
+        <!-- Vista de Día (estilo Google Calendar) -->
+        <div class="day-view" *ngIf="status.connected && viewMode === 'today'">
+            <!-- Eventos de todo el día -->
+            <div class="allday-section" *ngIf="getAllDayEvents().length > 0">
+                <div class="allday-event" *ngFor="let event of getAllDayEvents()" (click)="openEvent(event)">
+                    <span class="allday-dot"></span>
+                    <span class="allday-title">{{ event.title }}</span>
+                </div>
+            </div>
+
+            <!-- Grid de horas -->
+            <div class="time-grid" #timeGrid>
+                <!-- Indicador de hora actual -->
+                <div class="current-time-indicator" *ngIf="isToday()" [style.top.px]="getCurrentTimePosition()">
+                    <div class="current-time-dot"></div>
+                    <div class="current-time-line"></div>
+                </div>
+
+                <!-- Filas de horas -->
+                <div class="time-row" *ngFor="let hour of hours">
+                    <div class="time-label">{{ formatHour(hour) }}</div>
+                    <div class="time-slot"></div>
+                </div>
+
+                <!-- Eventos posicionados -->
+                <div
+                    *ngFor="let event of getTimedEvents()"
+                    class="event-block"
+                    [style.top.px]="getEventTop(event)"
+                    [style.height.px]="getEventHeight(event)"
+                    [style.left]="'72px'"
+                    [style.right]="'12px'"
+                    [class.event-short]="getEventHeight(event) < 40"
+                    [class.no-minute]="!hasMinuteLink(event.id)"
+                    [class.draft-minute]="isDraftMinute(event.id)"
+                    (click)="openEvent(event)">
+                    <div class="event-block-content">
+                        <span class="event-block-title">{{ event.title }}</span>
+                        <span class="event-block-time" *ngIf="getEventHeight(event) >= 40">{{ getEventTime(event) }}</span>
+                        <span class="event-block-location" *ngIf="getEventHeight(event) >= 56 && event.location">{{ event.location }}</span>
+                    </div>
+                    <div class="event-block-badge" *ngIf="!hasMinuteLink(event.id) && getEventHeight(event) >= 30">
+                        <span class="no-minute-badge">Sin Acta</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vista de Semana -->
+        <div class="week-view" *ngIf="status.connected && viewMode === 'week'">
+            <!-- Header de días -->
+            <div class="week-header">
+                <div class="week-time-gutter"></div>
+                <div class="week-day-col" *ngFor="let day of weekDays" [class.is-today]="isDayToday(day.date)">
+                    <span class="week-day-name">{{ day.name }}</span>
+                    <span class="week-day-number" [class.today-circle]="isDayToday(day.date)">{{ day.number }}</span>
+                </div>
+            </div>
+
+            <!-- Eventos de todo el día (semana) -->
+            <div class="week-allday-row" *ngIf="hasAllDayEventsInWeek()">
+                <div class="week-time-gutter"></div>
+                <div class="week-allday-col" *ngFor="let day of weekDays">
+                    <div class="allday-event" *ngFor="let event of getAllDayEventsForDay(day.date)" (click)="openEvent(event)">
+                        <span class="allday-title">{{ event.title }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid de horas semana -->
+            <div class="week-time-grid">
+                <!-- Indicador hora actual -->
+                <div class="week-current-time" *ngIf="isCurrentWeek()" [style.top.px]="getCurrentTimePosition()">
+                    <div class="week-time-gutter">
+                        <span class="current-time-label">{{ getCurrentTimeLabel() }}</span>
+                    </div>
+                    <div class="week-day-col" *ngFor="let day of weekDays" [class.show-line]="isDayToday(day.date)">
+                        <div class="current-time-line-week" *ngIf="isDayToday(day.date)">
+                            <div class="current-time-dot"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="time-row" *ngFor="let hour of hours">
+                    <div class="week-time-gutter">
+                        <span class="time-label">{{ formatHour(hour) }}</span>
+                    </div>
+                    <div class="week-day-col" *ngFor="let day of weekDays">
+                        <div class="week-time-slot"></div>
+                    </div>
+                </div>
+
+                <!-- Eventos posicionados por día -->
+                <ng-container *ngFor="let day of weekDays; let i = index">
+                    <div
+                        *ngFor="let event of getTimedEventsForDay(day.date)"
+                        class="week-event-block"
+                        [style.top.px]="getEventTop(event)"
+                        [style.height.px]="getEventHeight(event)"
+                        [style.left]="getWeekEventLeft(i)"
+                        [style.width]="getWeekEventWidth()"
+                        [class.event-short]="getEventHeight(event) < 30"
+                        [class.no-minute]="!hasMinuteLink(event.id)"
+                        [class.draft-minute]="isDraftMinute(event.id)"
+                        (click)="openEvent(event)">
+                        <div class="event-block-content compact">
+                            <span class="event-block-title">{{ event.title }}</span>
+                            <span class="event-block-time" *ngIf="getEventHeight(event) >= 30">{{ getEventTimeShort(event) }}</span>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+
+        <!-- Loading state -->
+        <div class="loading-state" *ngIf="isLoading && status.connected">
+            <div class="loading-spinner">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <p>Cargando eventos...</p>
+            </div>
+        </div>
+
+        <!-- Footer con info de conexión -->
+        <div class="calendar-footer" *ngIf="status.connected">
+            <span class="connected-info">
+                <ion-icon name="checkmark-circle"></ion-icon>
+                {{ status.email }}
+            </span>
+            <ion-button fill="clear" size="small" color="medium" (click)="loadEvents()">
+                <ion-icon name="refresh-outline" slot="start"></ion-icon>
+                Actualizar
+            </ion-button>
+            <ion-button fill="clear" size="small" color="danger" (click)="disconnectCalendar()">
+                <ion-icon name="unlink-outline" slot="start"></ion-icon>
+                Desconectar
+            </ion-button>
+        </div>
+    </div>
+</ion-content>

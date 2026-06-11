@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
     IonContent,
     IonCard,
@@ -23,7 +24,8 @@ import {
     refreshOutline,
     checkmarkCircleOutline,
     closeCircleOutline,
-    ellipseOutline
+    ellipseOutline,
+    arrowBackOutline
 } from 'ionicons/icons';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { PageTitleComponent } from '../../../shared/components/page-title/page-title.component';
@@ -65,7 +67,8 @@ export class WhatsappDevicesPage implements OnInit {
     constructor(
         private whatsappService: WhatsappService,
         private toastService: ToastService,
-        private modalController: ModalController
+        private modalController: ModalController,
+        private router: Router
     ) {
         addIcons({
             logoWhatsapp,
@@ -76,7 +79,8 @@ export class WhatsappDevicesPage implements OnInit {
             refreshOutline,
             checkmarkCircleOutline,
             closeCircleOutline,
-            ellipseOutline
+            ellipseOutline,
+            arrowBackOutline
         });
     }
 
@@ -193,5 +197,9 @@ export class WhatsappDevicesPage implements OnInit {
             case 'connecting': return 'ellipse-outline';
             default: return 'close-circle-outline';
         }
+    }
+
+    goBack() {
+        this.router.navigate(['/admin/settings']);
     }
 }

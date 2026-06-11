@@ -1,0 +1,246 @@
+<app-page-header></app-page-header>
+
+<ion-content [fullscreen]="true" class="detail-content">
+    <div class="page-container">
+        <!-- Back button + title -->
+        <div class="page-title-section">
+            <div class="title-left">
+                <ion-button fill="clear" class="back-button" (click)="goBack()">
+                    <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+                </ion-button>
+                <div class="title-text">
+                    <h1>Detalle de Acta</h1>
+                    @if (detail) {
+                        <p>Acta #{{ detail.Contac.number }} · {{ formatShortDate(detail.Contac.start_date) }}</p>
+                    }
+                </div>
+            </div>
+            @if (detail && detail.Contac.state === '1') {
+                <div class="title-right">
+                    <ion-button fill="clear" class="actions-dropdown-btn" (click)="toggleActionsMenu($event)">
+                        <ion-icon name="ellipsis-vertical-outline" slot="icon-only"></ion-icon>
+                    </ion-button>
+                </div>
+            }
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading) {
+            <div class="loading-container">
+                <ion-spinner name="crescent"></ion-spinner>
+            </div>
+        }
+
+        @if (!isLoading && detail) {
+            <!-- Draft banner -->
+            @if (detail.Contac.state === '1') {
+                <div class="draft-banner">
+                    <ion-icon name="alert-circle-outline"></ion-icon>
+                    <span>Esta acta es un borrador y aún no ha sido finalizada.</span>
+                </div>
+            }
+
+            <!-- Time and duration header -->
+            <div class="time-header-card" [class.draft]="detail.Contac.state === '1'">
+                <div class="time-display">
+                    <div class="time-block">
+                        <span class="time-value">{{ formatTime(detail.Contac.start_date) }}</span>
+                        <span class="time-label">Inicio</span>
+                    </div>
+                    <div class="time-separator">
+                        <ion-icon name="arrow-forward-outline"></ion-icon>
+                    </div>
+                    <div class="time-block">
+                        <span class="time-value">{{ formatTime(detail.Contac.end_date) }}</span>
+                        <span class="time-label">Fin</span>
+                    </div>
+                    <div class="duration-badge">
+                        <ion-icon name="time-outline"></ion-icon>
+                        <span>{{ getDuration() }}</span>
+                    </div>
+                </div>
+                <div class="date-full">
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    <span>{{ formatDate(detail.Contac.start_date) }}</span>
+                </div>
+            </div>
+
+            <!-- Info cards grid -->
+            <div class="info-grid">
+                <ion-card class="info-card">
+                    <ion-card-content>
+                        <div class="info-row">
+                            <ion-icon name="business-outline" color="primary"></ion-icon>
+                            <div class="info-text">
+                                <span class="info-label">Cliente</span>
+                                <span class="info-value">{{ detail.Client.name }}</span>
+                            </div>
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+
+                <ion-card class="info-card">
+                    <ion-card-content>
+                        <div class="info-row">
+                            <ion-icon name="folder-outline" color="primary"></ion-icon>
+                            <div class="info-text">
+                                <span class="info-label">Proyecto</span>
+                                <span class="info-value">{{ detail.Project.name }}</span>
+                            </div>
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+
+                <ion-card class="info-card">
+                    <ion-card-content>
+                        <div class="info-row">
+                            <ion-icon name="person-outline" color="primary"></ion-icon>
+                            <div class="info-text">
+                                <span class="info-label">Redactor</span>
+                                <span class="info-value">{{ detail.User.firstname }} {{ detail.User.lastname }}</span>
+                            </div>
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+
+                <ion-card class="info-card">
+                    <ion-card-content>
+                        <div class="info-row">
+                            <ion-icon name="people-outline" color="primary"></ion-icon>
+                            <div class="info-text">
+                                <span class="info-label">Asistentes</span>
+                                <span class="info-value">{{ detail.Assistant?.length || 0 }} participantes</span>
+                            </div>
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+            </div>
+
+            <!-- Assistants section -->
+            @if (detail.Assistant && detail.Assistant.length > 0) {
+                <ion-card class="section-card">
+                    <ion-card-header>
+                        <ion-card-title>
+                            <ion-icon name="people-outline"></ion-icon>
+                            Asistentes
+                        </ion-card-title>
+                    </ion-card-header>
+                    <ion-card-content>
+                        <div class="assistants-grid">
+                            @for (assistant of detail.Assistant; track assistant.id) {
+                                <div class="assistant-chip">
+                                    <div class="avatar">{{ getAssistantInitials(assistant) }}</div>
+                                    <div class="assistant-info">
+                                        <span class="assistant-name">{{ getAssistantName(assistant) }}</span>
+                                        @if (assistant.User?.email) {
+                                            <span class="assistant-email">{{ assistant.User.email }}</span>
+                                        }
+                                    </div>
+                                    <ion-badge [color]="getAssistantTypeColor(assistant.type_user)">
+                                        {{ getAssistantTypeLabel(assistant.type_user) }}
+                                    </ion-badge>
+                                </div>
+                            }
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+            }
+
+            <!-- Content section -->
+            <ion-card class="section-card content-card">
+                <ion-card-header>
+                    <ion-card-title>
+                        <ion-icon name="document-text-outline"></ion-icon>
+                        Contenido del Acta
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <div class="minute-body" [innerHTML]="detail.Contac.description"></div>
+                </ion-card-content>
+            </ion-card>
+
+            <!-- Commitments section -->
+            @if (detail.Commitment && detail.Commitment.length > 0) {
+                <ion-card class="section-card">
+                    <ion-card-header>
+                        <ion-card-title>
+                            <ion-icon name="checkmark-circle-outline"></ion-icon>
+                            Compromisos ({{ detail.Commitment.length }})
+                        </ion-card-title>
+                    </ion-card-header>
+                    <ion-card-content>
+                        <div class="commitments-list">
+                            @for (commitment of detail.Commitment; track commitment.id) {
+                                <div class="commitment-item" [class.completed]="commitment.state === '2'">
+                                    <div class="commitment-header">
+                                        <div class="commitment-status">
+                                            <ion-icon
+                                                [name]="commitment.state === '2' ? 'checkmark-circle' : 'ellipse-outline'"
+                                                [color]="commitment.state === '2' ? 'success' : 'warning'"
+                                            ></ion-icon>
+                                            <ion-badge [color]="commitment.state === '2' ? 'success' : 'warning'">
+                                                {{ commitment.state === '2' ? 'Completado' : 'Pendiente' }}
+                                            </ion-badge>
+                                        </div>
+                                        @if (commitment.delivery_date && commitment.delivery_date !== '0000-00-00') {
+                                            <div class="commitment-date">
+                                                <ion-icon name="calendar-outline"></ion-icon>
+                                                <span>{{ formatShortDate(commitment.delivery_date) }}</span>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <div class="commitment-description">{{ commitment.description }}</div>
+
+                                    <div class="commitment-footer">
+                                        @if (commitment.User) {
+                                            <div class="commitment-assignee">
+                                                <div class="assignee-avatar">{{ getCommitmentInitials(commitment) }}</div>
+                                                <div class="assignee-info">
+                                                    <span class="assignee-name">{{ getCommitmentUserName(commitment) }}</span>
+                                                    @if (commitment.User.email) {
+                                                        <span class="assignee-email">{{ commitment.User.email }}</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (commitment.state === '2' && commitment.finished_date && commitment.finished_date !== '0000-00-00') {
+                                            <div class="commitment-finished">
+                                                <ion-icon name="checkmark-circle-outline"></ion-icon>
+                                                <span>Completado: {{ formatShortDate(commitment.finished_date) }}</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+            }
+
+            <!-- Copies / notifications -->
+            @if (detail.Contac.copies) {
+                <ion-card class="section-card">
+                    <ion-card-header>
+                        <ion-card-title>
+                            <ion-icon name="mail-outline"></ion-icon>
+                            Copias enviadas a
+                        </ion-card-title>
+                    </ion-card-header>
+                    <ion-card-content>
+                        <div class="copies-list">
+                            @for (email of detail.Contac.copies.split(','); track $index) {
+                                @if (email.trim()) {
+                                    <div class="copy-chip">
+                                        <ion-icon name="mail-outline"></ion-icon>
+                                        <span>{{ email.trim() }}</span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+            }
+        }
+    </div>
+</ion-content>

@@ -12,7 +12,9 @@ import {
     settingsOutline, settingsSharp,
     documentTextOutline, documentTextSharp,
     keyOutline, keySharp,
-    schoolOutline, schoolSharp
+    schoolOutline, schoolSharp,
+    calendarOutline, calendarSharp,
+    clipboardOutline, clipboardSharp
 } from 'ionicons/icons';
 import { UserProfileComponent } from '../../shared/components/user-profile/user-profile.component';
 
@@ -31,6 +33,8 @@ export class EmployeeLayoutComponent {
     public appPages: Array<{ title: string; url: string; icon: string; badge?: string }> = [
         { title: 'Dashboard', url: '/employee/dashboard', icon: 'grid' },
         { title: 'Solicitudes', url: '/employee/requests', icon: 'document-text' },
+        { title: 'Calendario', url: '/employee/calendar', icon: 'calendar' },
+        { title: 'Actas', url: '/employee/minutes', icon: 'clipboard' },
         { title: 'Capacitaciones', url: '/employee/trainings', icon: 'school' },
         { title: 'Password Vault', url: '/employee/password-vault', icon: 'key' },
         { title: 'Ajustes', url: '/employee/settings', icon: 'settings' }
@@ -43,7 +47,9 @@ export class EmployeeLayoutComponent {
             settingsOutline, settingsSharp,
             documentTextOutline, documentTextSharp,
             keyOutline, keySharp,
-            schoolOutline, schoolSharp
+            schoolOutline, schoolSharp,
+            calendarOutline, calendarSharp,
+            clipboardOutline, clipboardSharp
         });
     }
 }

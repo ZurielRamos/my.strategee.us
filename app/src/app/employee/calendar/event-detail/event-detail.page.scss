@@ -1,0 +1,367 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.event-detail-content {
+    --background: var(--app-background);
+}
+
+.page-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 24px 32px 32px 32px;
+
+    @media (max-width: 768px) {
+        padding: 16px;
+    }
+}
+
+// Event header
+.event-header-section {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+
+    .event-color-indicator {
+        width: 5px;
+        border-radius: 3px;
+        background: var(--ion-color-primary);
+        flex-shrink: 0;
+        min-height: 36px;
+    }
+
+    .event-title-block {
+        flex: 1;
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--app-text-primary);
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .allday-badge {
+            margin-top: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            --border-radius: 8px;
+            --padding-start: 10px;
+            --padding-end: 10px;
+        }
+    }
+}
+
+// Detail cards
+.detail-card {
+    background: var(--app-card-bg);
+    border-radius: 16px;
+    padding: 4px 0;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px var(--app-shadow);
+    overflow: hidden;
+}
+
+.detail-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 20px;
+    transition: background 0.15s ease;
+
+    &.clickable {
+        cursor: pointer;
+
+        &:hover {
+            background: var(--app-hover-bg);
+        }
+
+        &:active {
+            background: var(--app-border);
+        }
+    }
+
+    .detail-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: var(--app-hover-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        ion-icon {
+            font-size: 18px;
+            color: var(--app-text-secondary);
+        }
+
+        &.conference {
+            background: rgba(var(--ion-color-primary-rgb), 0.1);
+
+            ion-icon {
+                color: var(--ion-color-primary);
+            }
+        }
+    }
+
+    .detail-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        justify-content: center;
+
+        .detail-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--app-text-tertiary);
+            font-weight: 600;
+        }
+
+        .detail-primary {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--app-text-primary);
+            line-height: 1.3;
+
+            &.capitalize {
+                text-transform: capitalize;
+            }
+
+            &.link {
+                color: var(--ion-color-primary);
+                font-weight: 700;
+            }
+
+            &.truncate {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+
+        .detail-secondary {
+            font-size: 0.8rem;
+            color: var(--app-text-secondary);
+            line-height: 1.3;
+
+            &.truncate {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+
+        .detail-meta {
+            font-size: 0.72rem;
+            color: var(--app-text-tertiary);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .event-description {
+            font-size: 0.85rem;
+            color: var(--app-text-primary);
+            line-height: 1.7;
+            word-break: break-word;
+            margin-top: 4px;
+
+            a {
+                color: var(--ion-color-primary);
+                text-decoration: none;
+                font-weight: 500;
+            }
+        }
+    }
+
+    .row-action-icon {
+        font-size: 16px;
+        color: var(--app-text-tertiary);
+        margin-top: 10px;
+        flex-shrink: 0;
+    }
+}
+
+// Attendees
+.attendees-list {
+    padding: 0 20px 12px 70px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .attendee-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--app-border);
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .attendee-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--app-hover-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+
+            ion-icon {
+                font-size: 18px;
+                color: var(--app-text-tertiary);
+            }
+
+            &.status-accepted {
+                background: rgba(var(--ion-color-success-rgb), 0.1);
+
+                ion-icon { color: var(--ion-color-success); }
+            }
+
+            &.status-declined {
+                background: rgba(var(--ion-color-danger-rgb), 0.1);
+
+                ion-icon { color: var(--ion-color-danger); }
+            }
+
+            &.status-tentative {
+                background: rgba(var(--ion-color-warning-rgb), 0.1);
+
+                ion-icon { color: var(--ion-color-warning); }
+            }
+        }
+
+        .attendee-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+
+            .attendee-name {
+                font-size: 0.82rem;
+                font-weight: 600;
+                color: var(--app-text-primary);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .attendee-status {
+                font-size: 0.7rem;
+                color: var(--app-text-tertiary);
+                font-weight: 500;
+            }
+        }
+    }
+}
+
+// Action section
+.action-section {
+    margin-top: 28px;
+    padding-bottom: 24px;
+
+    .google-btn {
+        --border-radius: 14px;
+        --border-width: 2px;
+        --border-color: var(--app-border);
+        --color: var(--app-text-primary);
+        font-weight: 700;
+        height: 50px;
+        text-transform: none;
+        font-size: 0.9rem;
+
+        &:hover {
+            --border-color: var(--ion-color-primary);
+            --color: var(--ion-color-primary);
+        }
+    }
+}
+
+// Acta card
+.acta-card {
+    .detail-icon {
+        &.linked {
+            background: rgba(var(--ion-color-success-rgb), 0.1);
+
+            ion-icon {
+                color: var(--ion-color-success);
+            }
+        }
+
+        &.unlinked {
+            background: rgba(var(--ion-color-warning-rgb), 0.1);
+
+            ion-icon {
+                color: var(--ion-color-warning);
+            }
+        }
+    }
+
+    .detail-primary.muted {
+        color: var(--app-text-tertiary);
+        font-style: italic;
+        font-weight: 500;
+    }
+
+    .detail-primary.link {
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+
+        .state-badge {
+            margin-left: 8px;
+            font-size: 0.6rem;
+            vertical-align: middle;
+            --padding-start: 6px;
+            --padding-end: 6px;
+        }
+    }
+
+    ion-button[fill="solid"] {
+        --border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        height: 32px;
+        text-transform: none;
+    }
+
+    ion-button[fill="clear"] {
+        height: 32px;
+    }
+}
+
+// Loading
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+
+    ion-icon {
+        font-size: 56px;
+        color: var(--ion-color-primary);
+        margin-bottom: 12px;
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    p {
+        font-size: 14px;
+        color: var(--app-text-secondary);
+        font-weight: 500;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}

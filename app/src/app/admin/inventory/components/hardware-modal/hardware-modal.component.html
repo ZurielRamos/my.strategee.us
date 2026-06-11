@@ -1,0 +1,21 @@
+<app-base-modal 
+    [title]="title"
+    subtitle="Complete los campos requeridos"
+    confirmText="Guardar"
+    [confirmDisabled]="!hardwareForm.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="hardwareForm">
+        <h4 class="section-title">Información General</h4>
+
+        <app-text-input
+            formControlName="name"
+            label="Nombre del Hardware"
+            placeholder="Ej: Disco SSD 500GB"
+            [required]="true">
+        </app-text-input>
+    </form>
+    
+</app-base-modal>

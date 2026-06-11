@@ -1,0 +1,65 @@
+<app-base-modal
+    title="Agregar Característica"
+    subtitle="Seleccione el tipo y componente"
+    confirmText="Agregar"
+    [confirmDisabled]="!isFormValid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+
+    <form [formGroup]="form">
+        <h4 class="section-title">Tipo de Característica</h4>
+
+        <div class="select-wrapper">
+            <label class="select-label">Tipo <span class="required">*</span></label>
+            <ion-select
+                formControlName="featureType"
+                placeholder="Seleccione tipo"
+                interface="popover"
+                (ionChange)="onFeatureTypeChange($event)">
+                <ion-select-option value="hardware">Hardware</ion-select-option>
+                <ion-select-option value="software">Software</ion-select-option>
+            </ion-select>
+        </div>
+
+        @if (featureType === 'hardware') {
+            <div class="select-wrapper">
+                <label class="select-label">Hardware <span class="required">*</span></label>
+                <ion-select
+                    formControlName="hardwareId"
+                    placeholder="Seleccione hardware"
+                    interface="popover">
+                    @for (hw of hardwares; track hw.id) {
+                        <ion-select-option [value]="hw.id">{{ hw.name }}</ion-select-option>
+                    }
+                </ion-select>
+            </div>
+        }
+
+        @if (featureType === 'software') {
+            <div class="select-wrapper">
+                <label class="select-label">Software <span class="required">*</span></label>
+                <ion-select
+                    formControlName="softwareId"
+                    placeholder="Seleccione software"
+                    interface="popover">
+                    @for (sw of softwares; track sw.id) {
+                        <ion-select-option [value]="sw.id">{{ sw.name }}</ion-select-option>
+                    }
+                </ion-select>
+            </div>
+        }
+
+        <h4 class="section-title">Detalle</h4>
+
+        <app-textarea-input
+            formControlName="description"
+            label="Descripción"
+            placeholder="Descripción opcional de la característica..."
+            [rows]="3"
+            [maxlength]="500"
+            [showCharCounter]="true">
+        </app-textarea-input>
+    </form>
+
+</app-base-modal>

@@ -1,0 +1,69 @@
+.form-section {
+    margin-bottom: 20px;
+
+    .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        margin-bottom: 8px;
+
+        .hint {
+            font-weight: 500;
+            color: var(--app-text-tertiary);
+            font-size: 11px;
+        }
+    }
+}
+
+.chips-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+
+    ion-chip {
+        --background: rgba(var(--ion-color-primary-rgb), 0.1);
+        --color: var(--ion-color-primary);
+        font-size: 12px;
+        font-weight: 600;
+        height: 30px;
+        cursor: pointer;
+
+        ion-icon {
+            font-size: 16px;
+            color: var(--ion-color-primary);
+        }
+
+        &:hover {
+            --background: rgba(var(--ion-color-primary-rgb), 0.2);
+        }
+    }
+}
+
+.event-info-summary {
+    margin-top: 24px;
+    padding: 12px 16px;
+    background: var(--app-hover-bg);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .info-item {
+        display: flex;
+        gap: 8px;
+        font-size: 12px;
+
+        .info-label {
+            font-weight: 600;
+            color: var(--app-text-secondary);
+            min-width: 50px;
+        }
+
+        .info-value {
+            color: var(--app-text-primary);
+            font-weight: 500;
+        }
+    }
+}

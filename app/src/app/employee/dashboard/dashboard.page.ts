@@ -10,6 +10,7 @@ import {
     checkmarkCircleOutline, closeCircleOutline, timeOutline as clockOutline, briefcaseOutline
 } from 'ionicons/icons';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
+import { InventoryCardComponent } from './components/inventory-card/inventory-card.component';
 import { BenefitsService } from '../../admin/employees/services/benefits.service';
 import { VacationsService } from '../requests/services/vacations.service';
 import { CompensatedTimeService } from '../requests/services/compensated-time.service';
@@ -31,7 +32,7 @@ import { AuthService } from '../../auth/services/auth.service';
     standalone: true,
     imports: [
         IonContent, CommonModule, FormsModule, IonIcon, IonSpinner,
-        IonChip, IonLabel, PageHeaderComponent
+        IonChip, IonLabel, PageHeaderComponent, InventoryCardComponent
     ]
 })
 export class DashboardPage implements OnInit {

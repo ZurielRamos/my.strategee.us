@@ -1,0 +1,122 @@
+<app-page-header
+    [showSearch]="true"
+    [useCustomSearch]="true"
+    (searchChange)="onSearchChange($event)">
+</app-page-header>
+
+<ion-content [fullscreen]="true" class="suppliers-content" (ionScroll)="onScroll($event)">
+    <div class="page-container">
+        <!-- Page Title & Controls -->
+        <div class="page-title-section">
+            <div class="title-text">
+                <h1>Proveedores</h1>
+                <p>Gestiona los proveedores del inventario</p>
+            </div>
+            <div class="title-controls desktop-only">
+                <ion-button (click)="openCreateModal()" class="add-button">
+                    <ion-icon slot="start" name="add-outline"></ion-icon>
+                    Nuevo Proveedor
+                </ion-button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading && suppliers.length === 0) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        <!-- Error State -->
+        @if (hasError && !isLoading) {
+        <div class="empty-state error-state">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <h2>No se pudieron cargar los datos</h2>
+            <p>Ocurrió un error al conectar con el servidor</p>
+            <ion-button (click)="loadSuppliers()">
+                <ion-icon slot="start" name="refresh-outline"></ion-icon>
+                Reintentar
+            </ion-button>
+        </div>
+        }
+
+        <!-- Suppliers List -->
+        @if (suppliers.length > 0) {
+        <div class="suppliers-list">
+            @for (supplier of suppliers; track supplier.id) {
+            <div class="supplier-card" [class.inactive]="!supplier.isActive">
+                <div class="supplier-info">
+                    <div class="supplier-header">
+                        <h3 class="supplier-name">{{ supplier.name }}</h3>
+                        <span class="status-badge" [class.active]="supplier.isActive" [class.inactive]="!supplier.isActive">
+                            {{ supplier.isActive ? 'Activo' : 'Inactivo' }}
+                        </span>
+                    </div>
+                    <div class="supplier-details">
+                        <p class="detail-item">
+                            <strong>Contacto:</strong> {{ supplier.contactPerson }}
+                        </p>
+                        <p class="detail-item">
+                            <strong>Teléfono:</strong> {{ supplier.phone }}
+                        </p>
+                        <p class="detail-item">
+                            <strong>Email:</strong> {{ supplier.email }}
+                        </p>
+                        @if (supplier.address) {
+                        <p class="detail-item">
+                            <strong>Dirección:</strong> {{ supplier.address }}
+                        </p>
+                        }
+                    </div>
+                </div>
+                <div class="supplier-actions">
+                    <ion-button fill="clear" size="small" (click)="openEditModal(supplier)" class="action-btn">
+                        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+                    </ion-button>
+                    <ion-button fill="clear" size="small" (click)="toggleStatus(supplier)" class="action-btn toggle-btn">
+                        <ion-icon slot="icon-only" name="toggle-outline"></ion-icon>
+                    </ion-button>
+                </div>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- Loading More Indicator -->
+        @if (isLoadingMore) {
+        <div class="loading-more">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Cargando más proveedores...</p>
+        </div>
+        }
+
+        <!-- Empty State -->
+        @if (!isLoading && suppliers.length === 0 && !searchTerm) {
+        <div class="empty-state">
+            <ion-icon name="storefront-outline"></ion-icon>
+            <h2>No hay proveedores registrados</h2>
+            <p>Comienza agregando tu primer proveedor</p>
+            <ion-button (click)="openCreateModal()">
+                <ion-icon slot="start" name="add-outline"></ion-icon>
+                Crear Proveedor
+            </ion-button>
+        </div>
+        }
+
+        <!-- No Results State -->
+        @if (!isLoading && suppliers.length === 0 && searchTerm) {
+        <div class="empty-state">
+            <ion-icon name="storefront-outline"></ion-icon>
+            <h2>No se encontraron resultados</h2>
+            <p>No hay proveedores que coincidan con la búsqueda</p>
+        </div>
+        }
+    </div>
+</ion-content>
+
+<!-- Mobile FAB -->
+<ion-fab slot="fixed" vertical="bottom" horizontal="end" class="mobile-only">
+    <ion-fab-button (click)="openCreateModal()" color="dark">
+        <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+</ion-fab>

@@ -145,3 +145,8 @@ ion-popover {
         box-shadow: 0 8px 24px var(--app-shadow);
     }
 }
+
+/* Global bottom padding for all content areas */
+ion-content {
+    --padding-bottom: 32px;
+}

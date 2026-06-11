@@ -1,0 +1,99 @@
+<app-base-modal
+    title="Vincular Acta"
+    subtitle="Selecciona un acta para vincular a este evento"
+    confirmText="Vincular"
+    [confirmDisabled]="!selectedMinuteId"
+    (modalConfirm)="onConfirm()"
+    (modalDismiss)="onDismiss()">
+
+    <!-- Filtros -->
+    <div class="filters-section">
+        <div class="filters-row">
+            <app-filter-autocomplete
+                [options]="clientOptions"
+                [value]="selectedClientId"
+                placeholder="Filtrar por cliente..."
+                icon="business-outline"
+                (valueChange)="onClientChange($event)"
+            ></app-filter-autocomplete>
+
+            <app-filter-autocomplete
+                [options]="projectOptions"
+                [value]="selectedProjectId"
+                placeholder="Filtrar por proyecto..."
+                icon="folder-outline"
+                (valueChange)="onProjectChange($event)"
+            ></app-filter-autocomplete>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    @if (isLoading && minutes.length === 0) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Cargando actas...</p>
+        </div>
+    }
+
+    <!-- Minutes List -->
+    @if (!isLoading || minutes.length > 0) {
+        @if (minutes.length > 0) {
+            <div class="minutes-list">
+                @for (minute of minutes; track minute.Contac.id) {
+                    <div
+                        class="minute-item"
+                        (click)="selectMinute(minute)"
+                        [class.selected]="selectedMinuteId === minute.Contac.id">
+
+                        <div class="minute-icon">
+                            <ion-icon name="document-text-outline"></ion-icon>
+                        </div>
+
+                        <div class="minute-info">
+                            <div class="minute-header-row">
+                                <span class="minute-number">Acta #{{ minute.Contac.number }}</span>
+                                <span class="minute-duration">
+                                    <ion-icon name="time-outline"></ion-icon>
+                                    {{ getDuration(minute.Contac.start_date, minute.Contac.end_date) }}
+                                </span>
+                            </div>
+                            <span class="minute-desc">{{ stripHtml(minute.Contac.description) }}</span>
+                            <div class="minute-meta">
+                                <span class="meta-item">
+                                    <ion-icon name="business-outline"></ion-icon>
+                                    {{ minute.Client.name }}
+                                </span>
+                                <span class="meta-item">
+                                    <ion-icon name="folder-outline"></ion-icon>
+                                    {{ minute.Project.name }}
+                                </span>
+                                <span class="meta-item">
+                                    <ion-icon name="calendar-outline"></ion-icon>
+                                    {{ formatDate(minute.Contac.start_date) }}
+                                </span>
+                            </div>
+                            <div class="minute-author">
+                                <ion-icon name="person-outline"></ion-icon>
+                                {{ minute.User.firstname }} {{ minute.User.lastname }}
+                            </div>
+                        </div>
+
+                        <ion-icon name="checkmark-circle" class="check-icon" *ngIf="selectedMinuteId === minute.Contac.id"></ion-icon>
+                    </div>
+                }
+            </div>
+        } @else {
+            <div class="empty-state">
+                <ion-icon name="document-text-outline"></ion-icon>
+                <p>No se encontraron actas</p>
+            </div>
+        }
+    }
+
+    <!-- Infinite Scroll -->
+    <ion-infinite-scroll [disabled]="!hasMore" (ionInfinite)="onIonInfinite($event)">
+        <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Cargando más...">
+        </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+
+</app-base-modal>

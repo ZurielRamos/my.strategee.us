@@ -31,6 +31,10 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'reception-format/:token',
+    loadComponent: () => import('./shared/pages/reception-format/reception-format.page').then(m => m.ReceptionFormatPage)
+  },
+  {
     path: '',
     canActivate: [InitialGuard],
     pathMatch: 'full',

@@ -1,0 +1,135 @@
+<app-page-header></app-page-header>
+
+<ion-content [fullscreen]="true" class="minutes-content">
+    <div class="page-container">
+        <!-- Page Title -->
+        <div class="page-title-section">
+            <div class="title-text">
+                <h1>Actas de Reunión</h1>
+                <p>Historial de actas de tus reuniones</p>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-container">
+            <div class="filters-row">
+                <app-filter-autocomplete
+                    [options]="clientOptions"
+                    [value]="selectedClientId"
+                    placeholder="Buscar cliente..."
+                    icon="business-outline"
+                    (valueChange)="onClientChange($event)"
+                ></app-filter-autocomplete>
+
+                <app-filter-autocomplete
+                    [options]="projectOptions"
+                    [value]="selectedProjectId"
+                    placeholder="Buscar proyecto..."
+                    icon="folder-outline"
+                    (valueChange)="onProjectChange($event)"
+                ></app-filter-autocomplete>
+            </div>
+
+            <!-- Clear Filters Button -->
+            @if (hasActiveFilters()) {
+                <div class="clear-filters-wrapper">
+                    <ion-button
+                        fill="clear"
+                        size="small"
+                        (click)="clearFilters()"
+                        class="clear-filters-button"
+                    >
+                        <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+                        Limpiar filtros
+                    </ion-button>
+                </div>
+            }
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading && minutes.length === 0) {
+            <div class="loading-container">
+                <ion-spinner name="crescent"></ion-spinner>
+            </div>
+        }
+
+        <!-- Minutes List -->
+        @if (!isLoading || minutes.length > 0) {
+            @if (minutes.length > 0) {
+                <div class="minutes-list">
+                    @for (minute of minutes; track minute.Contac.id) {
+                        <ion-card class="minute-card" (click)="openDetail(minute)" button>
+                            <!-- Header -->
+                            <div class="card-header">
+                                <div class="header-left">
+                                    <div class="minute-type">
+                                        <ion-icon name="document-text-outline"></ion-icon>
+                                        <span>Acta #{{ minute.Contac.number }}</span>
+                                    </div>
+                                    <div class="minute-date">
+                                        <ion-icon name="calendar-outline"></ion-icon>
+                                        <span>{{ formatDate(minute.Contac.start_date) }}</span>
+                                    </div>
+                                </div>
+                                <div class="header-right">
+                                    <div class="duration-badge">
+                                        <ion-icon name="time-outline"></ion-icon>
+                                        <span>{{ getDuration(minute.Contac.start_date, minute.Contac.end_date) }}</span>
+                                    </div>
+                                    <ion-badge [color]="minute.Contac.state === '0' ? 'success' : 'warning'" class="status-badge">
+                                        {{ minute.Contac.state === '0' ? 'Finalizada' : 'Borrador' }}
+                                    </ion-badge>
+                                </div>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="card-content">
+                                <div class="compact-details">
+                                    <!-- Description preview -->
+                                    <div class="description-compact">
+                                        <span>{{ stripHtml(minute.Contac.description) }}</span>
+                                    </div>
+
+                                    <!-- Meta info -->
+                                    <div class="meta-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Cliente</span>
+                                            <span class="info-value">{{ minute.Client.name }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Proyecto</span>
+                                            <span class="info-value">{{ minute.Project.name }}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Footer -->
+                                    <div class="minute-author-row">
+                                        <ion-icon name="person-outline"></ion-icon>
+                                        <span>{{ minute.User.firstname }} {{ minute.User.lastname }}</span>
+                                        <span class="time-range">{{ formatTime(minute.Contac.start_date) }} - {{ formatTime(minute.Contac.end_date) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </ion-card>
+                    }
+                </div>
+            } @else {
+                <div class="empty-state">
+                    <ion-icon name="document-text-outline"></ion-icon>
+                    <h2>No hay actas disponibles</h2>
+                    @if (hasActiveFilters()) {
+                        <p>No se encontraron actas con los filtros seleccionados.</p>
+                    } @else {
+                        <p>Aún no tienes actas de reunión registradas.</p>
+                    }
+                </div>
+            }
+        }
+
+        <!-- Infinite Scroll -->
+        <ion-infinite-scroll [disabled]="!hasMore" (ionInfinite)="onIonInfinite($event)">
+            <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Cargando más actas...">
+            </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    </div>
+</ion-content>

@@ -1,0 +1,32 @@
+<app-base-modal
+    title="Agregar Elemento Adicional"
+    subtitle="Seleccione el elemento y su valor"
+    confirmText="Agregar"
+    [confirmDisabled]="!isFormValid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+
+    <form [formGroup]="form">
+        <div class="select-wrapper">
+            <label class="select-label">Elemento <span class="required">*</span></label>
+            <ion-select
+                formControlName="additionalElementId"
+                placeholder="Seleccione un elemento"
+                interface="popover">
+                @for (element of additionalElements; track element.id) {
+                    <ion-select-option [value]="element.id">{{ element.name }}</ion-select-option>
+                }
+            </ion-select>
+        </div>
+
+        <app-text-input
+            formControlName="value"
+            label="Valor"
+            placeholder="Ingrese el valor"
+            type="number"
+            [required]="true">
+        </app-text-input>
+    </form>
+
+</app-base-modal>

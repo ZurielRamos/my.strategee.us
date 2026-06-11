@@ -6,6 +6,7 @@
 ion-split-pane {
     --side-width: 260px;
     --border: 0;
+    background: var(--app-background);
 }
 
 .admin-sidebar {

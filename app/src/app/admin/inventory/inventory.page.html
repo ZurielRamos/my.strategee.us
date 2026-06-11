@@ -1,0 +1,128 @@
+<app-page-header
+    [showSearch]="false"
+></app-page-header>
+
+<ion-content [fullscreen]="true" class="admin-page-content">
+    <div class="admin-container">
+        <app-page-title
+            title="Inventario"
+            subtitle="Gestiona los activos y recursos de tu organización">
+        </app-page-title>
+
+        <ion-grid class="menu-grid">
+            <ion-row>
+                <!-- Tipos de Inventario -->
+                <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
+                    <ion-card class="menu-card items-types" routerLink="/admin/inventory/types">
+                        <div class="card-icon-container">
+                            <ion-icon name="layers-outline"></ion-icon>
+                        </div>
+                        <ion-card-header>
+                            <ion-card-title>Tipos</ion-card-title>
+                        </ion-card-header>
+                        <ion-card-content>
+                            Categorías de activos.
+                        </ion-card-content>
+                        <ion-ripple-effect></ion-ripple-effect>
+                    </ion-card>
+                </ion-col>
+
+                <!-- Proveedores -->
+                <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
+                    <ion-card class="menu-card items-suppliers" routerLink="/admin/inventory/suppliers">
+                        <div class="card-icon-container">
+                            <ion-icon name="storefront-outline"></ion-icon>
+                        </div>
+                        <ion-card-header>
+                            <ion-card-title>Proveedores</ion-card-title>
+                        </ion-card-header>
+                        <ion-card-content>
+                            Gestión de proveedores.
+                        </ion-card-content>
+                        <ion-ripple-effect></ion-ripple-effect>
+                    </ion-card>
+                </ion-col>
+
+                <!-- Hardware -->
+                <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
+                    <ion-card class="menu-card items-hardware" routerLink="/admin/inventory/hardwares">
+                        <div class="card-icon-container">
+                            <ion-icon name="hardware-chip-outline"></ion-icon>
+                        </div>
+                        <ion-card-header>
+                            <ion-card-title>Hardware</ion-card-title>
+                        </ion-card-header>
+                        <ion-card-content>
+                            Componentes físicos.
+                        </ion-card-content>
+                        <ion-ripple-effect></ion-ripple-effect>
+                    </ion-card>
+                </ion-col>
+
+                <!-- Software -->
+                <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
+                    <ion-card class="menu-card items-software" routerLink="/admin/inventory/softwares">
+                        <div class="card-icon-container">
+                            <ion-icon name="laptop-outline"></ion-icon>
+                        </div>
+                        <ion-card-header>
+                            <ion-card-title>Software</ion-card-title>
+                        </ion-card-header>
+                        <ion-card-content>
+                            Licencias y programas.
+                        </ion-card-content>
+                        <ion-ripple-effect></ion-ripple-effect>
+                    </ion-card>
+                </ion-col>
+
+                <!-- Elementos Adicionales -->
+                <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
+                    <ion-card class="menu-card items-elements" routerLink="/admin/inventory/additional-elements">
+                        <div class="card-icon-container">
+                            <ion-icon name="extension-puzzle-outline"></ion-icon>
+                        </div>
+                        <ion-card-header>
+                            <ion-card-title>Elementos</ion-card-title>
+                        </ion-card-header>
+                        <ion-card-content>
+                            Elementos adicionales.
+                        </ion-card-content>
+                        <ion-ripple-effect></ion-ripple-effect>
+                    </ion-card>
+                </ion-col>
+
+                <!-- Activos -->
+                <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
+                    <ion-card class="menu-card items-assets" routerLink="/admin/inventory/assets">
+                        <div class="card-icon-container">
+                            <ion-icon name="cube-outline"></ion-icon>
+                        </div>
+                        <ion-card-header>
+                            <ion-card-title>Activos</ion-card-title>
+                        </ion-card-header>
+                        <ion-card-content>
+                            Equipos y bienes.
+                        </ion-card-content>
+                        <ion-ripple-effect></ion-ripple-effect>
+                    </ion-card>
+                </ion-col>
+
+                <!-- Asignaciones -->
+                <ion-col size="6" size-sm="6" size-md="4" size-lg="3">
+                    <ion-card class="menu-card items-allocations" routerLink="/admin/inventory/allocations">
+                        <div class="card-icon-container">
+                            <ion-icon name="swap-horizontal-outline"></ion-icon>
+                        </div>
+                        <ion-card-header>
+                            <ion-card-title>Asignaciones</ion-card-title>
+                        </ion-card-header>
+                        <ion-card-content>
+                            Asignación de activos.
+                        </ion-card-content>
+                        <ion-ripple-effect></ion-ripple-effect>
+                    </ion-card>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
+</ion-content>

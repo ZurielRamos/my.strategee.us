@@ -1,0 +1,105 @@
+<app-page-header
+    [showSearch]="true"
+    [useCustomSearch]="true"
+    (searchChange)="onSearchChange($event)"
+></app-page-header>
+
+<ion-content [fullscreen]="true" class="allocations-content" (ionScroll)="onScroll($event)">
+    <div class="page-container">
+        <!-- Page Title & Controls -->
+        <div class="page-title-section">
+            <div class="title-text">
+                <h1>Asignaciones</h1>
+                <p>Gestiona las asignaciones de activos a empleados</p>
+            </div>
+            <div class="title-controls desktop-only">
+                <ion-button (click)="openCreateModal()" class="add-button">
+                    <ion-icon slot="start" name="add-outline"></ion-icon>
+                    Nueva Asignación
+                </ion-button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading && allocations.length === 0) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        <!-- Error State -->
+        @if (hasError && !isLoading) {
+        <div class="empty-state error-state">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <h2>No se pudieron cargar los datos</h2>
+            <p>Ocurrió un error al conectar con el servidor</p>
+            <ion-button (click)="loadAllocations()">
+                <ion-icon slot="start" name="refresh-outline"></ion-icon>
+                Reintentar
+            </ion-button>
+        </div>
+        }
+
+        <!-- Allocations List -->
+        @if (allocations.length > 0) {
+        <div class="allocations-list">
+            @for (allocation of allocations; track allocation.id) {
+            <div class="allocation-card" (click)="navigateToDetail(allocation)">
+                <div class="allocation-card-content">
+                    <div class="allocation-main-info">
+                        <div class="allocation-asset">
+                            <ion-icon name="cube-outline"></ion-icon>
+                            <span>{{ getAssetName(allocation) }}</span>
+                        </div>
+                        <div class="allocation-employee">
+                            <ion-icon name="person-outline"></ion-icon>
+                            <span>{{ getEmployeeName(allocation) }}</span>
+                        </div>
+                    </div>
+                    <div class="allocation-actions">
+                        <ion-icon name="chevron-forward-outline" class="nav-icon"></ion-icon>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- Loading More Indicator -->
+        @if (isLoadingMore) {
+        <div class="loading-more">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Cargando más asignaciones...</p>
+        </div>
+        }
+
+        <!-- Empty State -->
+        @if (!isLoading && allocations.length === 0 && !searchTerm) {
+        <div class="empty-state">
+            <ion-icon name="swap-horizontal-outline"></ion-icon>
+            <h2>No hay asignaciones</h2>
+            <p>Comienza asignando un activo a un empleado</p>
+            <ion-button (click)="openCreateModal()">
+                <ion-icon slot="start" name="add-outline"></ion-icon>
+                Crear Asignación
+            </ion-button>
+        </div>
+        }
+
+        <!-- No Results State -->
+        @if (!isLoading && allocations.length === 0 && searchTerm) {
+        <div class="empty-state">
+            <ion-icon name="swap-horizontal-outline"></ion-icon>
+            <h2>No se encontraron resultados</h2>
+            <p>No hay asignaciones que coincidan con "{{ searchTerm }}"</p>
+        </div>
+        }
+    </div>
+</ion-content>
+
+<!-- Mobile FAB -->
+<ion-fab slot="fixed" vertical="bottom" horizontal="end" class="mobile-only">
+    <ion-fab-button (click)="openCreateModal()" color="dark">
+        <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+</ion-fab>

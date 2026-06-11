@@ -1,0 +1,227 @@
+<app-page-header
+    [pageTitle]="inventory?.name || 'Detalle Activo'"
+    backUrl="/admin/inventory/assets">
+</app-page-header>
+
+<ion-content [fullscreen]="true" class="detail-content">
+    <div class="page-container">
+
+        <!-- Loading State -->
+        @if (isLoading) {
+            <div class="loading-container">
+                <ion-spinner name="crescent"></ion-spinner>
+            </div>
+        }
+
+        <!-- Error State -->
+        @if (hasError && !isLoading) {
+            <div class="empty-state error-state">
+                <ion-icon name="alert-circle-outline"></ion-icon>
+                <h2>No se pudieron cargar los datos</h2>
+                <p>Ocurrió un error al conectar con el servidor</p>
+                <ion-button (click)="loadInventory()">
+                    <ion-icon slot="start" name="refresh-outline"></ion-icon>
+                    Reintentar
+                </ion-button>
+            </div>
+        }
+
+        @if (inventory && !isLoading) {
+            <!-- Asset Info Section -->
+            <section class="detail-section">
+                <div class="section-header">
+                    <h2>Información del Activo</h2>
+                    <span
+                        class="status-badge"
+                        [class.active]="inventory.isActive"
+                        [class.inactive]="!inventory.isActive">
+                        {{ inventory.isActive ? 'Activo' : 'Inactivo' }}
+                    </span>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Nombre</span>
+                        <span class="info-value">{{ inventory.name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Tipo</span>
+                        <span class="info-value">{{ inventory.typeInventory?.name || 'N/A' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Valor</span>
+                        <span class="info-value">{{ formatCurrency(inventory.value) }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Proveedor</span>
+                        <span class="info-value">{{ inventory.supplier?.name || 'N/A' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Fecha de Compra</span>
+                        <span class="info-value">{{ formatDate(inventory.purchaseDate) }}</span>
+                    </div>
+                    <div class="info-item full-width">
+                        <span class="info-label">Observaciones</span>
+                        <span class="info-value">{{ inventory.observations || 'Sin observaciones' }}</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="detail-section">
+                <div class="section-header">
+                    <h2>Características</h2>
+                    <ion-button (click)="openFeatureModal()" class="section-action-btn" size="small">
+                        <ion-icon slot="start" name="add-outline"></ion-icon>
+                        Agregar
+                    </ion-button>
+                </div>
+
+                <!-- Hardware Features -->
+                @if (hardwareFeatures.length > 0) {
+                    <div class="feature-group">
+                        <h4 class="feature-group-title">
+                            <ion-icon name="hardware-chip-outline"></ion-icon>
+                            Hardware
+                        </h4>
+                        <div class="feature-list">
+                            @for (feature of hardwareFeatures; track feature.id) {
+                                <div class="feature-card">
+                                    <div class="feature-info">
+                                        <span class="feature-name">{{ feature.hardware?.name }}</span>
+                                        @if (feature.description) {
+                                            <span class="feature-description">{{ feature.description }}</span>
+                                        }
+                                    </div>
+                                    <ion-button
+                                        fill="clear"
+                                        size="small"
+                                        color="danger"
+                                        (click)="confirmDeleteFeature(feature)">
+                                        <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                                    </ion-button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Software Features -->
+                @if (softwareFeatures.length > 0) {
+                    <div class="feature-group">
+                        <h4 class="feature-group-title">
+                            <ion-icon name="laptop-outline"></ion-icon>
+                            Software
+                        </h4>
+                        <div class="feature-list">
+                            @for (feature of softwareFeatures; track feature.id) {
+                                <div class="feature-card">
+                                    <div class="feature-info">
+                                        <span class="feature-name">{{ feature.software?.name }}</span>
+                                        @if (feature.description) {
+                                            <span class="feature-description">{{ feature.description }}</span>
+                                        }
+                                    </div>
+                                    <ion-button
+                                        fill="clear"
+                                        size="small"
+                                        color="danger"
+                                        (click)="confirmDeleteFeature(feature)">
+                                        <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                                    </ion-button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Empty Features State -->
+                @if (hardwareFeatures.length === 0 && softwareFeatures.length === 0) {
+                    <div class="empty-section">
+                        <ion-icon name="hardware-chip-outline"></ion-icon>
+                        <p>No hay características registradas</p>
+                    </div>
+                }
+            </section>
+
+            <!-- Maintenances Section -->
+            <section class="detail-section">
+                <div class="section-header">
+                    <h2>Mantenimientos</h2>
+                    <ion-button (click)="openMaintenanceModal()" class="section-action-btn" size="small">
+                        <ion-icon slot="start" name="add-outline"></ion-icon>
+                        Nuevo
+                    </ion-button>
+                </div>
+
+                @if (isLoadingMaintenances) {
+                    <div class="loading-section">
+                        <ion-spinner name="crescent"></ion-spinner>
+                    </div>
+                }
+
+                @if (!isLoadingMaintenances && maintenances.length > 0) {
+                    <div class="maintenance-list">
+                        @for (maintenance of maintenances; track maintenance.id) {
+                            <div class="maintenance-card">
+                                <div class="maintenance-info">
+                                    <div class="maintenance-date">
+                                        <ion-icon name="calendar-outline"></ion-icon>
+                                        {{ formatDate(maintenance.maintenanceDate) }}
+                                    </div>
+                                    <p class="maintenance-observations">{{ maintenance.observations }}</p>
+                                </div>
+                                <div class="maintenance-actions">
+                                    <ion-button
+                                        fill="clear"
+                                        size="small"
+                                        (click)="openMaintenanceModal(maintenance)">
+                                        <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+                                    </ion-button>
+                                    <ion-button
+                                        fill="clear"
+                                        size="small"
+                                        color="danger"
+                                        (click)="confirmDeleteMaintenance(maintenance)">
+                                        <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                                    </ion-button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Pagination -->
+                    @if (maintenanceTotalPages > 1) {
+                        <div class="pagination">
+                            <ion-button
+                                fill="clear"
+                                size="small"
+                                [disabled]="maintenancePage <= 1"
+                                (click)="previousPage()">
+                                <ion-icon name="chevron-back-outline" slot="icon-only"></ion-icon>
+                            </ion-button>
+                            <span class="pagination-info">
+                                Página {{ maintenancePage }} de {{ maintenanceTotalPages }}
+                            </span>
+                            <ion-button
+                                fill="clear"
+                                size="small"
+                                [disabled]="maintenancePage >= maintenanceTotalPages"
+                                (click)="nextPage()">
+                                <ion-icon name="chevron-forward-outline" slot="icon-only"></ion-icon>
+                            </ion-button>
+                        </div>
+                    }
+                }
+
+                <!-- Empty Maintenances State -->
+                @if (!isLoadingMaintenances && maintenances.length === 0) {
+                    <div class="empty-section">
+                        <ion-icon name="build-outline"></ion-icon>
+                        <p>No hay mantenimientos registrados</p>
+                    </div>
+                }
+            </section>
+        }
+    </div>
+</ion-content>

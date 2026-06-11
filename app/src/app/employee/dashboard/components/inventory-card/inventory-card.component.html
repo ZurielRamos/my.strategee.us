@@ -1,0 +1,35 @@
+<div class="grid-card inventory-card">
+    <div class="card-header">
+        <div class="card-title">
+            <ion-icon name="laptop-outline" class="title-icon"></ion-icon>
+            Mis Activos Asignados
+        </div>
+    </div>
+
+    <div class="card-content">
+        @if (isLoading) {
+            <div class="loading-state">
+                <ion-spinner name="crescent"></ion-spinner>
+            </div>
+        } @else if (assets.length > 0) {
+            <div class="asset-list">
+                @for (allocation of assets; track allocation.id) {
+                    <div class="asset-item">
+                        <div class="asset-info">
+                            <span class="asset-name">{{ allocation.inventory?.name || 'Activo' }}</span>
+                            <span class="asset-category">{{ allocation.inventory?.typeInventory?.name || '—' }}</span>
+                        </div>
+                        <div class="asset-date">
+                            {{ formatDate(allocation.createdAt) }}
+                        </div>
+                    </div>
+                }
+            </div>
+        } @else {
+            <div class="empty-state">
+                <ion-icon name="laptop-outline"></ion-icon>
+                <p>No tienes activos asignados</p>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,252 @@
+<app-page-header [backUrl]="backUrl"></app-page-header>
+
+<ion-content [fullscreen]="true" class="create-minute-content">
+    <div class="page-container">
+        <div class="page-title-section">
+            <h1>Crear Acta</h1>
+            <p>Nueva acta vinculada al evento</p>
+        </div>
+
+        <!-- Event summary -->
+        <div class="event-summary-card">
+            <div class="event-summary-icon">
+                <ion-icon name="calendar-outline"></ion-icon>
+            </div>
+            <div class="event-summary-info">
+                <span class="event-summary-title">{{ event?.title }}</span>
+                <span class="event-summary-date" *ngIf="event">{{ event.start | date:'EEEE dd/MM/yyyy' }} · {{ event.start | date:'HH:mm' }} - {{ event.end | date:'HH:mm' }}</span>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form [formGroup]="form" class="create-form">
+
+            <!-- Cliente -->
+            <div class="form-section">
+                <label class="form-label">Cliente <span class="required">*</span></label>
+                <app-filter-autocomplete
+                    [options]="clientOptions"
+                    [value]="form.get('client_id')?.value"
+                    placeholder="Seleccionar cliente..."
+                    icon="business-outline"
+                    (valueChange)="onClientChange($event)"
+                ></app-filter-autocomplete>
+            </div>
+
+            <!-- Proyecto -->
+            <div class="form-section">
+                <label class="form-label">Proyecto <span class="required">*</span></label>
+                <app-filter-autocomplete
+                    [options]="projectOptions"
+                    [value]="form.get('project_id')?.value"
+                    placeholder="Seleccionar proyecto..."
+                    icon="folder-outline"
+                    (valueChange)="onProjectChange($event)"
+                ></app-filter-autocomplete>
+            </div>
+
+            <!-- Descripción -->
+            <div class="form-section">
+                <label class="form-label">Descripción <span class="required">*</span></label>
+                <app-rich-text-editor
+                    [formControl]="$any(form.get('description'))"
+                    placeholder="Describe el contenido del acta..."
+                    minHeight="200px"
+                ></app-rich-text-editor>
+            </div>
+
+            <!-- Fecha y Hora -->
+            <div class="form-section">
+                <label class="form-label">Fecha y hora <span class="required">*</span></label>
+                <div class="datetime-row">
+                    <div class="datetime-field">
+                        <label class="field-sublabel">Inicio</label>
+                        <div class="datetime-inputs">
+                            <input type="date" class="native-input" [formControl]="$any(form.get('start_date'))">
+                            <input type="time" class="native-input" [formControl]="$any(form.get('start_time'))">
+                        </div>
+                    </div>
+                    <div class="datetime-field">
+                        <label class="field-sublabel">Fin</label>
+                        <div class="datetime-inputs">
+                            <input type="date" class="native-input" [formControl]="$any(form.get('end_date'))">
+                            <input type="time" class="native-input" [formControl]="$any(form.get('end_time'))">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copia a correos -->
+            <div class="form-section">
+                <label class="form-label">Copia a correos</label>
+                <input type="text" class="native-input" [formControl]="$any(form.get('copies'))" placeholder="correo1@ejemplo.com, correo2@ejemplo.com">
+                <span class="field-hint">Separa múltiples correos con coma</span>
+            </div>
+
+            <!-- Funcionarios -->
+            <div class="form-section">
+                <label class="form-label">Participantes internos <span class="required">*</span> <span class="hint">(mínimo 1)</span></label>
+                <app-filter-autocomplete
+                    [options]="funcionarioOptions"
+                    [value]="funcionarioResetValue"
+                    placeholder="Buscar y agregar participante..."
+                    icon="person-outline"
+                    (valueChange)="addFuncionario($event)"
+                ></app-filter-autocomplete>
+
+                <div class="chips-list" *ngIf="selectedFuncionarios.length > 0">
+                    <ion-chip *ngFor="let user of selectedFuncionarios" (click)="removeFuncionario(user)">
+                        <ion-label>{{ getUserDisplayName(user) }}</ion-label>
+                        <ion-icon name="close-circle"></ion-icon>
+                    </ion-chip>
+                </div>
+            </div>
+
+            <!-- Externos -->
+            <div class="form-section" *ngIf="externos.length > 0">
+                <label class="form-label">Participantes externos</label>
+                <app-filter-autocomplete
+                    [options]="externoOptions"
+                    [value]="externoResetValue"
+                    placeholder="Buscar y agregar externo..."
+                    icon="person-outline"
+                    (valueChange)="addExterno($event)"
+                ></app-filter-autocomplete>
+
+                <div class="chips-list" *ngIf="selectedExternos.length > 0">
+                    <ion-chip *ngFor="let user of selectedExternos" (click)="removeExterno(user)" color="tertiary">
+                        <ion-label>{{ getUserDisplayName(user) }}</ion-label>
+                        <ion-icon name="close-circle"></ion-icon>
+                    </ion-chip>
+                </div>
+            </div>
+
+            <!-- Compromisos -->
+            <div class="form-section">
+                <label class="form-label">Compromisos</label>
+
+                <div class="commitments-list" *ngIf="commitments.length > 0">
+                    <div class="commitment-item" *ngFor="let commitment of commitments; let i = index">
+                        <div class="commitment-body">
+                            <span class="commitment-desc">{{ commitment.description }}</span>
+                            <div class="commitment-meta">
+                                <span class="meta-item">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                    {{ getCommitmentResponsableName(commitment) }}
+                                </span>
+                                <span class="meta-item">
+                                    <ion-icon name="calendar-outline"></ion-icon>
+                                    {{ commitment.delivery_date }}
+                                </span>
+                            </div>
+                        </div>
+                        <ion-button fill="clear" size="small" color="danger" (click)="removeCommitment(i)">
+                            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                        </ion-button>
+                    </div>
+                </div>
+
+                <!-- Agregar compromiso -->
+                <div class="add-commitment-form">
+                    <div class="commitment-field">
+                        <label class="field-sublabel">Descripción</label>
+                        <input type="text" class="native-input" [(ngModel)]="newCommitment.description" [ngModelOptions]="{standalone: true}" placeholder="¿Qué se debe entregar?">
+                    </div>
+                    <div class="commitment-row">
+                        <div class="commitment-field flex-1">
+                            <label class="field-sublabel">Responsable</label>
+                            <app-filter-autocomplete
+                                [options]="allParticipantsOptions"
+                                [value]="newCommitment.user_id"
+                                placeholder="Seleccionar..."
+                                icon="person-outline"
+                                (valueChange)="newCommitment.user_id = $event || ''"
+                            ></app-filter-autocomplete>
+                        </div>
+                        <div class="commitment-field">
+                            <label class="field-sublabel">Fecha entrega</label>
+                            <input type="date" class="native-input" [(ngModel)]="newCommitment.delivery_date" [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </div>
+                    <ion-button fill="outline" size="small" (click)="addCommitment()" [disabled]="!isCommitmentValid" class="add-commitment-btn">
+                        <ion-icon name="add-outline" slot="start"></ion-icon>
+                        Agregar compromiso
+                    </ion-button>
+                </div>
+            </div>
+
+            <!-- Archivos adjuntos -->
+            <div class="form-section">
+                <label class="form-label">Imágenes</label>
+
+                <div class="attachments-list" *ngIf="images.length > 0">
+                    <div class="attachment-item" *ngFor="let file of images; let i = index">
+                        <div class="attachment-icon img-icon">
+                            <ion-icon name="image-outline"></ion-icon>
+                        </div>
+                        <div class="attachment-info">
+                            <span class="attachment-name">{{ file.name }}</span>
+                            <span class="attachment-size">{{ formatFileSize(file.size) }}</span>
+                        </div>
+                        <ion-button fill="clear" size="small" color="danger" (click)="removeImage(i)">
+                            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                        </ion-button>
+                    </div>
+                </div>
+
+                <div class="file-upload-area" (click)="imageInput.click()">
+                    <ion-icon name="image-outline"></ion-icon>
+                    <span>Seleccionar imágenes</span>
+                </div>
+                <input type="file" #imageInput hidden multiple accept="image/*" (change)="onImagesSelected($event)">
+            </div>
+
+            <div class="form-section">
+                <label class="form-label">Documentos</label>
+
+                <div class="attachments-list" *ngIf="documents.length > 0">
+                    <div class="attachment-item" *ngFor="let file of documents; let i = index">
+                        <div class="attachment-icon doc-icon">
+                            <ion-icon name="document-outline"></ion-icon>
+                        </div>
+                        <div class="attachment-info">
+                            <span class="attachment-name">{{ file.name }}</span>
+                            <span class="attachment-size">{{ formatFileSize(file.size) }}</span>
+                        </div>
+                        <ion-button fill="clear" size="small" color="danger" (click)="removeDocument(i)">
+                            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                        </ion-button>
+                    </div>
+                </div>
+
+                <div class="file-upload-area" (click)="documentInput.click()">
+                    <ion-icon name="document-outline"></ion-icon>
+                    <span>Seleccionar documentos</span>
+                </div>
+                <input type="file" #documentInput hidden multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv" (change)="onDocumentsSelected($event)">
+            </div>
+
+        </form>
+
+        <!-- Actions -->
+        <div class="form-actions">
+            <ion-button fill="outline" (click)="goBack()" class="cancel-btn">
+                Cancelar
+            </ion-button>
+            <ion-button
+                fill="outline"
+                color="medium"
+                (click)="onSubmit(1)"
+                [disabled]="!isFormValid || isSubmitting"
+                class="draft-btn">
+                {{ isSubmitting ? 'Guardando...' : 'Guardar borrador' }}
+            </ion-button>
+            <ion-button
+                (click)="onSubmit(0)"
+                [disabled]="!isFormValid || isSubmitting"
+                class="submit-btn">
+                {{ isSubmitting ? 'Creando...' : 'Crear Acta' }}
+            </ion-button>
+        </div>
+    </div>
+</ion-content>

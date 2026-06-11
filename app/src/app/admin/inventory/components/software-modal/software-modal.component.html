@@ -1,0 +1,21 @@
+<app-base-modal 
+    [title]="title"
+    subtitle="Complete los campos requeridos"
+    confirmText="Guardar"
+    [confirmDisabled]="!softwareForm.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="softwareForm">
+        <h4 class="section-title">Información General</h4>
+
+        <app-text-input
+            formControlName="name"
+            label="Nombre del Software"
+            placeholder="Ej: Microsoft Office 365"
+            [required]="true">
+        </app-text-input>
+    </form>
+    
+</app-base-modal>

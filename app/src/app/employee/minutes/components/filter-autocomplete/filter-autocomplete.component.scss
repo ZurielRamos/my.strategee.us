@@ -1,0 +1,114 @@
+.filter-autocomplete-wrapper {
+  width: 100%;
+  background: var(--app-card-bg, #fff);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px var(--app-shadow, rgba(0,0,0,0.08));
+  overflow: hidden;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+
+  @media (min-width: 768px) {
+    min-height: 52px;
+  }
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0 16px;
+  gap: 12px;
+
+  .input-icon {
+    font-size: 18px;
+    color: var(--app-text-secondary, #8c8c8c);
+    flex-shrink: 0;
+
+    @media (min-width: 768px) {
+      font-size: 20px;
+    }
+  }
+
+  .search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--app-text-primary, #1a1a1a);
+    padding: 14px 0;
+
+    @media (min-width: 768px) {
+      font-size: 15px;
+    }
+
+    &::placeholder {
+      color: var(--app-text-secondary, #8c8c8c);
+      font-weight: 400;
+    }
+  }
+}
+
+.selected-value {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0 12px 0 16px;
+  gap: 10px;
+  min-height: 48px;
+
+  @media (min-width: 768px) {
+    min-height: 52px;
+  }
+
+  ion-icon:first-child {
+    font-size: 18px;
+    color: #2196f3;
+    flex-shrink: 0;
+
+    @media (min-width: 768px) {
+      font-size: 20px;
+    }
+  }
+
+  .selected-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--app-text-primary, #1a1a1a);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (min-width: 768px) {
+      font-size: 15px;
+    }
+  }
+
+  .clear-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: background 0.15s;
+
+    ion-icon {
+      font-size: 20px;
+      color: var(--app-text-secondary, #8c8c8c);
+    }
+
+    &:hover {
+      background: var(--app-hover-bg, #f4f5f8);
+
+      ion-icon {
+        color: #eb445a;
+      }
+    }
+  }
+}

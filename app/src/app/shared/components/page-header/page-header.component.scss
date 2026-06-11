@@ -3,13 +3,13 @@
 }
 
 .dashboard-header {
-    background: transparent;
+    background: var(--app-background, #f4f5f8);
     border-bottom: none;
     position: relative;
     overflow: visible;
 
     ion-toolbar {
-        --background: transparent;
+        --background: var(--app-background, #f4f5f8);
         --border-color: transparent;
         --padding-top: 10px;
         --padding-bottom: 5px;

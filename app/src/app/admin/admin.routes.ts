@@ -74,6 +74,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./trainings/training-detail/training-detail.page').then(m => m.TrainingDetailPage)
             },
             {
+                path: 'inventory',
+                loadChildren: () => import('./inventory/inventory.routes').then(m => m.inventoryRoutes)
+            },
+            {
                 path: '',
                 redirectTo: 'dashboard',
                 pathMatch: 'full'

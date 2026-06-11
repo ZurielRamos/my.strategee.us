@@ -2,6 +2,15 @@
 
 <ion-content [fullscreen]="true" class="admin-page-content">
     <div class="admin-container">
+
+        <!-- Back Button -->
+        <div class="back-row">
+            <ion-button fill="clear" class="back-button" (click)="goBack()">
+                <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+                Volver
+            </ion-button>
+        </div>
+
         <app-page-title 
             title="Dispositivos WhatsApp" 
             subtitle="Gestiona las instancias conectadas a Evolution API">

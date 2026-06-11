@@ -1,0 +1,146 @@
+<app-page-header
+    [showSearch]="true"
+    [useCustomSearch]="true"
+    (searchChange)="onSearchChange($event)"
+></app-page-header>
+
+<ion-content [fullscreen]="true" class="inventories-content" (ionScroll)="onScroll($event)">
+    <div class="page-container">
+        <!-- Page Title & Controls -->
+        <div class="page-title-section">
+            <div class="title-text">
+                <h1>Activos</h1>
+                <p>Gestiona los activos de inventario de tu organización</p>
+            </div>
+            <div class="title-controls desktop-only">
+                <ion-button (click)="navigateToCreate()" class="add-button">
+                    <ion-icon slot="start" name="add-outline"></ion-icon>
+                    Nuevo Activo
+                </ion-button>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filter-item">
+                <label class="filter-label">Tipo de Inventario</label>
+                <ion-select
+                    placeholder="Todos los tipos"
+                    interface="popover"
+                    (ionChange)="onTypeFilterChange($event)">
+                    @for (option of typeOptions; track option.value) {
+                        <ion-select-option [value]="option.value">{{ option.label }}</ion-select-option>
+                    }
+                </ion-select>
+            </div>
+            <div class="filter-item">
+                <label class="filter-label">Proveedor</label>
+                <ion-select
+                    placeholder="Todos los proveedores"
+                    interface="popover"
+                    (ionChange)="onSupplierFilterChange($event)">
+                    @for (option of supplierOptions; track option.value) {
+                        <ion-select-option [value]="option.value">{{ option.label }}</ion-select-option>
+                    }
+                </ion-select>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        @if (isLoading && inventories.length === 0) {
+        <div class="loading-container">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+
+        <!-- Error State -->
+        @if (hasError && !isLoading) {
+        <div class="empty-state error-state">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <h2>No se pudieron cargar los datos</h2>
+            <p>Ocurrió un error al conectar con el servidor</p>
+            <ion-button (click)="loadInventories()">
+                <ion-icon slot="start" name="refresh-outline"></ion-icon>
+                Reintentar
+            </ion-button>
+        </div>
+        }
+
+        <!-- Inventories List -->
+        @if (inventories.length > 0) {
+        <div class="inventories-list">
+            @for (inventory of inventories; track inventory.id) {
+            <div class="inventory-card" (click)="navigateToDetail(inventory)">
+                <div class="inventory-card-content">
+                    <div class="inventory-main-info">
+                        <div class="inventory-name">{{ inventory.name }}</div>
+                        <div class="inventory-details">
+                            @if (inventory.typeInventory) {
+                            <span class="detail-chip type-chip">{{ inventory.typeInventory.name }}</span>
+                            }
+                            @if (inventory.supplier) {
+                            <span class="detail-chip supplier-chip">{{ inventory.supplier.name }}</span>
+                            }
+                        </div>
+                        <div class="inventory-value">{{ formatCurrency(inventory.value) }}</div>
+                        @if (getEmployeeName(inventory)) {
+                        <div class="inventory-employee">
+                            <ion-icon name="person-outline"></ion-icon>
+                            <span>{{ getEmployeeName(inventory) }}</span>
+                        </div>
+                        }
+                    </div>
+                    <div class="inventory-actions">
+                        <span
+                            class="status-badge"
+                            [class.active]="inventory.isActive"
+                            [class.inactive]="!inventory.isActive"
+                            (click)="toggleStatus(inventory, $event)">
+                            {{ inventory.isActive ? 'Activo' : 'Inactivo' }}
+                        </span>
+                        <ion-icon name="chevron-forward-outline" class="nav-icon"></ion-icon>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- Loading More Indicator -->
+        @if (isLoadingMore) {
+        <div class="loading-more">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Cargando más activos...</p>
+        </div>
+        }
+
+        <!-- Empty State -->
+        @if (!isLoading && inventories.length === 0 && !searchTerm && !selectedTypeId && !selectedSupplierId) {
+        <div class="empty-state">
+            <ion-icon name="cube-outline"></ion-icon>
+            <h2>No hay activos registrados</h2>
+            <p>Comienza creando tu primer activo de inventario</p>
+            <ion-button (click)="navigateToCreate()">
+                <ion-icon slot="start" name="add-outline"></ion-icon>
+                Crear Activo
+            </ion-button>
+        </div>
+        }
+
+        <!-- No Results State -->
+        @if (!isLoading && inventories.length === 0 && (searchTerm || selectedTypeId || selectedSupplierId)) {
+        <div class="empty-state">
+            <ion-icon name="cube-outline"></ion-icon>
+            <h2>No se encontraron resultados</h2>
+            <p>No hay activos que coincidan con los filtros aplicados</p>
+        </div>
+        }
+    </div>
+</ion-content>
+
+<!-- Mobile FAB -->
+<ion-fab slot="fixed" vertical="bottom" horizontal="end" class="mobile-only">
+    <ion-fab-button (click)="navigateToCreate()" color="dark">
+        <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+</ion-fab>

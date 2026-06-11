@@ -1,0 +1,56 @@
+<app-base-modal
+    [title]="title"
+    [subtitle]="subtitle"
+    [confirmText]="mode === 'create' ? 'Crear Activo' : 'Guardar Cambios'"
+    [confirmDisabled]="!form.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+
+    <form [formGroup]="form">
+        <app-text-input
+            formControlName="name"
+            label="Nombre"
+            placeholder="Ej: Laptop Dell Latitude 5520"
+            [required]="true"
+            [maxlength]="200">
+        </app-text-input>
+
+        <app-form-select
+            formControlName="typeInventoryId"
+            label="Tipo de Inventario"
+            [options]="typeOptions"
+            placeholder="Seleccione un tipo"
+            [required]="true">
+        </app-form-select>
+
+        <app-text-input
+            formControlName="value"
+            label="Valor"
+            placeholder="Ej: 2500000"
+            type="number"
+            [required]="true">
+        </app-text-input>
+
+        <app-form-select
+            formControlName="supplierId"
+            label="Proveedor"
+            [options]="supplierOptions"
+            placeholder="Seleccione un proveedor">
+        </app-form-select>
+
+        <app-date-input
+            formControlName="purchaseDate"
+            label="Fecha de Compra"
+            placeholder="Seleccione fecha de compra">
+        </app-date-input>
+
+        <app-textarea-input
+            formControlName="observations"
+            label="Observaciones"
+            placeholder="Observaciones adicionales sobre el activo"
+            [maxlength]="500"
+            [rows]="3">
+        </app-textarea-input>
+    </form>
+</app-base-modal>

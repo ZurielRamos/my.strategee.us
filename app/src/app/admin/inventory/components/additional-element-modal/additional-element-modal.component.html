@@ -1,0 +1,21 @@
+<app-base-modal 
+    [title]="title"
+    subtitle="Complete los campos requeridos"
+    confirmText="Guardar"
+    [confirmDisabled]="!elementForm.valid"
+    [loading]="isSubmitting"
+    (modalDismiss)="onDismiss()"
+    (modalConfirm)="onConfirm()">
+    
+    <form [formGroup]="elementForm">
+        <h4 class="section-title">Información General</h4>
+
+        <app-text-input
+            formControlName="name"
+            label="Nombre del Elemento"
+            placeholder="Ej: Mouse inalámbrico"
+            [required]="true">
+        </app-text-input>
+    </form>
+    
+</app-base-modal>
