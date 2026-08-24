@@ -121,6 +121,9 @@ export class AdminSettingsPage implements OnInit {
     bahamasAfternoonStart = '';
     bahamasAfternoonEnd = '';
     bahamasAfternoonDelivery = '';
+    bahamasSaturdayStart = '';
+    bahamasSaturdayEnd = '';
+    bahamasSaturdayDelivery = '';
     bahamasLoading = false;
 
     // API Keys
@@ -331,6 +334,9 @@ export class AdminSettingsPage implements OnInit {
                     this.bahamasAfternoonStart = config.afternoonStart || '';
                     this.bahamasAfternoonEnd = config.afternoonEnd || '';
                     this.bahamasAfternoonDelivery = config.afternoonDelivery || '';
+                    this.bahamasSaturdayStart = config.saturdayStart || '';
+                    this.bahamasSaturdayEnd = config.saturdayEnd || '';
+                    this.bahamasSaturdayDelivery = config.saturdayDelivery || '';
                 }
             },
             error: (error) => {
@@ -357,6 +363,9 @@ export class AdminSettingsPage implements OnInit {
             afternoonStart: normalizeTime(this.bahamasAfternoonStart),
             afternoonEnd: normalizeTime(this.bahamasAfternoonEnd),
             afternoonDelivery: normalizeTime(this.bahamasAfternoonDelivery),
+            saturdayStart: normalizeTime(this.bahamasSaturdayStart),
+            saturdayEnd: normalizeTime(this.bahamasSaturdayEnd),
+            saturdayDelivery: normalizeTime(this.bahamasSaturdayDelivery),
         }).subscribe({
             next: () => {
                 this.toastService.show({ message: 'Configuración de Bahamas guardada', type: 'success' });

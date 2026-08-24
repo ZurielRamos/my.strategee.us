@@ -66,24 +66,35 @@ export class BahamasService {
             throw new NotFoundException('La configuración de WhatsApp (Evolution API) no está definida');
         }
 
+        const now = new Date();
+        const isSaturday = now.getDay() === 6;
+
         return {
             whatsapp: {
                 instanceName: device.instanceName,
                 apiUrl: whatsappConfig.apiUrl,
                 apiKey: whatsappConfig.apiKey,
             },
-            schedule: {
-                morning: {
-                    start: config.morningStart,
-                    end: config.morningEnd,
-                    delivery: config.morningDelivery,
+            schedule: isSaturday
+                ? {
+                    morning: {
+                        start: config.saturdayStart,
+                        end: config.saturdayEnd,
+                        delivery: config.saturdayDelivery,
+                    },
+                }
+                : {
+                    morning: {
+                        start: config.morningStart,
+                        end: config.morningEnd,
+                        delivery: config.morningDelivery,
+                    },
+                    afternoon: {
+                        start: config.afternoonStart,
+                        end: config.afternoonEnd,
+                        delivery: config.afternoonDelivery,
+                    },
                 },
-                afternoon: {
-                    start: config.afternoonStart,
-                    end: config.afternoonEnd,
-                    delivery: config.afternoonDelivery,
-                },
-            },
         };
     }
 }

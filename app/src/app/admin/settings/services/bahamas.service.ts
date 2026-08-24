@@ -12,6 +12,9 @@ export interface BahamasConfig {
     afternoonStart: string;
     afternoonEnd: string;
     afternoonDelivery: string;
+    saturdayStart: string;
+    saturdayEnd: string;
+    saturdayDelivery: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -24,6 +27,9 @@ export interface UpdateBahamasConfigDto {
     afternoonStart: string;
     afternoonEnd: string;
     afternoonDelivery: string;
+    saturdayStart: string;
+    saturdayEnd: string;
+    saturdayDelivery: string;
 }
 
 @Injectable({

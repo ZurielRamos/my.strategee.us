@@ -343,6 +343,36 @@
                                 </ion-item>
                             </div>
                         </div>
+
+                        <div class="time-section">
+                            <h4 class="section-title">
+                                <ion-icon name="calendar-outline"></ion-icon>
+                                Jornada Sábado
+                            </h4>
+
+                            <div class="time-row">
+                                <ion-item class="settings-item time-item">
+                                    <ion-label position="stacked">
+                                        <h3>Hora Inicio</h3>
+                                    </ion-label>
+                                    <ion-input [(ngModel)]="bahamasSaturdayStart" type="time"></ion-input>
+                                </ion-item>
+
+                                <ion-item class="settings-item time-item">
+                                    <ion-label position="stacked">
+                                        <h3>Hora Fin</h3>
+                                    </ion-label>
+                                    <ion-input [(ngModel)]="bahamasSaturdayEnd" type="time"></ion-input>
+                                </ion-item>
+
+                                <ion-item class="settings-item time-item">
+                                    <ion-label position="stacked">
+                                        <h3>Hora Entrega</h3>
+                                    </ion-label>
+                                    <ion-input [(ngModel)]="bahamasSaturdayDelivery" type="time"></ion-input>
+                                </ion-item>
+                            </div>
+                        </div>
                     </ion-list>
 
                     <ion-button expand="block" (click)="saveBahamasConfig()" [disabled]="bahamasLoading" class="save-btn">

@@ -32,6 +32,15 @@ export class BahamasConfig {
     @Column({ type: 'time', nullable: true, comment: 'Hora entrega jornada tarde (HH:mm)' })
     afternoonDelivery: string;
 
+    @Column({ type: 'time', nullable: true, comment: 'Hora inicio jornada sábado (HH:mm)' })
+    saturdayStart: string;
+
+    @Column({ type: 'time', nullable: true, comment: 'Hora fin jornada sábado (HH:mm)' })
+    saturdayEnd: string;
+
+    @Column({ type: 'time', nullable: true, comment: 'Hora entrega jornada sábado (HH:mm)' })
+    saturdayDelivery: string;
+
     @CreateDateColumn()
     createdAt: Date;
 

@@ -47,6 +47,15 @@ export class BahamasIntegrationController {
                                 delivery: { type: 'string', example: '15:00' },
                             },
                         },
+                        saturday: {
+                            type: 'object',
+                            description: 'Se devuelve en lugar de morning/afternoon cuando es sábado',
+                            properties: {
+                                start: { type: 'string', example: '08:00' },
+                                end: { type: 'string', example: '10:00' },
+                                delivery: { type: 'string', example: '11:00' },
+                            },
+                        },
                     },
                 },
             },
