@@ -10,9 +10,11 @@ import {
     Matches,
     IsDate,
     IsNumber,
+    IsUUID,
 } from 'class-validator';
 import { DocumentType } from '../enums/document-type.enum';
 import { Gender } from '../enums/gender.enum';
+import { ContractType } from '../../contracts/enums/contract-type.enum';
 import { Type } from 'class-transformer';
 
 export class CreateEmployeeDto {
@@ -92,6 +94,40 @@ export class CreateEmployeeDto {
         message: 'El teléfono debe tener entre 7 y 20 caracteres',
     })
     personalPhone: string;
+
+    @ApiProperty({
+        example: '2024-02-01',
+        description: 'Fecha de ingreso (formato: YYYY-MM-DD)',
+        required: false,
+    })
+    @IsOptional()
+    @IsDateString({}, { message: 'La fecha de ingreso debe ser válida en formato YYYY-MM-DD' })
+    hireDate?: string;
+
+    @ApiProperty({
+        example: ContractType.INDEFINITE_TERM,
+        description: 'Tipo de contrato',
+        enum: ContractType,
+        required: false,
+    })
+    @IsOptional()
+    @IsEnum(ContractType, { message: 'El tipo de contrato no es válido' })
+    contractType?: ContractType;
+
+    @ApiProperty({ description: 'ID de la empresa', required: false, nullable: true })
+    @IsOptional()
+    @IsUUID('all', { message: 'La empresa no es válida' })
+    companyId?: string | null;
+
+    @ApiProperty({ description: 'ID del puesto', required: false, nullable: true })
+    @IsOptional()
+    @IsUUID('all', { message: 'El puesto no es válido' })
+    positionId?: string | null;
+
+    @ApiProperty({ description: 'ID del departamento/área', required: false, nullable: true })
+    @IsOptional()
+    @IsUUID('all', { message: 'El departamento/área no es válido' })
+    departmentId?: string | null;
 
     @ApiProperty({
         example: 90,

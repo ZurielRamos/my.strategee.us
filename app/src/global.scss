@@ -172,3 +172,25 @@ ion-loading.custom-loading {
         background: #0D1C3F;
     }
 }
+
+/* Detalle de evento del calendario: centrado en escritorio, hoja inferior en móvil */
+ion-modal.event-detail-modal {
+    @media (min-width: 768px) {
+        --width: 640px;
+        --height: min(85vh, 820px);
+    }
+    .ion-page {
+        background: var(--app-background);
+    }
+    ion-content {
+        --background: var(--app-background);
+    }
+}
+
+/* Modal de tarea: centrado en escritorio, hoja inferior en móvil */
+ion-modal.task-modal {
+    @media (min-width: 768px) {
+        --width: 560px;
+        --height: min(80vh, 640px);
+    }
+}

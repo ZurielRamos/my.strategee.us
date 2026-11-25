@@ -39,9 +39,9 @@ export class GiftedDaysService {
      * Sin contrato → no elegible.
      */
     async validateEligibility(employeeId: string): Promise<void> {
-        const contract = await this.contractsService.findActiveByEmployee(employeeId);
+        const contract = await this.contractsService.findEmploymentInfo(employeeId);
 
-        if (!contract) {
+        if (!contract?.type) {
             throw new BadRequestException(
                 'Los días obsequiados requieren un contrato activo.',
             );
@@ -61,10 +61,10 @@ export class GiftedDaysService {
 
     async getEmployeeBalance(employeeId: string): Promise<GiftedDaysBalanceResponseDto> {
         // 1. Obtener contrato activo
-        const contract = await this.contractsService.findActiveByEmployee(employeeId);
+        const contract = await this.contractsService.findEmploymentInfo(employeeId);
 
         // Sin contrato → no elegible
-        if (!contract) {
+        if (!contract?.type) {
             return { totalAccrued: 0, totalDays: 0, availableDays: 0, pendingDays: 0, isEligible: false };
         }
 
@@ -84,11 +84,9 @@ export class GiftedDaysService {
         let totalAccrued = 0;
         if (isServiceContract) {
             const settings = await this.systemSettingsService.getSettings();
-            totalAccrued = VacationCalculator.calculateAccrued(
-                contract.startDate,
-                new Date(),
-                settings.vacationDaysServiceContract,
-            );
+            totalAccrued = contract.startDate
+                ? VacationCalculator.calculateAccrued(contract.startDate, new Date(), settings.vacationDaysServiceContract)
+                : 0;
         }
 
         // 3. Procesar el Ledger (ajustes manuales, otorgamientos, usos, vencimientos)

@@ -14,7 +14,8 @@ import {
     keyOutline, keySharp,
     schoolOutline, schoolSharp,
     calendarOutline, calendarSharp,
-    clipboardOutline, clipboardSharp
+    clipboardOutline, clipboardSharp,
+    checkboxOutline, checkboxSharp
 } from 'ionicons/icons';
 import { UserProfileComponent } from '../../shared/components/user-profile/user-profile.component';
 
@@ -35,6 +36,7 @@ export class EmployeeLayoutComponent {
         { title: 'Solicitudes', url: '/employee/requests', icon: 'document-text' },
         { title: 'Calendario', url: '/employee/calendar', icon: 'calendar' },
         { title: 'Actas', url: '/employee/minutes', icon: 'clipboard' },
+        { title: 'Tareas', url: '/employee/tasks', icon: 'checkbox' },
         { title: 'Capacitaciones', url: '/employee/trainings', icon: 'school' },
         { title: 'Password Vault', url: '/employee/password-vault', icon: 'key' },
         { title: 'Ajustes', url: '/employee/settings', icon: 'settings' }
@@ -49,7 +51,8 @@ export class EmployeeLayoutComponent {
             keyOutline, keySharp,
             schoolOutline, schoolSharp,
             calendarOutline, calendarSharp,
-            clipboardOutline, clipboardSharp
+            clipboardOutline, clipboardSharp,
+            checkboxOutline, checkboxSharp
         });
     }
 }

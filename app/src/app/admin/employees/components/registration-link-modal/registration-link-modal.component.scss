@@ -1,0 +1,30 @@
+.center {
+    display: flex;
+    justify-content: center;
+    padding: 24px 0;
+}
+
+.link-box {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--app-hover-bg);
+    border: 1px solid var(--app-border);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    color: var(--app-text-primary);
+    word-break: break-all;
+}
+
+.hint {
+    margin: 12px 0 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--app-text-secondary);
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}

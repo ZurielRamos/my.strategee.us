@@ -16,7 +16,8 @@
                 class="score-range">
             </ion-range>
             <input
-                type="number"
+                type="text"
+ appNumericOnly [integer]="true"
                 formControlName="passingScore"
                 [min]="1"
                 [max]="100"
@@ -64,7 +65,8 @@
                 <div class="field-group score-field">
                     <label class="field-label">Puntaje (opcional)</label>
                     <input
-                        type="number"
+                        type="text"
+ appNumericOnly [integer]="true"
                         formControlName="score"
                         placeholder="Auto"
                         [min]="0"

@@ -1,0 +1,180 @@
+.registration-content {
+    --background: var(--app-background, #f4f6f8);
+}
+
+.registration-container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+}
+
+.registration-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+
+    .logo {
+        height: 56px;
+        width: auto;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--app-text-primary, #1a1c1b);
+        text-align: center;
+    }
+}
+
+.stepper {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    list-style: none;
+    margin: 0 0 20px;
+    padding: 0;
+
+    li {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        color: var(--app-text-tertiary, #9ca3af);
+        font-size: 12px;
+        font-weight: 600;
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--app-border, #e8eaed);
+            color: var(--app-text-secondary, #6b7280);
+            font-size: 14px;
+        }
+
+        &.active {
+            color: var(--app-text-primary, #1a1c1b);
+
+            .step-number {
+                background: #252827;
+                color: #ffffff;
+            }
+        }
+
+        &.done .step-number {
+            background: var(--ion-color-primary, #3b82f6);
+            color: #ffffff;
+        }
+    }
+}
+
+.form-card,
+.state-card {
+    background: var(--app-card-bg, #ffffff);
+    border: 1px solid var(--app-border, #e8eaed);
+    border-radius: 16px;
+    padding: 24px 20px;
+}
+
+.state-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+
+    h2 {
+        margin: 8px 0 0;
+        font-size: 20px;
+        color: var(--app-text-primary, #1a1c1b);
+    }
+
+    p {
+        margin: 0;
+        color: var(--app-text-secondary, #6b7280);
+        line-height: 1.5;
+    }
+
+    .state-icon {
+        font-size: 56px;
+
+        &.success { color: var(--ion-color-success, #2dd36f); }
+        &.danger { color: var(--ion-color-danger, #eb445a); }
+    }
+}
+
+.step-title {
+    margin: 0 0 16px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--app-text-primary, #1a1c1b);
+}
+
+.step-hint {
+    margin: -8px 0 16px;
+    font-size: 13px;
+    color: var(--app-text-secondary, #6b7280);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+
+    @media (max-width: 576px) {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
+
+.contact-block {
+    border: 1px solid var(--app-border, #e8eaed);
+    border-radius: 12px;
+    padding: 12px 12px 4px;
+    margin-bottom: 16px;
+
+    .contact-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        h3 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--app-text-secondary, #6b7280);
+        }
+    }
+}
+
+.form-error {
+    margin: 16px 0 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(var(--ion-color-danger-rgb, 235, 68, 90), 0.1);
+    color: var(--ion-color-danger, #eb445a);
+    font-size: 14px;
+}
+
+.step-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+// Campo trampa fuera de pantalla (no usar display:none: algunos bots lo detectan)
+.hp-field {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}

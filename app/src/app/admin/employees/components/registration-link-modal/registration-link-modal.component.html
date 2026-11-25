@@ -1,0 +1,36 @@
+<app-base-modal
+    title="Enlace de registro"
+    subtitle="Compártelo con tus colaboradores para que envíen su información"
+    [showFooter]="false"
+    (modalDismiss)="onDismiss()">
+    @if (isLoading) {
+    <div class="center"><ion-spinner name="crescent"></ion-spinner></div>
+    } @else {
+    @if (token) {
+    <div class="link-box">{{ link }}</div>
+    <p class="hint">
+        Cualquier persona con este enlace puede enviar una solicitud. Las solicitudes quedan
+        pendientes hasta que las apruebes en Personal &gt; Solicitudes pendientes.
+    </p>
+    <div class="actions">
+        <ion-button color="dark" (click)="copy()">
+            <ion-icon slot="start" name="copy-outline"></ion-icon>
+            Copiar enlace
+        </ion-button>
+        <ion-button fill="outline" color="dark" (click)="generate()" [disabled]="isWorking">
+            <ion-icon slot="start" name="refresh-outline"></ion-icon>
+            Generar nuevo
+        </ion-button>
+        <ion-button fill="outline" color="danger" (click)="disable()" [disabled]="isWorking">
+            <ion-icon slot="start" name="ban-outline"></ion-icon>
+            Desactivar
+        </ion-button>
+    </div>
+    } @else {
+    <p class="hint">No hay un enlace activo. Genera uno para empezar a recibir registros.</p>
+    <div class="actions">
+        <ion-button color="dark" (click)="generate()" [disabled]="isWorking">Generar enlace</ion-button>
+    </div>
+    }
+    }
+</app-base-modal>

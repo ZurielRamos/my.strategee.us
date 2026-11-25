@@ -62,6 +62,8 @@ export interface ApiKey {
     lastUsedAt?: Date;
 }
 
+import { NumericOnlyDirective } from '../../shared/directives/numeric-only.directive';
+
 @Component({
     selector: 'app-admin-settings',
     templateUrl: './settings.page.html',
@@ -69,6 +71,7 @@ export interface ApiKey {
     standalone: true,
     providers: [ModalController],
     imports: [
+        NumericOnlyDirective,
         CommonModule,
         FormsModule,
         IonContent,
@@ -204,9 +207,9 @@ export class AdminSettingsPage implements OnInit {
         this.loading = true;
         try {
             this.adminSettingsService.updateSettings({
-                vacationDaysLaborContract: this.vacationDaysLaborContract,
-                vacationDaysServiceContract: this.vacationDaysServiceContract,
-                hoursPerWorkday: this.hoursPerWorkday
+                vacationDaysLaborContract: Number(this.vacationDaysLaborContract),
+                vacationDaysServiceContract: Number(this.vacationDaysServiceContract),
+                hoursPerWorkday: Number(this.hoursPerWorkday)
             }).subscribe({
                 next: () => {
                     this.toastService.show('Configuración de solicitudes guardada');

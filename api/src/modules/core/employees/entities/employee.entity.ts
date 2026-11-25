@@ -1,5 +1,6 @@
 import {
     Entity,
+    ManyToOne,
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
@@ -11,6 +12,11 @@ import {
 import { User } from '@modules/iam/users/entities/user.entity';
 import { DocumentType } from '../enums/document-type.enum';
 import { Gender } from '../enums/gender.enum';
+import { Company } from '../../../organization/companies/entities/company.entity';
+import { Position } from '../../../organization/positions/entities/position.entity';
+import { Department } from '../../../organization/departments/entities/department.entity';
+import { EmployeeStatus } from '../enums/employee-status.enum';
+import { ContractType } from '../../contracts/enums/contract-type.enum';
 import { Contract } from '../../contracts/entities/contract.entity';
 import { Compensation } from '../../../finance/compensation/entities/compensation.entity';
 import { BenefitAllocation } from '../../benefits/entities/benefit-allocation.entity';
@@ -36,6 +42,33 @@ export class Employee {
     @Column({ type: 'date' })
     birthDate: Date;
 
+    @Column({ type: 'date', nullable: true })
+    hireDate: Date | null;
+
+    @Column({ type: 'enum', enum: ContractType, nullable: true })
+    contractType: ContractType | null;
+
+    @ManyToOne(() => Company, { nullable: true, createForeignKeyConstraints: false })
+    @JoinColumn({ name: 'company_id' })
+    company: Company | null;
+
+    @Column({ type: 'varchar', length: 36, nullable: true })
+    companyId: string | null;
+
+    @ManyToOne(() => Position, { nullable: true, createForeignKeyConstraints: false })
+    @JoinColumn({ name: 'position_id' })
+    position: Position | null;
+
+    @Column({ type: 'varchar', length: 36, nullable: true })
+    positionId: string | null;
+
+    @ManyToOne(() => Department, { nullable: true, createForeignKeyConstraints: false })
+    @JoinColumn({ name: 'department_id' })
+    department: Department | null;
+
+    @Column({ type: 'varchar', length: 36, nullable: true })
+    departmentId: string | null;
+
     @Column({ type: 'int', default: 90 })
     idoLimit: number;
 
@@ -59,6 +92,9 @@ export class Employee {
 
     @Column({ type: 'boolean', default: true })
     isActive: boolean;
+
+    @Column({ type: 'varchar', length: 20, default: EmployeeStatus.ACTIVE })
+    status: EmployeeStatus;
 
     @OneToOne(() => User, (user) => user.employee, { nullable: true })
     @JoinColumn()

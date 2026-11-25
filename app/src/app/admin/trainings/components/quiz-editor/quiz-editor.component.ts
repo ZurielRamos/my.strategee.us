@@ -27,6 +27,8 @@ import { TrainingsAdminService, SaveQuizDto } from '../../services/trainings-adm
 import { TrainingQuiz } from '../../models/training.model';
 import { ToastService } from '../../../../shared/services/toast.service';
 
+import { NumericOnlyDirective } from '../../../../shared/directives/numeric-only.directive';
+
 @Component({
     selector: 'app-quiz-editor',
     templateUrl: './quiz-editor.component.html',
@@ -34,6 +36,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
     standalone: true,
     providers: [AlertController],
     imports: [
+        NumericOnlyDirective,
         CommonModule,
         ReactiveFormsModule,
         IonButton,
@@ -113,7 +116,7 @@ export class QuizEditorComponent implements OnInit {
     }
 
     get passingScore(): number {
-        return this.form.get('passingScore')?.value ?? 70;
+        return Number(this.form.get('passingScore')?.value ?? 70);
     }
 
     // ─── Questions ────────────────────────────────────────────────────────────
@@ -174,10 +177,10 @@ export class QuizEditorComponent implements OnInit {
         const formValue = this.form.value;
 
         const dto: SaveQuizDto = {
-            passingScore: formValue.passingScore,
+            passingScore: Number(formValue.passingScore),
             questions: formValue.questions.map((q: any, qi: number) => ({
                 text: q.text,
-                score: q.score ?? undefined,
+                score: q.score !== null && q.score !== '' && q.score !== undefined ? Number(q.score) : undefined,
                 orderIndex: qi,
                 options: q.options.map((o: any, oi: number) => ({
                     text: o.text,

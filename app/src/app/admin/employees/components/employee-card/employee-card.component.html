@@ -11,12 +11,16 @@
             <div class="employee-info">
                 <ion-card-title>{{ fullName }}</ion-card-title>
                 <div class="employee-badges">
+                    @if (employee.status === 'PENDING') {
+                    <ion-badge color="warning">Pendiente de aprobación</ion-badge>
+                    } @else {
                     <ion-badge [color]="userRoleBadgeColor">
                         {{ userRoleLabel }}
                     </ion-badge>
                     <ion-badge [color]="contractStatusBadgeColor">
                         {{ contractStatusLabel }}
                     </ion-badge>
+                    }
                 </div>
             </div>
         </div>

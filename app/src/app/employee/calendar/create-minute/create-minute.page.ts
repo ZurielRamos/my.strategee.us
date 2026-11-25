@@ -91,7 +91,7 @@ export class CreateMinutePage implements OnInit {
         // Back URL desde query params
         const eventId = this.route.snapshot.queryParamMap.get('eventId');
         if (eventId) {
-            this.backUrl = `/employee/calendar/event/${eventId}`;
+            this.backUrl = '/employee/calendar';
 
             // Si no hay evento del storage, cargar desde la API
             if (!this.event) {
@@ -430,14 +430,23 @@ export class CreateMinutePage implements OnInit {
         };
 
         try {
-            const result = await this.minutesService.createMinute(data).toPromise();
+            // Los adjuntos deben estar en el acta antes de publicarla, porque recapmeeting
+            // los incluye en los correos de finalización. Con adjuntos se crea como borrador,
+            // se suben los archivos y luego se publica.
+            const hasAttachments = this.images.length > 0 || this.documents.length > 0;
+            const publishAfterUpload = state === 0 && hasAttachments;
+            const result = await this.minutesService
+                .createMinute(publishAfterUpload ? { ...data, state: 1 } : data)
+                .toPromise();
 
-            // Subir archivos al acta creada
             const minuteId = result?.Contac?.id || result?.id || result?.contac_id;
             console.log('[CreateMinute] Acta creada, minuteId:', minuteId, 'eventId:', this.event.id);
 
-            if (minuteId && (this.images.length > 0 || this.documents.length > 0)) {
+            if (minuteId && hasAttachments) {
                 await this.uploadAttachmentsToMinute(String(minuteId));
+            }
+            if (minuteId && publishAfterUpload) {
+                await this.minutesService.sendMinute(String(minuteId)).toPromise();
             }
 
             // Vincular automáticamente al evento (tanto para actas como borradores)

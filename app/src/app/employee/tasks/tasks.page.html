@@ -1,0 +1,173 @@
+<app-page-header></app-page-header>
+<ion-content [fullscreen]="true" class="tasks-content">
+    <ion-refresher slot="fixed" (ionRefresh)="loadBoards(undefined, $event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
+    <div class="page-container">
+        <div class="page-title-section">
+            <div class="title-text">
+                <h1>Tareas</h1>
+                <p>Tus tableros, sincronizados con Google Tasks. Arrastra las tarjetas entre listas.</p>
+            </div>
+            @if (board && !isRecapBoard) {
+                <ion-button class="new-task-button" (click)="openTask()">
+                    <ion-icon slot="start" name="add-outline"></ion-icon>
+                    Nueva tarea
+                </ion-button>
+            }
+        </div>
+
+        <!-- Selector de tableros -->
+        <nav class="board-tabs" aria-label="Tableros">
+            @for (b of boards; track b.id) {
+                <button type="button" class="board-tab" [class.active]="b.id === board?.id" (click)="selectBoard(b)">
+                    @if (b.type === 'recapmeeting') {
+                        <ion-icon name="clipboard-outline"></ion-icon>
+                    } @else if (!b.isOwner || b.isShared) {
+                        <ion-icon name="people-outline"></ion-icon>
+                    }
+                    <span>{{ b.name }}</span>
+                </button>
+            }
+            <button type="button" class="board-tab add" (click)="createBoard()">
+                <ion-icon name="add-outline"></ion-icon>
+                <span>Nuevo tablero</span>
+            </button>
+        </nav>
+
+        @if (board) {
+            <div class="board-info">
+                <span class="board-info-text">
+                    @if (isRecapBoard) {
+                        Compromisos de las actas en las que eres responsable. Al moverlos a una lista de hechas se terminan en el acta.
+                    } @else if (!board.isOwner) {
+                        Compartido por {{ board.ownerName }}
+                    } @else if (board.isShared) {
+                        Compartido con {{ members.length - 1 }} persona{{ members.length - 1 === 1 ? '' : 's' }}
+                    } @else {
+                        Solo tú tienes acceso
+                    }
+                </span>
+                @if (canManage && !isRecapBoard) {
+                    <ion-button fill="clear" size="small" class="board-settings" (click)="openBoardMenu($event)">
+                        <ion-icon slot="start" name="settings-outline"></ion-icon>
+                        Tablero
+                    </ion-button>
+                }
+            </div>
+        }
+
+        @if (isLoading || (isLoadingBoard && !board?.lists?.length)) {
+            <div class="loading-container"><ion-spinner name="crescent"></ion-spinner></div>
+        } @else if (board) {
+            <div
+                #boardScroller
+                class="board"
+                cdkScrollable
+                cdkDropList
+                cdkDropListOrientation="horizontal"
+                [cdkDropListData]="board.lists"
+                [cdkDropListDisabled]="!canManage"
+                (cdkDropListDropped)="onListDrop($event)">
+
+                @for (list of board.lists; track list.id) {
+                    <section
+                        class="board-column"
+                        [class.done-list]="list.isDone"
+                        cdkDrag
+                        [cdkDragData]="list"
+                        [cdkDragDisabled]="!canManage"
+                        (cdkDragMoved)="onDragMoved($event)"
+                        (cdkDragEnded)="stopAutoScroll()">
+                        <div class="column-placeholder" *cdkDragPlaceholder></div>
+                        <header class="column-header">
+                            @if (canManage) {
+                                <ion-icon name="reorder-two-outline" class="column-handle" cdkDragHandle aria-label="Arrastrar lista"></ion-icon>
+                            }
+                            <h2>{{ list.name }}</h2>
+                            @if (list.isDone) {
+                                <ion-icon name="checkmark-done-outline" class="done-flag" title="Las tareas de esta lista cuentan como hechas"></ion-icon>
+                            }
+                            <span class="column-count">{{ columns[list.id]?.length ?? 0 }}</span>
+                            <span class="column-actions">
+                                @if (!isRecapBoard) {
+                                    <button type="button" class="icon-button" aria-label="Nueva tarea en esta lista" (click)="openTask(undefined, list)">
+                                        <ion-icon name="add-outline"></ion-icon>
+                                    </button>
+                                }
+                                @if (canManage) {
+                                    <button type="button" class="icon-button" aria-label="Opciones de la lista" (click)="openListMenu(list, $event)">
+                                        <ion-icon name="ellipsis-horizontal"></ion-icon>
+                                    </button>
+                                }
+                            </span>
+                        </header>
+
+                        <div
+                            class="column-body"
+                            cdkDropList
+                            [id]="'list-' + list.id"
+                            [cdkDropListData]="columns[list.id]"
+                            [cdkDropListConnectedTo]="dropListIds"
+                            (cdkDropListDropped)="onTaskDrop($event, list)">
+                            @for (task of columns[list.id] ?? []; track task.id) {
+                                <article
+                                    class="task-card"
+                                    cdkDrag
+                                    [cdkDragData]="task"
+                                    [cdkDragDisabled]="isUpdating(task)"
+                                    [cdkDragStartDelay]="{ touch: 250, mouse: 0 }"
+                                    (cdkDragMoved)="onDragMoved($event)"
+                                    (cdkDragEnded)="stopAutoScroll()"
+                                    [class.done]="task.status === 'done'"
+                                    [class.updating]="isUpdating(task)"
+                                    (click)="openTask(task)">
+                                    <div class="card-placeholder" *cdkDragPlaceholder></div>
+                                    <div class="card-top">
+                                        <button
+                                            type="button"
+                                            class="task-check"
+                                            [class.checked]="task.status === 'done'"
+                                            [disabled]="isUpdating(task)"
+                                            [attr.aria-label]="task.status === 'done' ? 'Reabrir tarea' : 'Marcar como hecha'"
+                                            (click)="toggleDone(task, $event)">
+                                            <ion-icon name="checkmark"></ion-icon>
+                                        </button>
+                                        <span class="task-title">{{ task.title }}</span>
+                                    </div>
+                                    <div class="task-meta">
+                                        @if (task.dueDate) {
+                                            <span class="meta-chip" [class.overdue]="isOverdue(task)">
+                                                <ion-icon name="calendar-clear-outline"></ion-icon>
+                                                {{ dueLabel(task) }}
+                                            </span>
+                                        }
+                                        @if (task.source === 'recapmeeting') {
+                                            <span class="meta-chip origin">
+                                                <ion-icon name="clipboard-outline"></ion-icon>
+                                                {{ originLabel(task) }}
+                                            </span>
+                                        }
+                                        @if (members.length > 1 && assigneeInitials(task)) {
+                                            <span class="assignee" [title]="assigneeName(task)">{{ assigneeInitials(task) }}</span>
+                                        }
+                                    </div>
+                                </article>
+                            } @empty {
+                                <div class="column-empty">Arrastra tarjetas aquí</div>
+                            }
+                        </div>
+                    </section>
+                }
+
+                @if (canManage) {
+                    <button type="button" class="add-list" (click)="createList()">
+                        <ion-icon name="add-outline"></ion-icon>
+                        Agregar lista
+                    </button>
+                }
+            </div>
+        }
+    </div>
+</ion-content>

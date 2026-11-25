@@ -1,14 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import {
-    IonContent,
     IonIcon,
     IonButton,
     IonBadge,
     ModalController,
-    LoadingController,
-    ViewWillEnter
+    LoadingController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -27,40 +25,44 @@ import {
     removeCircle,
     documentTextOutline,
     addOutline,
-    trashOutline
+    trashOutline,
+    chevronDownOutline
 } from 'ionicons/icons';
-import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { GoogleCalendarService } from '../services/google-calendar.service';
-import { CalendarEvent, EventMinuteLink } from '../models/calendar-event.model';
-import { ToastService } from '../../../shared/services/toast.service';
-import { LinkMinuteModalComponent } from '../components/link-minute-modal/link-minute-modal.component';
-import { MinutesService } from '../../minutes/services/minutes.service';
-import { MinuteListItem } from '../../minutes/models/minute.model';
+import { BaseModalComponent } from '../../../../shared/components/base-modal/base-modal.component';
+import { GoogleCalendarService } from '../../services/google-calendar.service';
+import { CalendarEvent, EventMinuteLink } from '../../models/calendar-event.model';
+import { ToastService } from '../../../../shared/services/toast.service';
+import { LinkMinuteModalComponent } from '../link-minute-modal/link-minute-modal.component';
+import { MinutesService } from '../../../minutes/services/minutes.service';
+import { MinuteListItem } from '../../../minutes/models/minute.model';
 
+/**
+ * Detalle de un evento de Google Calendar en un modal.
+ * Al cerrarse devuelve { changed: true } si se vinculó o desvinculó un acta.
+ */
 @Component({
-    selector: 'app-event-detail',
-    templateUrl: './event-detail.page.html',
-    styleUrls: ['./event-detail.page.scss'],
+    selector: 'app-event-detail-modal',
+    templateUrl: './event-detail-modal.component.html',
+    styleUrls: ['./event-detail-modal.component.scss'],
     standalone: true,
     imports: [
         CommonModule,
-        RouterLink,
-        IonContent,
         IonIcon,
         IonButton,
         IonBadge,
-        PageHeaderComponent
+        BaseModalComponent
     ]
 })
-export class EventDetailPage implements OnInit, ViewWillEnter {
-    event: CalendarEvent | null = null;
+export class EventDetailModalComponent implements OnInit {
+    @Input({ required: true }) event!: CalendarEvent;
     eventLink: EventMinuteLink | null = null;
     linkedMinute: MinuteListItem | null = null;
     linkedMinuteState: string | null = null;
-    isLoading = true;
+    private changed = false;
+    descriptionOpen = false;
+    attendeesOpen = false;
 
     constructor(
-        private route: ActivatedRoute,
         private router: Router,
         private calendarService: GoogleCalendarService,
         private minutesService: MinutesService,
@@ -84,31 +86,18 @@ export class EventDetailPage implements OnInit, ViewWillEnter {
             removeCircle,
             documentTextOutline,
             addOutline,
-            trashOutline
+            trashOutline,
+            chevronDownOutline
         });
     }
 
     ngOnInit() {
-        // El evento se pasa como state desde la navegación
-        const nav = this.router.getCurrentNavigation();
-        if (nav?.extras?.state?.['event']) {
-            this.event = nav.extras.state['event'];
-            this.isLoading = false;
-            this.loadEventLink();
-        } else {
-            // Si no hay state (recarga de página), intentar cargar por ID
-            const eventId = this.route.snapshot.paramMap.get('id');
-            if (eventId) {
-                this.loadEventById(eventId);
-            } else {
-                this.router.navigate(['/employee/calendar']);
-            }
-        }
+        this.loadEventLink();
     }
 
-    ionViewWillEnter() {
-        // Recargar vinculación cada vez que la vista se muestra (Ionic cachea las páginas)
-        this.loadEventLink();
+    /** Cierra el modal informando si cambió el vínculo con un acta. */
+    close() {
+        this.modalCtrl.dismiss({ changed: this.changed });
     }
 
     private async loadEventLink() {
@@ -126,37 +115,11 @@ export class EventDetailPage implements OnInit, ViewWillEnter {
                     await this.calendarService.unlinkEvent(this.event.id).toPromise();
                     this.eventLink = null;
                     this.linkedMinuteState = null;
+                    this.changed = true;
                 }
             }
         } catch {
             this.eventLink = null;
-        }
-    }
-
-    private async loadEventById(eventId: string) {
-        try {
-            // Cargar eventos del día actual y buscar por ID
-            const now = new Date();
-            const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
-            const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30);
-
-            const events = await this.calendarService.getEvents({
-                timeMin: start.toISOString(),
-                timeMax: end.toISOString(),
-                maxResults: 250
-            }).toPromise() || [];
-
-            this.event = events.find(e => e.id === eventId) || null;
-
-            if (!this.event) {
-                await this.toastService.show('No se encontró el evento');
-                this.router.navigate(['/employee/calendar']);
-            }
-        } catch {
-            await this.toastService.show('Error al cargar el evento');
-            this.router.navigate(['/employee/calendar']);
-        } finally {
-            this.isLoading = false;
         }
     }
 
@@ -179,6 +142,8 @@ export class EventDetailPage implements OnInit, ViewWillEnter {
                     .linkEventToMinute(this.event.id, data.minuteId)
                     .toPromise() || null;
                 this.linkedMinute = data.minute || null;
+                this.changed = true;
+                await this.loadEventLink();
                 await this.toastService.show('Acta vinculada exitosamente');
             } catch {
                 await this.toastService.show('Error al vincular el acta');
@@ -196,6 +161,8 @@ export class EventDetailPage implements OnInit, ViewWillEnter {
             await this.calendarService.unlinkEvent(this.event.id).toPromise();
             this.eventLink = null;
             this.linkedMinute = null;
+            this.linkedMinuteState = null;
+            this.changed = true;
             await this.toastService.show('Acta desvinculada');
         } catch {
             await this.toastService.show('Error al desvincular el acta');
@@ -205,22 +172,17 @@ export class EventDetailPage implements OnInit, ViewWillEnter {
     }
 
     async openLinkedMinute() {
-        if (this.eventLink && this.event) {
-            this.router.navigate(['/employee/minutes', this.eventLink.minuteId], {
-                queryParams: { backUrl: `/employee/calendar/event/${this.event.id}` }
-            });
-        }
+        if (!this.eventLink) return;
+        const minuteId = this.eventLink.minuteId;
+        await this.modalCtrl.dismiss({ changed: this.changed });
+        this.router.navigate(['/employee/minutes', minuteId], {
+            queryParams: { backUrl: '/employee/calendar' }
+        });
     }
 
-    saveEventToStorage() {
-        if (this.event) {
-            sessionStorage.setItem('create-minute-event', JSON.stringify(this.event));
-        }
-    }
-
-    openCreateMinuteModal() {
-        if (!this.event) return;
+    async openCreateMinute() {
         sessionStorage.setItem('create-minute-event', JSON.stringify(this.event));
+        await this.modalCtrl.dismiss({ changed: this.changed });
         this.router.navigate(['/employee/calendar/create-minute'], {
             queryParams: { eventId: this.event.id }
         });

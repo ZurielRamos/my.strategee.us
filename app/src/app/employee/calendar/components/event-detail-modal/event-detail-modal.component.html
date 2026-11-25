@@ -1,17 +1,6 @@
-<app-page-header [backUrl]="'/employee/calendar'"></app-page-header>
-
-<ion-content [fullscreen]="true" class="event-detail-content">
-    <div class="page-container" *ngIf="event && !isLoading">
-
-        <!-- Header del evento -->
-        <div class="event-header-section">
-            <div class="event-color-indicator"></div>
-            <div class="event-title-block">
-                <h1>{{ event.title }}</h1>
-                <ion-badge *ngIf="event.allDay" color="primary" class="allday-badge">Todo el día</ion-badge>
-            </div>
-        </div>
-
+<app-base-modal [title]="event.title" [showFooter]="false" (modalDismiss)="close()">
+    <div class="page-container">
+        <ion-badge *ngIf="event.allDay" color="primary" class="allday-badge">Todo el día</ion-badge>
         <!-- Card principal de información -->
         <div class="detail-card">
             <!-- Fecha y hora -->
@@ -62,31 +51,37 @@
             </div>
         </div>
 
-        <!-- Card de descripción -->
+        <!-- Card de descripción (contraída por defecto) -->
         <div class="detail-card" *ngIf="event.description">
-            <div class="detail-row">
+            <div class="detail-row clickable collapsible-header" (click)="descriptionOpen = !descriptionOpen"
+                role="button" [attr.aria-expanded]="descriptionOpen">
                 <div class="detail-icon">
                     <ion-icon name="document-text-outline"></ion-icon>
                 </div>
                 <div class="detail-body">
                     <span class="detail-label">Descripción</span>
-                    <div class="event-description" [innerHTML]="event.description"></div>
                 </div>
+                <ion-icon name="chevron-down-outline" class="collapse-icon" [class.open]="descriptionOpen"></ion-icon>
+            </div>
+            <div class="collapsible-body" *ngIf="descriptionOpen">
+                <div class="event-description" [innerHTML]="event.description"></div>
             </div>
         </div>
 
-        <!-- Card de participantes -->
+        <!-- Card de participantes (contraída por defecto) -->
         <div class="detail-card" *ngIf="event.attendees && event.attendees.length > 0">
-            <div class="detail-row">
+            <div class="detail-row clickable collapsible-header" (click)="attendeesOpen = !attendeesOpen"
+                role="button" [attr.aria-expanded]="attendeesOpen">
                 <div class="detail-icon">
                     <ion-icon name="people-outline"></ion-icon>
                 </div>
                 <div class="detail-body">
                     <span class="detail-label">{{ event.attendees.length }} participante{{ event.attendees.length > 1 ? 's' : '' }}</span>
                 </div>
+                <ion-icon name="chevron-down-outline" class="collapse-icon" [class.open]="attendeesOpen"></ion-icon>
             </div>
 
-            <div class="attendees-list">
+            <div class="attendees-list" *ngIf="attendeesOpen">
                 <div class="attendee-item" *ngFor="let attendee of event.attendees">
                     <div class="attendee-avatar" [ngClass]="'status-' + attendee.responseStatus">
                         <ion-icon [name]="getStatusIcon(attendee.responseStatus)"></ion-icon>
@@ -132,7 +127,7 @@
                     <ion-icon name="add-outline" slot="start"></ion-icon>
                     Vincular
                 </ion-button>
-                <ion-button fill="outline" size="small" color="success" [routerLink]="['/employee/calendar/create-minute']" [queryParams]="{eventId: event.id}" (click)="saveEventToStorage()">
+                <ion-button fill="outline" size="small" color="success" (click)="openCreateMinute()">
                     <ion-icon name="add-outline" slot="start"></ion-icon>
                     Crear
                 </ion-button>
@@ -148,9 +143,4 @@
         </div>
     </div>
 
-    <!-- Loading -->
-    <div class="loading-state" *ngIf="isLoading">
-        <ion-icon name="calendar-outline"></ion-icon>
-        <p>Cargando evento...</p>
-    </div>
-</ion-content>
+</app-base-modal>

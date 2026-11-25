@@ -46,7 +46,8 @@ export class EmployeesService {
         search?: string,
         hasCredentials?: boolean,
         contractStatus?: string,
-        companyId?: string
+        companyId?: string,
+        status?: string
     ): Observable<EmployeesResponse> {
         let params = new HttpParams()
             .set('page', page.toString())
@@ -68,12 +69,25 @@ export class EmployeesService {
             params = params.set('companyId', companyId);
         }
 
+        if (status) {
+            params = params.set('status', status);
+        }
         return this.http.get<EmployeesResponse>(this.apiUrl, { params }).pipe(
             catchError(error => {
                 console.error('Error loading employees:', error);
                 return throwError(() => error);
             })
         );
+    }
+
+    /** Aprueba una solicitud de registro pendiente (envía el correo de bienvenida). */
+    approveRegistration(id: string): Observable<Employee> {
+        return this.http.post<Employee>(`${this.apiUrl}/${id}/approve`, {});
+    }
+
+    /** Rechaza (elimina) una solicitud de registro pendiente. */
+    rejectRegistration(id: string): Observable<void> {
+        return this.http.post<void>(`${this.apiUrl}/${id}/reject`, {});
     }
 
     /**

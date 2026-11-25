@@ -100,6 +100,44 @@
             [readonly]="mode === 'view'">
         </app-text-input>
 
+        <!-- Información Laboral -->
+        <h4 class="section-title">Información Laboral</h4>
+        <div class="form-row">
+            <app-date-input
+                formControlName="hireDate"
+                label="Fecha de Ingreso"
+                mode="single"
+                [required]="mode === 'create'">
+            </app-date-input>
+            <app-form-select
+                label="Tipo de Contrato"
+                [options]="contractTypeOptions"
+                formControlName="contractType"
+                placeholder="Seleccione tipo"
+                [required]="mode === 'create'">
+            </app-form-select>
+        </div>
+        <app-form-select
+            label="Empresa"
+            [options]="companyOptions"
+            formControlName="companyId"
+            placeholder="Seleccione empresa">
+        </app-form-select>
+        <div class="form-row">
+            <app-form-select
+                label="Puesto"
+                [options]="positionOptions"
+                formControlName="positionId"
+                placeholder="Seleccione puesto">
+            </app-form-select>
+            <app-form-select
+                label="Departamento/Área"
+                [options]="departmentOptions"
+                formControlName="departmentId"
+                placeholder="Seleccione departamento">
+            </app-form-select>
+        </div>
+
         <!-- Configuración IDO -->
         <h4 class="section-title">Configuración IDO</h4>
 

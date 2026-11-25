@@ -10,6 +10,17 @@ import { SalaryType } from './enums/salary-type.enum';
 import { GlobalParametersService } from '@modules/finance/global-parameters/global-parameters.service';
 import { GlobalParameterKey } from '@modules/finance/global-parameters/enums/global-parameter-key.enum';
 import { ContractStatus } from './enums/contract-status.enum';
+import { ContractType } from './enums/contract-type.enum';
+import { Employee } from '../employees/entities/employee.entity';
+
+export interface EmploymentInfo {
+    type: ContractType | null;
+    startDate: Date | null;
+    companyId: string | null;
+    positionId: string | null;
+    departmentId: string | null;
+    source: 'contract' | 'employee';
+}
 
 @Injectable()
 export class ContractsService {
@@ -18,6 +29,8 @@ export class ContractsService {
         private readonly contractsRepository: Repository<Contract>,
         @InjectRepository(Memorandum)
         private readonly memorandumsRepository: Repository<Memorandum>,
+        @InjectRepository(Employee)
+        private readonly employeesRepository: Repository<Employee>,
         private readonly globalParametersService: GlobalParametersService,
     ) { }
 
@@ -306,5 +319,38 @@ export class ContractsService {
 
         return contract;
     }
-}
 
+    /**
+     * Datos laborales vigentes de un empleado (tipo de contrato, fecha de ingreso,
+     * empresa, puesto y departamento/área).
+     * Si tiene contrato activo se usan los del contrato (y su memorando vigente);
+     * si no, los guardados en su información personal.
+     * Devuelve null si el empleado no existe.
+     */
+    async findEmploymentInfo(employeeId: string): Promise<EmploymentInfo | null> {
+        const contract = await this.findActiveByEmployee(employeeId);
+        if (contract) {
+            const memo = (contract as any).currentMemorandum as Memorandum | undefined;
+            return {
+                type: contract.type,
+                startDate: contract.startDate,
+                companyId: contract.companyId ?? null,
+                positionId: memo?.positionId ?? null,
+                departmentId: memo?.departmentId ?? null,
+                source: 'contract',
+            };
+        }
+        const employee = await this.employeesRepository.findOne({ where: { id: employeeId } });
+        if (!employee) {
+            return null;
+        }
+        return {
+            type: employee.contractType ?? null,
+            startDate: employee.hireDate ?? null,
+            companyId: employee.companyId ?? null,
+            positionId: employee.positionId ?? null,
+            departmentId: employee.departmentId ?? null,
+            source: 'employee',
+        };
+    }
+}

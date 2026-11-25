@@ -85,6 +85,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             }
         }
         
+        // Sin contrato activo: puesto guardado en la información personal
+        if (profile?.employment?.position?.name) {
+            this.cachedPosition = profile.employment.position.name;
+            return;
+        }
         this.cachedPosition = null;
     }
 

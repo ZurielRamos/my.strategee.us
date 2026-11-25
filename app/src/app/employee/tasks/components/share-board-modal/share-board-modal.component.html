@@ -1,0 +1,58 @@
+<app-base-modal
+    [title]="'Compartir ' + board.name"
+    [subtitle]="summary"
+    confirmText="Guardar"
+    [loading]="isSaving"
+    (modalDismiss)="close()"
+    (modalConfirm)="save()">
+
+    <p class="intro">Quienes tengan acceso verán todas las tareas del tablero y podrán crearlas, editarlas y moverlas. Solo tú puedes cambiar las listas y los accesos.</p>
+
+    <ion-segment [value]="tab" (ionChange)="tab = $any($event.detail.value)" mode="ios" class="share-tabs">
+        <ion-segment-button value="users">
+            <ion-label>Empleados{{ selectedUsers.size ? ' (' + selectedUsers.size + ')' : '' }}</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="departments">
+            <ion-label>Departamentos{{ selectedDepartments.size ? ' (' + selectedDepartments.size + ')' : '' }}</ion-label>
+        </ion-segment-button>
+    </ion-segment>
+
+    <ion-searchbar
+        [(ngModel)]="search"
+        [placeholder]="tab === 'users' ? 'Buscar empleado' : 'Buscar departamento'"
+        class="share-search"
+        [debounce]="150">
+    </ion-searchbar>
+
+    @if (isLoading) {
+        <div class="loading"><ion-spinner name="crescent"></ion-spinner></div>
+    } @else if (tab === 'users') {
+        <div class="option-list">
+            @for (user of filteredUsers; track user.id) {
+                <button type="button" class="option" [class.selected]="selectedUsers.has(user.id)" (click)="toggle(selectedUsers, user.id)">
+                    <span class="check"><ion-icon name="checkmark"></ion-icon></span>
+                    <span class="option-text">
+                        <span class="option-name">{{ user.name }}</span>
+                        <span class="option-detail">{{ user.email }}</span>
+                    </span>
+                </button>
+            } @empty {
+                <p class="empty">No hay empleados que coincidan.</p>
+            }
+        </div>
+    } @else {
+        <div class="option-list">
+            @for (department of filteredDepartments; track department.id) {
+                <button type="button" class="option" [class.selected]="selectedDepartments.has(department.id)" (click)="toggle(selectedDepartments, department.id)">
+                    <span class="check"><ion-icon name="checkmark"></ion-icon></span>
+                    <span class="option-text">
+                        <span class="option-name">{{ department.name }}</span>
+                        <span class="option-detail">Todos los empleados del departamento</span>
+                    </span>
+                </button>
+            } @empty {
+                <p class="empty">No hay departamentos que coincidan.</p>
+            }
+        </div>
+    }
+</app-base-modal>

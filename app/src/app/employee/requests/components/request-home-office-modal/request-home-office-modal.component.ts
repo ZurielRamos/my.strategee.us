@@ -10,12 +10,15 @@ import { RequestsService } from '../../services/requests.service';
 import { BenefitAllocation } from '../../../../admin/employees/models/benefit-allocation.model';
 import { RequestType } from '../../models/request.model';
 
+import { NumericOnlyDirective } from '../../../../shared/directives/numeric-only.directive';
+
 @Component({
     selector: 'app-request-home-office-modal',
     templateUrl: './request-home-office-modal.component.html',
     styleUrls: ['./request-home-office-modal.component.scss'],
     standalone: true,
     imports: [
+        NumericOnlyDirective,
         CommonModule,
         ReactiveFormsModule,
         BaseModalComponent,
@@ -71,7 +74,7 @@ export class RequestHomeOfficeModalComponent implements OnInit {
         if (this.form.valid && !this.isSubmitting) {
             this.isSubmitting = true;
 
-            const formValue = this.form.value;
+            const formValue = { ...this.form.value, amount: Number(this.form.value.amount) };
             const selectedDate = new Date(formValue.date);
             
             // Validar que no exceda los días disponibles

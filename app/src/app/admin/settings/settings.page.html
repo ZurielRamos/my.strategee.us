@@ -76,7 +76,7 @@
                                 <h3>Días de Vacaciones para Contrato Laboral</h3>
                                 <p>Días de vacaciones anuales para empleados con contrato laboral</p>
                             </ion-label>
-                            <ion-input [(ngModel)]="vacationDaysLaborContract" type="number" min="0"></ion-input>
+                            <ion-input [(ngModel)]="vacationDaysLaborContract" type="text" appNumericOnly [integer]="true"></ion-input>
                         </ion-item>
 
                         <ion-item class="settings-item">
@@ -84,7 +84,7 @@
                                 <h3>Días de Vacaciones para Contrato Prestación de Servicios</h3>
                                 <p>Días de vacaciones anuales para empleados con contrato de prestación de servicios</p>
                             </ion-label>
-                            <ion-input [(ngModel)]="vacationDaysServiceContract" type="number" min="0"></ion-input>
+                            <ion-input [(ngModel)]="vacationDaysServiceContract" type="text" appNumericOnly [integer]="true"></ion-input>
                         </ion-item>
 
                         <ion-item class="settings-item">
@@ -92,7 +92,7 @@
                                 <h3>Horas en un Día Laboral</h3>
                                 <p>Número de horas que constituyen un día laboral completo</p>
                             </ion-label>
-                            <ion-input [(ngModel)]="hoursPerWorkday" type="number" min="1" max="24" step="0.5"></ion-input>
+                            <ion-input [(ngModel)]="hoursPerWorkday" type="text" appNumericOnly [integer]="true" max="24" step="0.5"></ion-input>
                         </ion-item>
                     </ion-list>
 
@@ -121,7 +121,7 @@
                                 <h3>Tiempo de Sesión (minutos)</h3>
                                 <p>Tiempo de inactividad antes de cerrar sesión automáticamente</p>
                             </ion-label>
-                            <ion-input [(ngModel)]="sessionTimeout" type="number" min="5"></ion-input>
+                            <ion-input [(ngModel)]="sessionTimeout" type="text" appNumericOnly [integer]="true"></ion-input>
                         </ion-item>
 
                         <ion-item class="settings-item">
@@ -137,7 +137,7 @@
                                 <h3>Expiración de Contraseña (días)</h3>
                                 <p>Días antes de que expire la contraseña</p>
                             </ion-label>
-                            <ion-input [(ngModel)]="passwordExpirationDays" type="number" min="30"></ion-input>
+                            <ion-input [(ngModel)]="passwordExpirationDays" type="text" appNumericOnly [integer]="true"></ion-input>
                         </ion-item>
                     </ion-list>
 

@@ -31,6 +31,10 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'registro/:token',
+    loadComponent: () => import('./shared/pages/employee-registration/employee-registration.page').then(m => m.EmployeeRegistrationPage)
+  },
+  {
     path: 'reception-format/:token',
     loadComponent: () => import('./shared/pages/reception-format/reception-format.page').then(m => m.ReceptionFormatPage)
   },

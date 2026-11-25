@@ -1,0 +1,132 @@
+:host {
+    display: contents;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.readonly-task {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    .readonly-title {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--app-text-primary);
+        line-height: 1.4;
+    }
+
+    .readonly-description {
+        margin: 0;
+        font-size: 14px;
+        color: var(--app-text-secondary);
+        white-space: pre-line;
+        line-height: 1.5;
+    }
+}
+
+.readonly-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+    padding: 10px 0;
+    border-top: 1px solid var(--app-border-color, rgba(0, 0, 0, 0.06));
+
+    .meta-label {
+        color: var(--app-text-secondary);
+    }
+
+    .meta-value {
+        color: var(--app-text-primary);
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+}
+
+.origin-card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: none;
+    border-radius: 12px;
+    background: var(--app-hover-bg);
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+
+    &:disabled {
+        cursor: default;
+    }
+
+    .origin-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(var(--ion-color-primary-rgb), 0.12);
+        color: var(--ion-color-primary);
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .origin-text {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .origin-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--app-text-tertiary, var(--app-text-secondary));
+    }
+
+    .origin-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--app-text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .origin-open {
+        color: var(--app-text-secondary);
+        font-size: 18px;
+    }
+}
+
+.hint,
+.google-hint {
+    font-size: 12px;
+    color: var(--app-text-secondary);
+    margin: 12px 0 0;
+    line-height: 1.5;
+}
+
+.google-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.delete-button {
+    margin-top: 8px;
+    --padding-start: 0;
+    text-transform: none;
+    font-weight: 600;
+}

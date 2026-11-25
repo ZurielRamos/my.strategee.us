@@ -48,9 +48,9 @@ export class VacationsService {
      * Elegible = contrato laboral activo (Término Indefinido o Término Fijo).
      */
     async validateEligibility(employeeId: string): Promise<void> {
-        const contract = await this.contractsService.findActiveByEmployee(employeeId);
+        const contract = await this.contractsService.findEmploymentInfo(employeeId);
 
-        if (!contract) {
+        if (!contract?.type) {
             throw new BadRequestException(
                 'Las vacaciones solo aplican para empleados con contrato laboral activo (Término Indefinido o Término Fijo).',
             );
@@ -88,9 +88,9 @@ export class VacationsService {
 
     async getEmployeeBalance(employeeId: string): Promise<VacationBalanceResponseDto> {
         // 1. Obtener Contrato y verificar elegibilidad
-        const contract = await this.contractsService.findActiveByEmployee(employeeId);
+        const contract = await this.contractsService.findEmploymentInfo(employeeId);
         
-        if (!contract || !VacationsService.ELIGIBLE_CONTRACT_TYPES.includes(contract.type)) {
+        if (!contract?.type || !contract.startDate || !VacationsService.ELIGIBLE_CONTRACT_TYPES.includes(contract.type)) {
             return this.getEmptyBalance();
         }
 

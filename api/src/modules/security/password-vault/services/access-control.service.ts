@@ -230,8 +230,11 @@ export class AccessControlService {
             .select('contract.companyId', 'companyId')
             .getRawOne();
 
-        if (!memorandum) return false;
-        return visibilityCompanies.some((vc) => vc.companyId === memorandum.companyId);
+        const companyId = memorandum
+            ? memorandum.companyId
+            : (await this.getEmployeeWithoutActiveContract(employeeId))?.companyId;
+        if (!companyId) return false;
+        return visibilityCompanies.some((vc) => vc.companyId === companyId);
     }
 
     private async hasAreaAccess(
@@ -256,8 +259,25 @@ export class AccessControlService {
             .select('memorandum.positionId', 'positionId')
             .getRawOne();
 
-        if (!memorandum) return false;
-        return visibilityPositions.some((vp) => vp.positionId === memorandum.positionId);
+        const positionId = memorandum
+            ? memorandum.positionId
+            : (await this.getEmployeeWithoutActiveContract(employeeId))?.positionId;
+        if (!positionId) return false;
+        return visibilityPositions.some((vp) => vp.positionId === positionId);
+    }
+
+    /**
+     * Empresa/puesto/departamento guardados en el empleado. Solo aplica
+     * cuando no tiene contratos activos (fallback a su información personal).
+     */
+    private async getEmployeeWithoutActiveContract(employeeId: string): Promise<Employee | null> {
+        return this.employeeRepository
+            .createQueryBuilder('employee')
+            .leftJoin('employee.contracts', 'contract', 'contract.status = :status', { status: 'active' })
+            .where('employee.id = :employeeId', { employeeId })
+            .andWhere('contract.id IS NULL')
+            .select(['employee.id', 'employee.companyId', 'employee.positionId', 'employee.departmentId'])
+            .getOne();
     }
 
     private hasEmployeeListAccess(

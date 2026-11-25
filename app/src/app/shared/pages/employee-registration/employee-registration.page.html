@@ -1,0 +1,144 @@
+<ion-content class="registration-content" [fullscreen]="true">
+    <div class="registration-container">
+        <header class="registration-header">
+            <img src="assets/icono-strategee.png" alt="My Strategee" class="logo" />
+            <h1>Registro My Strategee</h1>
+        </header>
+
+        @switch (state) {
+        @case ('loading') {
+        <div class="state-card">
+            <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        }
+        @case ('invalid') {
+        <div class="state-card">
+            <ion-icon name="alert-circle-outline" class="state-icon danger"></ion-icon>
+            <h2>Enlace no disponible</h2>
+            <p>Este enlace de registro no es válido o ya no está activo. Solicita uno nuevo a Recursos Humanos.</p>
+        </div>
+        }
+        @case ('success') {
+        <div class="state-card">
+            <ion-icon name="checkmark-circle-outline" class="state-icon success"></ion-icon>
+            <h2>¡Registro enviado!</h2>
+            <p>Recibimos tu información. Recursos Humanos la revisará y, una vez aprobada, recibirás un correo para configurar tu contraseña.</p>
+        </div>
+        }
+        @case ('form') {
+        <!-- Indicador de pasos -->
+        <ol class="stepper">
+            @for (step of steps; track step; let i = $index) {
+            <li [class.active]="i === currentStep" [class.done]="i < currentStep">
+                <span class="step-number">
+                    @if (i < currentStep) { <ion-icon name="checkmark-outline"></ion-icon> } @else { {{ i + 1 }} }
+                </span>
+                <span class="step-label">{{ step }}</span>
+            </li>
+            }
+        </ol>
+
+        <form [formGroup]="form" class="form-card" (ngSubmit)="$event.preventDefault()">
+            <!-- Paso 1: Personal -->
+            @if (currentStep === 0) {
+            <div formGroupName="personal">
+                <h2 class="step-title">Información personal</h2>
+                <app-text-input formControlName="firstName" label="Nombres" placeholder="Ej: Juan Carlos" [required]="true"></app-text-input>
+                <app-text-input formControlName="lastName" label="Apellidos" placeholder="Ej: García López" [required]="true"></app-text-input>
+                <div class="form-row">
+                    <app-form-select label="Tipo de Documento" [options]="documentTypeOptions" formControlName="documentType" [required]="true"></app-form-select>
+                    <app-text-input formControlName="documentNumber" label="Número de Documento" placeholder="Ej: 12345678" [required]="true"></app-text-input>
+                </div>
+                <div class="form-row">
+                    <app-date-input formControlName="birthDate" label="Fecha de Nacimiento" mode="single" [required]="true"></app-date-input>
+                    <app-form-select label="Género" [options]="genderOptions" formControlName="gender" placeholder="Seleccione género" [required]="true"></app-form-select>
+                </div>
+                <app-textarea-input formControlName="address" label="Dirección" placeholder="Ej: Calle 123 #45-67, Medellín" [required]="true" [rows]="2"></app-textarea-input>
+                <app-phone-input formControlName="personalPhone" label="Teléfono Personal" placeholder="Ej: 3001234567" [required]="true"></app-phone-input>
+                <app-text-input formControlName="personalEmail" label="Email Personal" placeholder="Ej: juan.garcia@email.com" type="email" [required]="true"></app-text-input>
+                <app-text-input formControlName="corporateEmail" label="Email Corporativo" placeholder="Ej: juan.garcia@strategee.us" type="email" [required]="true"></app-text-input>
+            </div>
+            }
+
+            <!-- Paso 2: Laboral -->
+            @if (currentStep === 1) {
+            <div formGroupName="work">
+                <h2 class="step-title">Información laboral</h2>
+                <app-date-input formControlName="hireDate" label="Fecha de Ingreso" mode="single" [required]="true"></app-date-input>
+                <app-form-select label="Tipo de Contrato" [options]="contractTypeOptions" formControlName="contractType" placeholder="Seleccione tipo" [required]="true"></app-form-select>
+                <app-form-select label="Empresa" [options]="companyOptions" formControlName="companyId" placeholder="Seleccione empresa" [required]="true"></app-form-select>
+                <app-form-select label="Puesto" [options]="positionOptions" formControlName="positionId" placeholder="Seleccione puesto" [required]="true"></app-form-select>
+                <app-form-select label="Departamento/Área" [options]="departmentOptions" formControlName="departmentId" placeholder="Seleccione departamento" [required]="true"></app-form-select>
+            </div>
+            }
+
+            <!-- Paso 3: Contactos de emergencia -->
+            @if (currentStep === 2) {
+            <div>
+                <h2 class="step-title">Contactos de emergencia</h2>
+                <p class="step-hint">Agrega al menos un contacto (máximo {{ maxContacts }}).</p>
+                @for (contact of contacts.controls; track contact; let i = $index) {
+                <div class="contact-block" [formGroup]="contactGroup(i)">
+                    <div class="contact-header">
+                        <h3>Contacto {{ i + 1 }}</h3>
+                        @if (contacts.length > 1) {
+                        <ion-button fill="clear" color="danger" size="small" (click)="removeContact(i)">
+                            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                        </ion-button>
+                        }
+                    </div>
+                    <app-text-input formControlName="name" label="Nombre completo" placeholder="Ej: María García" [required]="true"></app-text-input>
+                    <app-text-input formControlName="relationship" label="Parentesco" placeholder="Ej: Madre" [required]="true"></app-text-input>
+                    <app-phone-input formControlName="phone" label="Teléfono" placeholder="Ej: 3001234567" [required]="true"></app-phone-input>
+                    <app-text-input formControlName="email" label="Email (opcional)" placeholder="Ej: maria@email.com" type="email"></app-text-input>
+                </div>
+                }
+                @if (contacts.length < maxContacts) {
+                <ion-button fill="outline" color="dark" (click)="addContact()">
+                    <ion-icon slot="start" name="add-outline"></ion-icon>
+                    Agregar otro contacto
+                </ion-button>
+                }
+            </div>
+            }
+
+            <!-- Paso 4: Parafiscales -->
+            @if (currentStep === 3) {
+            <div formGroupName="parafiscales">
+                <h2 class="step-title">Parafiscales</h2>
+                <p class="step-hint">Indica las entidades a las que estás afiliado. Puedes dejar en blanco las que no conozcas.</p>
+                <app-text-input formControlName="eps" label="EPS" placeholder="Ej: Sura EPS"></app-text-input>
+                <app-text-input formControlName="arl" label="ARL" placeholder="Ej: Sura ARL"></app-text-input>
+                <app-text-input formControlName="fondoPension" label="Fondo de Pensión" placeholder="Ej: Porvenir"></app-text-input>
+                <app-text-input formControlName="cajaCompensacion" label="Caja de Compensación" placeholder="Ej: Comfama"></app-text-input>
+            </div>
+            }
+
+            <!-- Campo trampa anti-bots -->
+            <input type="text" formControlName="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+            @if (errorMessage) {
+            <p class="form-error">{{ errorMessage }}</p>
+            }
+
+            <div class="step-actions">
+                <ion-button fill="outline" color="dark" (click)="back()" [disabled]="currentStep === 0 || isSubmitting">
+                    <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+                    Atrás
+                </ion-button>
+                @if (!isLastStep) {
+                <ion-button color="dark" (click)="next()" [disabled]="!isStepValid">
+                    Siguiente
+                    <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+                </ion-button>
+                } @else {
+                <ion-button color="dark" (click)="submit()" [disabled]="isSubmitting || !form.valid">
+                    @if (isSubmitting) { <ion-spinner name="crescent"></ion-spinner> } @else { Enviar registro }
+                </ion-button>
+                }
+            </div>
+        </form>
+        }
+        }
+    </div>
+</ion-content>

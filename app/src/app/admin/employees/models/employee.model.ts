@@ -11,8 +11,17 @@ export interface Employee {
     personalEmail: string;
     corporateEmail: string;
     idoLimit: number;
+    hireDate?: string | null;
+    contractType?: string | null;
+    companyId?: string | null;
+    positionId?: string | null;
+    departmentId?: string | null;
+    company?: { id: string; name: string } | null;
+    position?: { id: string; name: string } | null;
+    department?: { id: string; name: string } | null;
     photoUrl?: string;
     isActive: boolean;
+    status?: 'ACTIVE' | 'PENDING';
     vacationBalance?: number;
     createdAt?: string;
     updatedAt?: string;

@@ -76,14 +76,29 @@ export class TextInputComponent implements ControlValueAccessor {
         this.disabled = isDisabled;
     }
 
-    get inputMode(): 'numeric' | undefined {
-        return this.digitsOnly ? 'numeric' : undefined;
+    /** Nunca se usa <input type="number">: se renderiza como texto y se filtra a números. */
+    get nativeType(): Exclude<TextInputType, 'number'> {
+        return this.type === 'number' ? 'text' : this.type;
+    }
+
+    get inputMode(): 'numeric' | 'decimal' | undefined {
+        if (this.digitsOnly) return 'numeric';
+        return this.type === 'number' ? 'decimal' : undefined;
     }
 
     onValueChange(event: any) {
         let newValue = event.detail.value || '';
-        if (this.digitsOnly) {
-            newValue = newValue.replace(/\D/g, '');
+        if (this.digitsOnly || this.type === 'number') {
+            if (this.digitsOnly) {
+                newValue = newValue.replace(/\D/g, '');
+            } else {
+                // Solo dígitos y un único punto decimal (la coma se toma como punto)
+                newValue = newValue.replace(/,/g, '.').replace(/[^\d.]/g, '');
+                const firstDot = newValue.indexOf('.');
+                if (firstDot !== -1) {
+                    newValue = newValue.slice(0, firstDot + 1) + newValue.slice(firstDot + 1).replace(/\./g, '');
+                }
+            }
             // Forzar el valor en el ion-input: si el valor saneado no cambia, el binding no lo actualiza
             event.target.value = newValue;
         }

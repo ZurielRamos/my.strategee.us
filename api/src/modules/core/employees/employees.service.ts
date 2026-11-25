@@ -23,6 +23,10 @@ import { GlobalParametersService } from '@modules/finance/global-parameters/glob
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { AuditLog } from '@modules/core/audit/entities/audit-log.entity';
+import { EmployeeStatus } from './enums/employee-status.enum';
+import { EmergencyContact } from './entities/emergency-contact.entity';
+import { EmployeeParafiscales } from '@modules/core/parafiscales/entities/employee-parafiscales.entity';
+import { Role } from '@modules/iam/authorization/enums/role.enum';
 
 @Injectable()
 export class EmployeesService {
@@ -95,6 +99,7 @@ export class EmployeesService {
         hasCredentials?: boolean,
         contractStatus?: string,
         companyId?: string,
+        status: EmployeeStatus = EmployeeStatus.ACTIVE,
     ): Promise<{
         data: Employee[];
         meta: {
@@ -113,7 +118,9 @@ export class EmployeesService {
         queryBuilder.leftJoinAndSelect('employee.profilePhoto', 'profilePhoto');
         queryBuilder.leftJoinAndSelect('employee.contracts', 'contracts');
         queryBuilder.leftJoinAndSelect('contracts.company', 'company');
+        queryBuilder.leftJoinAndSelect('employee.company', 'employeeCompany');
 
+        queryBuilder.andWhere('employee.status = :status', { status });
         if (search) {
             // Search by full name (firstName + lastName)
             queryBuilder.andWhere(
@@ -139,7 +146,12 @@ export class EmployeesService {
 
         // Filter by company
         if (companyId) {
-            queryBuilder.andWhere('contracts.companyId = :companyId', { companyId });
+            queryBuilder.andWhere(
+                `(contracts.companyId = :companyId OR (employee.companyId = :companyId AND NOT EXISTS (
+                    SELECT 1 FROM contracts ac WHERE ac.employee_id = employee.id AND ac.status = 'active'
+                )))`,
+                { companyId },
+            );
         }
 
         queryBuilder
@@ -170,6 +182,9 @@ export class EmployeesService {
                 'user',
                 'profilePhoto',
                 'benefitAllocations',
+                'company',
+                'position',
+                'department',
                 'contracts',
                 'contracts.memorandums',
                 'contracts.memorandums.position',
@@ -237,6 +252,9 @@ export class EmployeesService {
             where: { id },
             relations: [
                 'profilePhoto',
+                'company',
+                'position',
+                'department',
             ],
         });
 
@@ -265,6 +283,14 @@ export class EmployeesService {
                 photoUrl: employee.photoUrl,
                 profilePhoto: employee.profilePhoto,
                 isActive: employee.isActive,
+            },
+            // Datos laborales guardados en la información personal (se usan si no hay contrato activo)
+            employment: {
+                hireDate: employee.hireDate,
+                contractType: employee.contractType,
+                company: employee.company ? { id: employee.company.id, name: employee.company.name } : null,
+                position: employee.position ? { id: employee.position.id, name: employee.position.name } : null,
+                department: employee.department ? { id: employee.department.id, name: employee.department.name } : null,
             },
             // Información del contrato y memorando vigente
             currentContract: activeContract ? {
@@ -339,7 +365,12 @@ export class EmployeesService {
         }
 
         Object.assign(employee, updateEmployeeDto);
-        return this.employeesRepository.save(employee);
+        // Las relaciones cargadas tienen prioridad sobre los IDs al guardar; se descartan si el ID cambió
+        if ('companyId' in updateEmployeeDto) employee.company = undefined as any;
+        if ('positionId' in updateEmployeeDto) employee.position = undefined as any;
+        if ('departmentId' in updateEmployeeDto) employee.department = undefined as any;
+        await this.employeesRepository.save(employee);
+        return this.findOne(id);
     }
 
     /**
@@ -434,6 +465,58 @@ export class EmployeesService {
             await queryRunner.release();
         }
     }
+    /**
+     * Aprueba una solicitud de registro pendiente: activa al empleado, crea sus
+     * credenciales (rol EMPLOYEE) y envía el correo de bienvenida para configurar
+     * la contraseña. Requiere correo corporativo (es el usuario de acceso).
+     */
+    async approveRegistration(id: string): Promise<Employee> {
+        const employee = await this.findOne(id);
+        if (employee.status !== EmployeeStatus.PENDING) {
+            throw new BadRequestException('Este empleado no tiene una solicitud pendiente');
+        }
+        if (!employee.corporateEmail) {
+            throw new BadRequestException(
+                'Asigna un correo corporativo al empleado antes de aprobar: es el usuario con el que iniciará sesión',
+            );
+        }
+        const missing: string[] = [];
+        if (!employee.hireDate) missing.push('fecha de ingreso');
+        if (!employee.contractType) missing.push('tipo de contrato');
+        if (missing.length) {
+            throw new BadRequestException(`Completa antes de aprobar: ${missing.join(', ')}`);
+        }
+
+        // Activar primero para que las validaciones posteriores lo vean como empleado vigente
+        await this.employeesRepository.update({ id }, { status: EmployeeStatus.ACTIVE, isActive: true });
+        try {
+            // Crea el usuario y envía el correo de bienvenida (configurar contraseña)
+            await this.createCredentials(id, { roles: [Role.EMPLOYEE] });
+        } catch (error) {
+            await this.employeesRepository.update({ id }, { status: EmployeeStatus.PENDING, isActive: false });
+            throw error;
+        }
+        return this.findOne(id);
+    }
+
+    /**
+     * Rechaza una solicitud pendiente eliminando el registro (y sus contactos y parafiscales).
+     */
+    async rejectRegistration(id: string): Promise<void> {
+        const employee = await this.employeesRepository.findOne({ where: { id } });
+        if (!employee) {
+            throw new NotFoundException('Empleado no encontrado');
+        }
+        if (employee.status !== EmployeeStatus.PENDING) {
+            throw new BadRequestException('Solo se pueden rechazar solicitudes pendientes');
+        }
+        await this.dataSource.transaction(async (manager) => {
+            await manager.delete(EmergencyContact, { employeeId: id });
+            await manager.delete(EmployeeParafiscales, { employeeId: id });
+            await manager.delete(Employee, { id });
+        });
+    }
+
     /**
      * Soft delete employee (set isActive to false)
      */

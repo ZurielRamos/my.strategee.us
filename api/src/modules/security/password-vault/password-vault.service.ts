@@ -594,8 +594,22 @@ export class PasswordVaultService {
              LIMIT 1`,
             [employeeId, now, now],
         );
-        const employeePositionId: string | null = activeMemorandum[0]?.position_id ?? null;
-        const employeeCompanyId: string | null = activeMemorandum[0]?.company_id ?? null;
+        let employeePositionId: string | null = activeMemorandum[0]?.position_id ?? null;
+        let employeeCompanyId: string | null = activeMemorandum[0]?.company_id ?? null;
+        // Sin contrato activo: usar empresa y puesto guardados en la información personal
+        if (!activeMemorandum[0]) {
+            const fallback = await this.dataSource.query(
+                `SELECT e.position_id, e.company_id
+                 FROM employees e
+                 WHERE e.id = ?
+                   AND NOT EXISTS (
+                       SELECT 1 FROM contracts c WHERE c.employee_id = e.id AND c.status = 'active'
+                   )`,
+                [employeeId],
+            );
+            employeePositionId = fallback[0]?.position_id ?? null;
+            employeeCompanyId = fallback[0]?.company_id ?? null;
+        }
 
         // Mapa id -> vault para recorrer jerarquía (incluye propios y ajenos)
         const vaultMap = new Map<string, typeof foreignVaults[0]>();
@@ -847,6 +861,13 @@ export class PasswordVaultService {
             '  AND (m.end_date IS NULL OR m.end_date >= :now) ' +
             '  AND cvc.company_id = c.company_id' +
             ') OR ' +
+            'EXISTS (' +
+            '  SELECT 1 FROM employees e ' +
+            '  INNER JOIN credential_visibility_companies cvc ON cvc.credential_id = credential.id ' +
+            '  WHERE e.id = :employeeId ' +
+            '  AND cvc.company_id = e.company_id ' +
+            '  AND NOT EXISTS (SELECT 1 FROM contracts ac WHERE ac.employee_id = e.id AND ac.status = :activeStatus)' +
+            ') OR ' +
             // 4. Credenciales por puesto (visibilidad propia)
             'EXISTS (' +
             '  SELECT 1 FROM memorandums m ' +
@@ -857,6 +878,13 @@ export class PasswordVaultService {
             '  AND m.start_date <= :now ' +
             '  AND (m.end_date IS NULL OR m.end_date >= :now) ' +
             '  AND cvp.position_id = m.position_id' +
+            ') OR ' +
+            'EXISTS (' +
+            '  SELECT 1 FROM employees e ' +
+            '  INNER JOIN credential_visibility_positions cvp ON cvp.credential_id = credential.id ' +
+            '  WHERE e.id = :employeeId ' +
+            '  AND cvp.position_id = e.position_id ' +
+            '  AND NOT EXISTS (SELECT 1 FROM contracts ac WHERE ac.employee_id = e.id AND ac.status = :activeStatus)' +
             ') OR ' +
             // 5. Credenciales por lista de empleados (visibilidad propia)
             'EXISTS (' +

@@ -43,6 +43,8 @@ export interface GoogleWorkspaceStatus {
 @Injectable()
 export class GoogleWorkspaceService {
     private readonly logger = new Logger(GoogleWorkspaceService.name);
+    /** Access tokens vigentes por usuario, para no refrescar en cada llamada a Google. */
+    private readonly accessTokens = new Map<string, { token: string; expiresAt: number }>();
 
     constructor(
         @InjectRepository(GoogleWorkspaceToken)
@@ -138,6 +140,10 @@ export class GoogleWorkspaceService {
         if (!record) {
             throw new NotFoundException('El usuario no ha conectado Google Workspace');
         }
+        const cached = this.accessTokens.get(userId);
+        if (cached && cached.expiresAt > Date.now()) {
+            return cached.token;
+        }
         try {
             const tokens = await this.requestToken({
                 grant_type: 'refresh_token',
@@ -146,16 +152,36 @@ export class GoogleWorkspaceService {
             if (!tokens.access_token) {
                 throw new UnauthorizedException('Google no devolvió un access token');
             }
+            // Se descarta un minuto antes de que venza.
+            const lifetimeMs = ((tokens.expires_in ?? 3600) - 60) * 1000;
+            this.accessTokens.set(userId, { token: tokens.access_token, expiresAt: Date.now() + lifetimeMs });
             return tokens.access_token;
         } catch (error) {
             if (error instanceof UnauthorizedException) {
+                this.accessTokens.delete(userId);
                 await this.tokenRepository.delete({ userId });
             }
             throw error;
         }
     }
 
+    /** Descarta el access token en caché (por ejemplo, si Google lo rechazó). */
+    forgetAccessToken(userId: string): void {
+        this.accessTokens.delete(userId);
+    }
+
+    /** Usuarios con Google Workspace conectado y el permiso indicado. */
+    async findConnectedUsers(scope: string): Promise<GoogleWorkspaceToken[]> {
+        const records = await this.tokenRepository.find();
+        return records.filter((record) => normalizeScopes(record.scopes).includes(scope));
+    }
+
+    async getTokenRecord(userId: string): Promise<GoogleWorkspaceToken | null> {
+        return this.tokenRepository.findOne({ where: { userId } });
+    }
+
     async disconnect(userId: string): Promise<void> {
+        this.accessTokens.delete(userId);
         const record = await this.tokenRepository.findOne({ where: { userId } });
         if (!record) {
             return;

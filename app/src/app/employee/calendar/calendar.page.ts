@@ -12,6 +12,7 @@ import {
     IonLabel,
     LoadingController,
     AlertController,
+    ModalController,
     ViewWillEnter
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -37,6 +38,7 @@ import { ToastService } from '../../shared/services/toast.service';
 import { MinutesService } from '../minutes/services/minutes.service';
 import { GoogleWorkspaceService } from '../../auth/services/google-workspace.service';
 import { AuthService } from '../../auth/services/auth.service';
+import { EventDetailModalComponent } from './components/event-detail-modal/event-detail-modal.component';
 
 type ViewMode = 'today' | 'week';
 
@@ -70,6 +72,8 @@ export class CalendarPage implements OnInit, OnDestroy, AfterViewInit, ViewWillE
     status: CalendarStatus = { connected: false };
     events: CalendarEvent[] = [];
     eventLinks: Map<string, EventMinuteLink> = new Map();
+    /** Columna y número de columnas de cada evento con hora, para mostrar lado a lado los que se superponen. */
+    private eventLayout = new Map<string, { col: number; cols: number }>();
     eventLinkStates: Map<string, string> = new Map(); // googleEventId -> acta state ('0' publicada, '1' borrador)
     isLoading = false;
     isConnecting = false;
@@ -88,7 +92,8 @@ export class CalendarPage implements OnInit, OnDestroy, AfterViewInit, ViewWillE
         private alertCtrl: AlertController,
         private router: Router,
         private googleWorkspace: GoogleWorkspaceService,
-        private authService: AuthService
+        private authService: AuthService,
+        private modalCtrl: ModalController
     ) {
         addIcons({
             calendarOutline,
@@ -230,6 +235,7 @@ export class CalendarPage implements OnInit, OnDestroy, AfterViewInit, ViewWillE
             ]);
 
             this.events = events || [];
+            this.computeEventLayout();
             this.eventLinks = new Map((links || []).map(l => [l.googleEventId, l]));
 
             // Cargar estados de las actas vinculadas
@@ -389,15 +395,85 @@ export class CalendarPage implements OnInit, OnDestroy, AfterViewInit, ViewWillE
         return (now.getHours() - firstHour) * 60 + now.getMinutes();
     }
 
-    getWeekEventLeft(dayIndex: number): string {
-        // 60px gutter + cada columna tiene ancho proporcional
-        const gutterWidth = 60;
-        const colWidth = `calc((100% - ${gutterWidth}px) / 7)`;
-        return `calc(${gutterWidth}px + ${dayIndex} * ${colWidth} + 2px)`;
+    // Vista de día: área de eventos entre la columna de horas (72px) y el margen derecho (12px).
+    getDayEventLeft(event: CalendarEvent): string {
+        const { col, cols } = this.getLayout(event);
+        return `calc(72px + (100% - 84px) * ${col} / ${cols})`;
     }
 
-    getWeekEventWidth(): string {
-        return `calc((100% - 60px) / 7 - 4px)`;
+    getDayEventWidth(event: CalendarEvent): string {
+        const { cols } = this.getLayout(event);
+        return `calc((100% - 84px) / ${cols} - 4px)`;
+    }
+
+    getWeekEventLeft(dayIndex: number, event: CalendarEvent): string {
+        // 60px gutter + cada día tiene ancho proporcional; los eventos superpuestos dividen el día en columnas
+        const { col, cols } = this.getLayout(event);
+        const dayWidth = `((100% - 60px) / 7)`;
+        return `calc(60px + ${dayIndex} * ${dayWidth} + ${dayWidth} * ${col} / ${cols} + 2px)`;
+    }
+
+    getWeekEventWidth(event: CalendarEvent): string {
+        const { cols } = this.getLayout(event);
+        return `calc((100% - 60px) / 7 / ${cols} - 4px)`;
+    }
+
+    private getLayout(event: CalendarEvent): { col: number; cols: number } {
+        return this.eventLayout.get(event.id) ?? { col: 0, cols: 1 };
+    }
+
+    /**
+     * Agrupa los eventos de cada día que se superponen y reparte columnas,
+     * como en Google Calendar: cada evento usa la primera columna libre del grupo.
+     */
+    private computeEventLayout() {
+        this.eventLayout.clear();
+        const byDay = new Map<string, CalendarEvent[]>();
+        for (const event of this.events.filter(e => !e.allDay)) {
+            const key = new Date(event.start).toDateString();
+            byDay.set(key, [...(byDay.get(key) ?? []), event]);
+        }
+
+        const range = (e: CalendarEvent) => {
+            const start = new Date(e.start).getTime();
+            // Misma altura mínima que getEventHeight (20 min) para que los eventos cortos no se encimen.
+            return { start, end: Math.max(new Date(e.end).getTime(), start + 20 * 60000) };
+        };
+
+        for (const dayEvents of byDay.values()) {
+            const sorted = [...dayEvents].sort((a, b) =>
+                range(a).start - range(b).start || range(b).end - range(a).end);
+
+            let group: { event: CalendarEvent; col: number }[] = [];
+            let columnEnds: number[] = [];
+            let groupEnd = -Infinity;
+
+            const closeGroup = () => {
+                for (const item of group) {
+                    this.eventLayout.set(item.event.id, { col: item.col, cols: columnEnds.length });
+                }
+                group = [];
+                columnEnds = [];
+            };
+
+            for (const event of sorted) {
+                const { start, end } = range(event);
+                if (start >= groupEnd) {
+                    closeGroup();
+                    groupEnd = -Infinity;
+                }
+                let col = columnEnds.findIndex(colEnd => colEnd <= start);
+                if (col === -1) {
+                    col = columnEnds.length;
+                    columnEnds.push(end);
+                } else {
+                    columnEnds[col] = end;
+                }
+                group.push({ event, col });
+                groupEnd = Math.max(groupEnd, end);
+            }
+            closeGroup();
+        }
     }
 
     // --- Filtros de eventos ---
@@ -490,10 +566,20 @@ export class CalendarPage implements OnInit, OnDestroy, AfterViewInit, ViewWillE
 
     // --- Acciones ---
 
-    openEvent(event: CalendarEvent) {
-        this.router.navigate(['/employee/calendar/event', event.id], {
-            state: { event }
+    async openEvent(event: CalendarEvent) {
+        const isMobile = window.innerWidth < 768;
+        const modal = await this.modalCtrl.create({
+            component: EventDetailModalComponent,
+            componentProps: { event },
+            cssClass: 'event-detail-modal',
+            // En móvil se muestra como hoja inferior; en escritorio, centrado.
+            ...(isMobile ? { breakpoints: [0, 0.6, 0.92], initialBreakpoint: 0.92 } : {})
         });
+        await modal.present();
+        const { data } = await modal.onDidDismiss();
+        if (data?.changed) {
+            this.refreshEventLinks();
+        }
     }
 
     openConference(event: CalendarEvent) {

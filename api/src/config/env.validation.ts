@@ -35,4 +35,8 @@ export const envValidationSchema = Joi.object({
     GOOGLE_OAUTH_CLIENT_ID: Joi.string().optional(),
     GOOGLE_OAUTH_CLIENT_SECRET: Joi.string().optional(),
     GOOGLE_WORKSPACE_DOMAIN: Joi.string().default('strategee.us'),
+    // API de actas (recapmeeting)
+    RECAPMEETING_API_URL: Joi.string().uri().default('https://recapmeeting.com/apis'),
+    // Clave compartida con recapmeeting (ApisController::MS_API_KEY)
+    RECAPMEETING_API_KEY: Joi.string().min(32).optional(),
 });

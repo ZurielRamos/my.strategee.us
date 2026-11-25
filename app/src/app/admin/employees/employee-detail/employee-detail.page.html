@@ -10,7 +10,18 @@
         }
 
         @if (!isLoading && employee) {
-
+        @if (employee.status === 'PENDING') {
+        <div class="pending-banner">
+            <div class="pending-text">
+                <strong>Solicitud de registro pendiente</strong>
+                <span>Revisa y corrige los datos (edita al empleado si hace falta). Para aprobar debe tener correo corporativo: al aprobar se le envía el correo para configurar su contraseña.</span>
+            </div>
+            <div class="pending-actions">
+                <ion-button color="danger" fill="outline" (click)="rejectRegistration()">Rechazar</ion-button>
+                <ion-button color="dark" (click)="approveRegistration()">Aprobar</ion-button>
+            </div>
+        </div>
+        }
         <div class="detail-grid">
             <!-- Left Column: Profile Card -->
             <div class="left-column">
@@ -330,6 +341,40 @@
                             <ion-icon name="briefcase-outline"></ion-icon>
                             <p>No hay contrato activo</p>
                         </div>
+                        @if (employee.company || employee.position || employee.department || employee.contractType || employee.hireDate) {
+                        <div class="contract-info">
+                            @if (employee.company) {
+                            <div class="info-row">
+                                <span class="info-label">Empresa</span>
+                                <span class="info-value">{{ employee.company.name }}</span>
+                            </div>
+                            }
+                            @if (employee.position) {
+                            <div class="info-row">
+                                <span class="info-label">Puesto</span>
+                                <span class="info-value">{{ employee.position.name }}</span>
+                            </div>
+                            }
+                            @if (employee.department) {
+                            <div class="info-row">
+                                <span class="info-label">Departamento/Área</span>
+                                <span class="info-value">{{ employee.department.name }}</span>
+                            </div>
+                            }
+                            @if (employee.contractType) {
+                            <div class="info-row">
+                                <span class="info-label">Tipo</span>
+                                <span class="info-value">{{ employee.contractType }}</span>
+                            </div>
+                            }
+                            @if (employee.hireDate) {
+                            <div class="info-row">
+                                <span class="info-label">Fecha de Ingreso</span>
+                                <span class="info-value">{{ formatDate(employee.hireDate) }}</span>
+                            </div>
+                            }
+                        </div>
+                        }
                         }
                     </ion-card-content>
                 </ion-card>

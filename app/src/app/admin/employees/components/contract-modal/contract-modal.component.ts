@@ -17,6 +17,8 @@ import { TextareaInputComponent } from '../../../../shared/components/textarea-i
 import { AlertBoxComponent } from '../../../../shared/components/alert-box/alert-box.component';
 import { ToastService } from '../../../../shared/services/toast.service';
 
+import { NumericOnlyDirective } from '../../../../shared/directives/numeric-only.directive';
+
 @Component({
     selector: 'app-contract-modal',
     templateUrl: './contract-modal.component.html',
@@ -24,6 +26,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
     standalone: true,
     providers: [ModalController],
     imports: [
+        NumericOnlyDirective,
         CommonModule,
         ReactiveFormsModule,
         IonItem,

@@ -966,3 +966,35 @@
         }
     }
 }
+
+.pending-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    background: rgba(var(--ion-color-warning-rgb), 0.12);
+    border: 1px solid rgba(var(--ion-color-warning-rgb), 0.5);
+
+    .pending-text {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+        min-width: 240px;
+        color: var(--app-text-primary);
+        font-size: 14px;
+
+        span {
+            color: var(--app-text-secondary);
+        }
+    }
+
+    .pending-actions {
+        display: flex;
+        gap: 8px;
+    }
+}

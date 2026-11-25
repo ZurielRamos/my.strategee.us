@@ -26,6 +26,7 @@ import { AccessTokenGuard } from '@modules/iam/authentication/guards/access-toke
 import { RolesGuard } from '@modules/iam/authorization/guards/roles.guard';
 import { Roles } from '@modules/iam/authorization/decorators/roles.decorator';
 import { Role } from '@modules/iam/authorization/enums/role.enum';
+import { EmployeeStatus } from './enums/employee-status.enum';
 import { ResponseEmployeeDto } from './dto/response-empoyee.dto';
 import { JwtPayload } from '@modules/iam/authentication/interfaces/jwt-payload.interface';
 
@@ -139,9 +140,11 @@ export class EmployeesController {
         @Query('hasCredentials') hasCredentials?: string,
         @Query('contractStatus') contractStatus?: string,
         @Query('companyId') companyId?: string,
+        @Query('status') status?: string,
     ) {
         const hasCredentialsBool = hasCredentials === 'true' ? true : hasCredentials === 'false' ? false : undefined;
-        return this.employeesService.findAll(page, limit, search, hasCredentialsBool, contractStatus, companyId);
+        return this.employeesService.findAll(page, limit, search, hasCredentialsBool, contractStatus, companyId,
+            status === 'PENDING' ? EmployeeStatus.PENDING : EmployeeStatus.ACTIVE);
     }
 
     @Get('profile')
@@ -253,6 +256,22 @@ export class EmployeesController {
     }
 
 
+
+    @Post(':id/approve')
+    @Roles(Role.ADMIN, Role.HR_MANAGER)
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Aprobar solicitud de registro: activa al empleado y envía el correo de bienvenida' })
+    approveRegistration(@Param('id', ParseUUIDPipe) id: string) {
+        return this.employeesService.approveRegistration(id);
+    }
+
+    @Post(':id/reject')
+    @Roles(Role.ADMIN, Role.HR_MANAGER)
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({ summary: 'Rechazar solicitud de registro (elimina el registro pendiente)' })
+    rejectRegistration(@Param('id', ParseUUIDPipe) id: string) {
+        return this.employeesService.rejectRegistration(id);
+    }
 
     @Post(':id/credentials')
     @HttpCode(HttpStatus.OK)

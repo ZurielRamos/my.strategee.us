@@ -23,6 +23,8 @@ import { DateInputComponent } from '../../../../shared/components/date-input/dat
 import { TextareaInputComponent } from '../../../../shared/components/textarea-input/textarea-input.component';
 import { ToastService } from '../../../../shared/services/toast.service';
 
+import { NumericOnlyDirective } from '../../../../shared/directives/numeric-only.directive';
+
 @Component({
     selector: 'app-memorandum-modal',
     templateUrl: './memorandum-modal.component.html',
@@ -30,6 +32,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
     standalone: true,
     providers: [ModalController],
     imports: [
+        NumericOnlyDirective,
         CommonModule,
         ReactiveFormsModule,
         BaseModalComponent,

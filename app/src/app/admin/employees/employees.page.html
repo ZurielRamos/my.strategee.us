@@ -13,6 +13,10 @@
                 <p>Gestiona la información de los empleados de tu organización</p>
             </div>
             <div class="title-controls desktop-only">
+                <ion-button fill="outline" class="link-button" (click)="openRegistrationLinkModal()">
+                    <ion-icon slot="start" name="link-outline"></ion-icon>
+                    Enlace de registro
+                </ion-button>
                 <ion-button (click)="openCreateModal()" class="add-button">
                     <ion-icon slot="start" name="add-outline"></ion-icon>
                     Nuevo Empleado
@@ -52,6 +56,18 @@
                     </ion-select>
                 </ion-item>
 
+                <ion-item lines="none" class="filter-item">
+                    <ion-icon name="hourglass-outline" slot="start"></ion-icon>
+                    <ion-select
+                        [(ngModel)]="selectedStatus"
+                        placeholder="Solicitudes"
+                        (ionChange)="onFilterChange()"
+                        interface="popover"
+                    >
+                        <ion-select-option value="ACTIVE">Registrados</ion-select-option>
+                        <ion-select-option value="PENDING">Pendientes de aprobación</ion-select-option>
+                    </ion-select>
+                </ion-item>
                 <ion-item lines="none" class="filter-item">
                     <ion-icon name="business-outline" slot="start"></ion-icon>
                     <ion-select 

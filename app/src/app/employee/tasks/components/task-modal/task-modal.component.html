@@ -1,0 +1,87 @@
+<app-base-modal
+    [title]="modalTitle"
+    [subtitle]="isFromMinute ? 'El contenido lo define el acta' : ''"
+    [confirmText]="isFromMinute ? 'Cerrar' : (isNew ? 'Crear tarea' : 'Guardar')"
+    [cancelText]="isFromMinute ? 'Volver' : 'Cancelar'"
+    [confirmDisabled]="!isFromMinute && form.invalid"
+    [loading]="isSaving"
+    (modalDismiss)="close()"
+    (modalConfirm)="save()">
+
+    @if (isFromMinute && task) {
+        <!-- Tarea de un acta: solo lectura -->
+        <div class="readonly-task">
+            <h3 class="readonly-title">{{ task.title }}</h3>
+            @if (task.description) {
+                <p class="readonly-description">{{ task.description }}</p>
+            }
+            <div class="readonly-meta">
+                <span class="meta-label">Fecha límite</span>
+                <span class="meta-value">{{ formatDueDate(task.dueDate) }}</span>
+            </div>
+            <div class="readonly-meta">
+                <span class="meta-label">Estado</span>
+                <span class="meta-value">{{ task.status === 'done' ? 'Hecha' : 'Pendiente' }}</span>
+            </div>
+        </div>
+
+        <button type="button" class="origin-card" (click)="openMinute()" [disabled]="!task.recapMinuteId">
+            <span class="origin-icon"><ion-icon name="clipboard-outline"></ion-icon></span>
+            <span class="origin-text">
+                <span class="origin-label">Origen</span>
+                <span class="origin-value">{{ originLabel }}</span>
+            </span>
+            @if (task.recapMinuteId) {
+                <ion-icon name="open-outline" class="origin-open"></ion-icon>
+            }
+        </button>
+        <p class="hint">Mueve la tarjeta a una lista de hechas: el compromiso también quedará terminado en el acta.</p>
+    } @else {
+        <form [formGroup]="form" (ngSubmit)="save()">
+            <app-text-input
+                formControlName="title"
+                label="Título"
+                placeholder="¿Qué hay que hacer?"
+                [required]="true"
+                [maxlength]="500">
+            </app-text-input>
+
+            <app-textarea-input
+                formControlName="description"
+                label="Descripción"
+                placeholder="Detalles, enlaces o notas"
+                [rows]="4"
+                [maxlength]="10000">
+            </app-textarea-input>
+
+            <app-date-input
+                formControlName="dueDate"
+                label="Fecha límite"
+                placeholder="Sin fecha">
+            </app-date-input>
+
+            @if (showAssignee) {
+                <app-form-select
+                    formControlName="assigneeUserId"
+                    label="Responsable"
+                    [options]="memberOptions"
+                    helperText="La tarea aparecerá en su Google Tasks">
+                </app-form-select>
+            }
+        </form>
+
+        @if (task) {
+            <ion-button fill="clear" color="danger" size="small" class="delete-button" (click)="confirmDelete()">
+                <ion-icon slot="start" name="trash-outline"></ion-icon>
+                Eliminar tarea
+            </ion-button>
+        }
+    }
+
+    @if (task?.googleTaskId) {
+        <p class="google-hint">
+            <ion-icon name="logo-google"></ion-icon>
+            Sincronizada con la lista "{{ board.name }}" de Google Tasks{{ assigneeName && task?.assigneeUserId !== currentUserId ? ' de ' + assigneeName : '' }}
+        </p>
+    }
+</app-base-modal>

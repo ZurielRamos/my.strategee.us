@@ -50,6 +50,24 @@
     }
 
     .title-controls {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .link-button {
+            --background: var(--app-card-bg);
+            --background-hover: var(--app-hover-bg);
+            --color: var(--app-text-primary);
+            --border-color: var(--app-border);
+            --border-width: 1px;
+            --border-style: solid;
+            --border-radius: 12px;
+            height: 44px;
+            margin: 0;
+            font-weight: 600;
+            text-transform: none;
+        }
+
         .add-button {
             --background: var(--app-text-primary);
             --background-hover: var(--app-hover-bg);
@@ -73,16 +91,8 @@
 // Filters Row
 .filters-row {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 12px;
-
-    @media (min-width: 576px) {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    @media (min-width: 768px) {
-        grid-template-columns: repeat(3, 1fr);
-    }
 
     .filter-item {
         --background: var(--app-card-bg);

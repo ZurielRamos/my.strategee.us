@@ -1,0 +1,117 @@
+:host {
+    display: contents;
+}
+
+// Botón de confirmar en rojo para acciones destructivas.
+app-base-modal.danger ::ng-deep .primary-button {
+    --background: var(--ion-color-danger);
+    --background-hover: var(--ion-color-danger-shade);
+    --background-activated: var(--ion-color-danger-shade);
+}
+
+.confirm-body {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 4px 0;
+
+    .confirm-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(var(--ion-color-primary-rgb), 0.1);
+        color: var(--ion-color-primary);
+        font-size: 20px;
+    }
+
+    &.danger .confirm-icon {
+        background: rgba(var(--ion-color-danger-rgb), 0.1);
+        color: var(--ion-color-danger);
+    }
+
+    p {
+        margin: 8px 0 0;
+        font-size: 14px;
+        line-height: 1.55;
+        color: var(--app-text-primary);
+    }
+}
+
+.dialog-message {
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--app-text-secondary);
+}
+
+.option-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1.5px solid var(--app-border-color, rgba(0, 0, 0, 0.08));
+    background: var(--app-card-bg);
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+
+    &:hover {
+        background: var(--app-hover-bg);
+    }
+
+    &.selected {
+        border-color: var(--ion-color-primary);
+        background: rgba(var(--ion-color-primary-rgb), 0.05);
+    }
+
+    .radio {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 2px solid var(--app-text-tertiary, #b0b7c3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    &.selected .radio {
+        border-color: var(--ion-color-primary);
+
+        .radio-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--ion-color-primary);
+        }
+    }
+
+    .option-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .option-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--app-text-primary);
+    }
+
+    .option-hint {
+        font-size: 12px;
+        color: var(--app-text-secondary);
+    }
+}

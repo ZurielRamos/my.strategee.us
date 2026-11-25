@@ -61,6 +61,11 @@ export const routes: Routes = [
                 loadComponent: () => import('./minutes/edit-minute/edit-minute.page').then(m => m.EditMinutePage)
             },
             {
+                path: 'tasks',
+                canActivate: [MandatoryTrainingGuard],
+                loadComponent: () => import('./tasks/tasks.page').then(m => m.TasksPage)
+            },
+            {
                 path: 'trainings',
                 loadComponent: () => import('./trainings/trainings.page').then(m => m.EmployeeTrainingsPage)
             },

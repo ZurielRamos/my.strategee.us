@@ -25,12 +25,12 @@
         <ion-item lines="none">
             <ion-label position="stacked">Cantidad de Días *</ion-label>
             <ion-input
-                type="number"
+                type="text"
+                appNumericOnly
                 formControlName="amount"
                 placeholder="Ej: 1"
-                [min]="0.5"
                 [max]="benefit.monthlyQuota"
-                step="0.5">
+                >
             </ion-input>
         </ion-item>
 

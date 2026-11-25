@@ -395,6 +395,11 @@ export class EmployeeDetailPage implements OnInit {
         return this.employee?.contract || null;
     }
 
+    /** Tipo de contrato del contrato activo; si no hay, el guardado en la información personal. */
+    get effectiveContractType(): string | null {
+        return this.activeContract?.type || this.employee?.contractType || null;
+    }
+
     get hasActiveContract(): boolean {
         return !!this.employee?.contract;
     }
@@ -877,6 +882,57 @@ export class EmployeeDetailPage implements OnInit {
         });
     }
 
+    async approveRegistration() {
+        if (!this.employee) return;
+        const alert = await this.alertCtrl.create({
+            header: 'Aprobar registro',
+            message: `Se activará a ${this.fullName} y se le enviará el correo de bienvenida para configurar su contraseña.`,
+            buttons: [
+                { text: 'Cancelar', role: 'cancel' },
+                {
+                    text: 'Aprobar',
+                    handler: () => {
+                        this.employeesService.approveRegistration(this.employee!.id).subscribe({
+                            next: () => this.loadEmployee(),
+                            error: async (error) => {
+                                const message = error.error?.message;
+                                const errorAlert = await this.alertCtrl.create({
+                                    header: 'No se pudo aprobar',
+                                    message: Array.isArray(message) ? message.join(', ') : (message || 'Error al aprobar la solicitud'),
+                                    buttons: ['Entendido']
+                                });
+                                await errorAlert.present();
+                            }
+                        });
+                    }
+                }
+            ]
+        });
+        await alert.present();
+    }
+
+    async rejectRegistration() {
+        if (!this.employee) return;
+        const alert = await this.alertCtrl.create({
+            header: 'Rechazar registro',
+            message: `Se eliminará la solicitud de ${this.fullName}. Esta acción no se puede deshacer.`,
+            buttons: [
+                { text: 'Cancelar', role: 'cancel' },
+                {
+                    text: 'Rechazar',
+                    role: 'destructive',
+                    handler: () => {
+                        this.employeesService.rejectRegistration(this.employee!.id).subscribe({
+                            next: () => this.router.navigate(['/admin/employees']),
+                            error: (error) => console.error('Error rejecting registration:', error)
+                        });
+                    }
+                }
+            ]
+        });
+        await alert.present();
+    }
+
     async addMemorandum() {
         if (!this.employee || !this.activeContract) return;
 
@@ -942,10 +998,10 @@ export class EmployeeDetailPage implements OnInit {
             componentProps: {
                 hasCredentials: !!this.employee?.user && this.employee.user.isActive !== false,
                 birthDate: this.employee?.birthDate,
-                hasLaborContract: this.activeContract?.type === 'Término Indefinido' || this.activeContract?.type === 'Término Fijo',
-                hasServiceContract: !this.activeContract ||
-                    this.activeContract?.type === 'Prestación de servicios superior a un mes' ||
-                    this.activeContract?.type === 'Prestación de servicios inferior a un mes'
+                hasLaborContract: this.effectiveContractType === 'Término Indefinido' || this.effectiveContractType === 'Término Fijo',
+                hasServiceContract: !this.effectiveContractType ||
+                    this.effectiveContractType === 'Prestación de servicios superior a un mes' ||
+                    this.effectiveContractType === 'Prestación de servicios inferior a un mes'
             }
         });
 

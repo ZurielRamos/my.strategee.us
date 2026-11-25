@@ -21,13 +21,16 @@ import {
     keyOutline, 
     documentTextOutline, 
     businessOutline,
-    closeCircleOutline 
+    closeCircleOutline,
+    linkOutline,
+    hourglassOutline
 } from 'ionicons/icons';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { EmployeesService } from './services/employees.service';
 import { CompaniesService, Company } from './services/companies.service';
 import { Employee } from './models/employee.model';
 import { EmployeeModalComponent } from './components/employee-modal/employee-modal.component';
+import { RegistrationLinkModalComponent } from './components/registration-link-modal/registration-link-modal.component';
 import { EmployeeCardComponent } from './components/employee-card/employee-card.component';
 
 @Component({
@@ -63,6 +66,7 @@ export class EmployeesPage implements OnInit {
     selectedCredentials: any = undefined;
     selectedContractStatus: string | undefined = undefined;
     selectedCompany: string | undefined = undefined;
+    selectedStatus: string | undefined = undefined;
     
     currentPage = 1;
     totalPages = 1;
@@ -81,7 +85,9 @@ export class EmployeesPage implements OnInit {
             keyOutline, 
             documentTextOutline, 
             businessOutline,
-            closeCircleOutline 
+            closeCircleOutline,
+            linkOutline,
+            hourglassOutline
         });
     }
 
@@ -122,7 +128,8 @@ export class EmployeesPage implements OnInit {
             this.searchTerm || undefined,
             hasCredentials,
             this.selectedContractStatus,
-            this.selectedCompany
+            this.selectedCompany,
+            this.selectedStatus
         ).subscribe({
             next: (response) => {
                 if (append) {
@@ -160,7 +167,8 @@ export class EmployeesPage implements OnInit {
         return !!(
             this.selectedCredentials !== undefined || 
             this.selectedContractStatus !== undefined || 
-            this.selectedCompany !== undefined
+            this.selectedCompany !== undefined ||
+            this.selectedStatus !== undefined
         );
     }
 
@@ -168,6 +176,7 @@ export class EmployeesPage implements OnInit {
         this.selectedCredentials = undefined;
         this.selectedContractStatus = undefined;
         this.selectedCompany = undefined;
+        this.selectedStatus = undefined;
         this.loadEmployees();
     }
 
@@ -205,6 +214,15 @@ export class EmployeesPage implements OnInit {
         if (role === 'save') {
             this.loadEmployees();
         }
+    }
+
+    async openRegistrationLinkModal() {
+        const modal = await this.modalCtrl.create({
+            component: RegistrationLinkModalComponent,
+            cssClass: 'employee-modal',
+            backdropDismiss: true
+        });
+        await modal.present();
     }
 
     viewEmployeeDetail(employee: Employee) {

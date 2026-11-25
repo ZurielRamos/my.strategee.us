@@ -8,11 +8,12 @@ import { GoogleWorkspaceController } from './google-workspace.controller';
 import { CalendarEventLink } from './calendar/entities/calendar-event-link.entity';
 import { GoogleCalendarService } from './calendar/google-calendar.service';
 import { GoogleCalendarController } from './calendar/google-calendar.controller';
+import { GoogleTasksService } from './tasks/google-tasks.service';
 
 @Module({
     imports: [TypeOrmModule.forFeature([GoogleWorkspaceToken, CalendarEventLink]), UsersModule],
     controllers: [GoogleWorkspaceController, GoogleCalendarController],
-    providers: [GoogleWorkspaceService, GoogleCalendarService, EncryptionService],
-    exports: [GoogleWorkspaceService, GoogleCalendarService],
+    providers: [GoogleWorkspaceService, GoogleCalendarService, GoogleTasksService, EncryptionService],
+    exports: [GoogleWorkspaceService, GoogleCalendarService, GoogleTasksService],
 })
 export class GoogleWorkspaceModule { }
