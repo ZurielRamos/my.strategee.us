@@ -35,6 +35,8 @@ import { GoogleCalendarService } from './services/google-calendar.service';
 import { CalendarEvent, CalendarStatus, EventMinuteLink } from './models/calendar-event.model';
 import { ToastService } from '../../shared/services/toast.service';
 import { MinutesService } from '../minutes/services/minutes.service';
+import { GoogleWorkspaceService } from '../../auth/services/google-workspace.service';
+import { AuthService } from '../../auth/services/auth.service';
 
 type ViewMode = 'today' | 'week';
 
@@ -84,7 +86,9 @@ export class CalendarPage implements OnInit, OnDestroy, AfterViewInit, ViewWillE
         private toastService: ToastService,
         private loadingCtrl: LoadingController,
         private alertCtrl: AlertController,
-        private router: Router
+        private router: Router,
+        private googleWorkspace: GoogleWorkspaceService,
+        private authService: AuthService
     ) {
         addIcons({
             calendarOutline,
@@ -142,6 +146,9 @@ export class CalendarPage implements OnInit, OnDestroy, AfterViewInit, ViewWillE
             this.status = await this.calendarService.getStatus().toPromise() || { connected: false };
             if (this.status.connected) {
                 await this.loadEvents();
+            } else {
+                // En web precarga Google Identity Services para que el popup abra sin bloqueo al pulsar "Conectar".
+                this.googleWorkspace.prepare().catch(() => { });
             }
         } catch {
             this.status = { connected: false };
@@ -150,48 +157,32 @@ export class CalendarPage implements OnInit, OnDestroy, AfterViewInit, ViewWillE
         }
     }
 
+    /**
+     * Pide los permisos de Google Workspace con el mismo flujo del login
+     * (selector nativo en Android, popup de Google en web).
+     */
     async connectCalendar() {
+        const email = this.authService.getCurrentUser()?.email;
+        if (!email) {
+            return;
+        }
         this.isConnecting = true;
         try {
-            const result = await this.calendarService.getAuthUrl().toPromise();
-            if (result?.url) {
-                const authWindow = window.open(result.url, '_blank', 'width=600,height=700');
-
-                const messageHandler = async (event: MessageEvent) => {
-                    if (event.data?.type === 'google-calendar-callback') {
-                        window.removeEventListener('message', messageHandler);
-                        authWindow?.close();
-
-                        const loading = await this.loadingCtrl.create({
-                            message: 'Conectando calendario...'
-                        });
-                        await loading.present();
-
-                        try {
-                            await this.calendarService
-                                .handleCallback(event.data.code, event.data.state)
-                                .toPromise();
-                            await this.toastService.show('Google Calendar conectado exitosamente');
-                            await this.checkStatus();
-                        } catch (error: any) {
-                            await this.toastService.show(
-                                error?.error?.message || 'Error al conectar el calendario'
-                            );
-                        } finally {
-                            await loading.dismiss();
-                            this.isConnecting = false;
-                        }
-                    }
-                };
-
-                window.addEventListener('message', messageHandler);
-                setTimeout(() => {
-                    window.removeEventListener('message', messageHandler);
-                    this.isConnecting = false;
-                }, 120000);
+            const workspaceStatus = await this.googleWorkspace.getStatus();
+            if (!workspaceStatus.eligible) {
+                await this.toastService.show(`Google Calendar solo está disponible para cuentas de ${workspaceStatus.domain}`);
+                return;
             }
-        } catch {
-            await this.toastService.show('Error al obtener la URL de autorización');
+            const result = await this.googleWorkspace.authorize(workspaceStatus, email);
+            if (result === 'cancelled') {
+                await this.toastService.show('No se concedieron los permisos de Google');
+                return;
+            }
+            await this.toastService.show('Google Calendar conectado');
+            await this.checkStatus();
+        } catch (error: any) {
+            await this.toastService.show(error?.error?.message || error?.message || 'Error al conectar el calendario');
+        } finally {
             this.isConnecting = false;
         }
     }
@@ -244,7 +235,7 @@ export class CalendarPage implements OnInit, OnDestroy, AfterViewInit, ViewWillE
             // Cargar estados de las actas vinculadas
             this.loadMinuteStates(links || []);
         } catch (error: any) {
-            if (error?.status === 401) {
+            if (error?.status === 409) {
                 this.status = { connected: false };
                 await this.toastService.show('La conexión ha expirado. Reconecta tu calendario.');
             } else {

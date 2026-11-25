@@ -75,6 +75,12 @@ export class GoogleWorkspaceService {
         };
     }
 
+    /** Correo de la cuenta de Google conectada, o null si no hay autorización guardada. */
+    async getConnectedEmail(userId: string): Promise<string | null> {
+        const record = await this.tokenRepository.findOne({ where: { userId } });
+        return record?.googleEmail ?? null;
+    }
+
     /**
      * Cambia el código de autorización por tokens y guarda el refresh token cifrado.
      * Verifica que la cuenta de Google sea la misma del usuario y pertenezca al dominio.

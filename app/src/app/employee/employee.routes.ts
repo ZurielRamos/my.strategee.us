@@ -3,10 +3,6 @@ import { MandatoryTrainingGuard } from './trainings/guards/mandatory-training.gu
 
 export const routes: Routes = [
     {
-        path: 'calendar/callback',
-        loadComponent: () => import('./calendar/calendar-callback.page').then(m => m.CalendarCallbackPage)
-    },
-    {
         path: '',
         loadComponent: () => import('./layout/employee-layout.component').then(m => m.EmployeeLayoutComponent),
         children: [

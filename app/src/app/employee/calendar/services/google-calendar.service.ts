@@ -20,23 +20,6 @@ export class GoogleCalendarService {
     }
 
     /**
-     * Obtiene la URL de autorización de Google Calendar.
-     */
-    getAuthUrl(): Observable<{ url: string }> {
-        return this.http.get<{ url: string }>(`${this.apiUrl}/auth-url`);
-    }
-
-    /**
-     * Completa el callback de OAuth2 con el código de autorización.
-     */
-    handleCallback(code: string, state: string): Observable<{ success: boolean; message: string }> {
-        return this.http.get<{ success: boolean; message: string }>(
-            `${this.apiUrl}/callback`,
-            { params: { code, state } }
-        );
-    }
-
-    /**
      * Desconecta Google Calendar.
      */
     disconnect(): Observable<{ success: boolean; message: string }> {
