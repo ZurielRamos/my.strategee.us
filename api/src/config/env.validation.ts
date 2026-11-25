@@ -31,4 +31,8 @@ export const envValidationSchema = Joi.object({
     // Password Vault Encryption
     ENCRYPTION_SECRET: Joi.string().min(32).required(),
     ENCRYPTION_SALT: Joi.string().min(16).required(),
+    // Google Workspace (Calendar, Tasks, Docs, Drive). Cliente OAuth "Web" del proyecto de Firebase.
+    GOOGLE_OAUTH_CLIENT_ID: Joi.string().optional(),
+    GOOGLE_OAUTH_CLIENT_SECRET: Joi.string().optional(),
+    GOOGLE_WORKSPACE_DOMAIN: Joi.string().default('strategee.us'),
 });

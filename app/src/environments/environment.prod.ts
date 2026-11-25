@@ -4,6 +4,8 @@ export const environment = {
   production: true,
   // En web la API se sirve desde el mismo dominio; en la app nativa hay que usar la URL absoluta.
   apiUrl: Capacitor.isNativePlatform() ? 'https://i.strategee.us/api/v1' : '/api/v1',
+  // Cliente OAuth "Web" del proyecto de Firebase (Google Workspace en web)
+  googleWebClientId: '488463410625-9f1ak5be7jl8ubgpk7n92pab2gjp1e2l.apps.googleusercontent.com',
   firebase: {
     apiKey: 'AIzaSyDh68L51KpRpb3q2_OGrMd0QfV2vfqgYUU',
     authDomain: 'mystrategee-c7c1d.firebaseapp.com',

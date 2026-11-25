@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.mystrategee.app',
-  appName: 'app',
+  appName: 'My Strategee',
   webDir: '../api/app/www',
   plugins: {
     FirebaseAuthentication: {

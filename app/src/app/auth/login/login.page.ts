@@ -3,7 +3,8 @@ import { Preferences } from '@capacitor/preferences';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastController, LoadingController } from '@ionic/angular/standalone';
+import { ToastController, LoadingController, AlertController } from '@ionic/angular/standalone';
+import { Capacitor } from '@capacitor/core';
 import {
     IonContent, IonButton, IonIcon, IonSpinner, IonCheckbox
 } from '@ionic/angular/standalone';
@@ -13,6 +14,7 @@ import {
     logoGoogle, logoApple, logInOutline
 } from 'ionicons/icons';
 import { AuthService } from '../services/auth.service';
+import { GoogleWorkspaceService } from '../services/google-workspace.service';
 
 @Component({
     selector: 'app-login',
@@ -32,7 +34,9 @@ export class LoginPage implements OnInit {
         private authService: AuthService,
         private router: Router,
         private toastCtrl: ToastController,
-        private loadingCtrl: LoadingController
+        private loadingCtrl: LoadingController,
+        private alertCtrl: AlertController,
+        private googleWorkspace: GoogleWorkspaceService
     ) {
         addIcons({
             mailOutline, lockClosedOutline, eyeOutline, eyeOffOutline,
@@ -172,6 +176,7 @@ export class LoginPage implements OnInit {
         this.authService.signInWithGoogle().subscribe({
             next: async (response) => {
                 await loading.dismiss();
+                await this.requestWorkspacePermissions(response.user.email);
                 const roles = response.user?.roles || [];
 
                 if (roles.includes('ADMIN')) {
@@ -187,5 +192,56 @@ export class LoginPage implements OnInit {
                 await this.showToast(err.message || 'Error al iniciar sesión con Google');
             }
         });
+    }
+
+    /**
+     * Usuarios de Workspace: pide los permisos de Calendar, Tasks, Docs y Drive
+     * la primera vez (o si faltan permisos nuevos). Nunca bloquea el inicio de sesión.
+     */
+    private async requestWorkspacePermissions(email: string): Promise<void> {
+        try {
+            const status = await this.googleWorkspace.getStatus();
+            if (!this.googleWorkspace.needsAuthorization(status)) {
+                return;
+            }
+            if (Capacitor.isNativePlatform()) {
+                await this.runWorkspaceAuthorization(status, email);
+                return;
+            }
+            // En web el popup de Google debe abrirse desde un clic del usuario.
+            await this.googleWorkspace.prepare();
+            const alert = await this.alertCtrl.create({
+                header: 'Conecta Google Workspace',
+                message: 'Permite el acceso a tu Calendar, Tasks y Docs para usarlos desde My Strategee.',
+                cssClass: 'custom-alert',
+                buttons: [
+                    { text: 'Ahora no', role: 'cancel' },
+                    {
+                        text: 'Conectar',
+                        handler: () => {
+                            this.runWorkspaceAuthorization(status, email);
+                        }
+                    }
+                ]
+            });
+            await alert.present();
+            await alert.onDidDismiss();
+        } catch {
+            await this.showToast('No se pudieron solicitar los permisos de Google Workspace');
+        }
+    }
+
+    private async runWorkspaceAuthorization(
+        status: Awaited<ReturnType<GoogleWorkspaceService['getStatus']>>,
+        email: string
+    ): Promise<void> {
+        try {
+            const result = await this.googleWorkspace.authorize(status, email);
+            if (result === 'cancelled') {
+                await this.showToast('No se concedieron los permisos de Google. Te los pediremos de nuevo al iniciar sesión.');
+            }
+        } catch (err: any) {
+            await this.showToast(err?.error?.message || err?.message || 'No se pudo conectar Google Workspace');
+        }
     }
 }
