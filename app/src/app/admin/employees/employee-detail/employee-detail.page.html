@@ -14,6 +14,9 @@
         <div class="pending-banner">
             <div class="pending-text">
                 <strong>Solicitud de registro pendiente</strong>
+                @if (employee.termsAcceptedAt) {
+                <span class="pending-terms">Términos y autorización de datos aceptados el {{ employee.termsAcceptedAt | date:'dd/MM/yyyy HH:mm' }} (versión {{ employee.termsVersion }}).</span>
+                }
                 <span>Revisa y corrige los datos (edita al empleado si hace falta). Para aprobar debe tener correo corporativo: al aprobar se le envía el correo para configurar su contraseña.</span>
             </div>
             <div class="pending-actions">

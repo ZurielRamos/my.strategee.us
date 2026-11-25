@@ -22,6 +22,8 @@ export interface Employee {
     photoUrl?: string;
     isActive: boolean;
     status?: 'ACTIVE' | 'PENDING';
+    termsAcceptedAt?: string | null;
+    termsVersion?: string | null;
     vacationBalance?: number;
     createdAt?: string;
     updatedAt?: string;

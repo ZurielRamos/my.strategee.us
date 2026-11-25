@@ -114,6 +114,49 @@
             </div>
             }
 
+            <!-- Paso 5: Términos y autorización -->
+            @if (currentStep === 4) {
+            <div formGroupName="consent">
+                <h2 class="step-title">Términos y autorización</h2>
+                <p class="step-hint">Lee los documentos (se abren en una pestaña nueva) y acepta para poder enviar tu registro.</p>
+
+                <label class="consent-item">
+                    <ion-checkbox formControlName="acceptTerms" labelPlacement="end" justify="start" alignment="start">
+                        <span class="consent-text">
+                            He leído y acepto los
+                            <a href="/legal/terminos" target="_blank" rel="noopener">Términos y Condiciones de Uso</a>
+                            de la plataforma My Strategee.
+                        </span>
+                    </ion-checkbox>
+                </label>
+
+                <label class="consent-item">
+                    <ion-checkbox formControlName="acceptDataPolicy" labelPlacement="end" justify="start" alignment="start">
+                        <span class="consent-text">
+                            Autorizo de manera previa, expresa e informada el tratamiento de mis datos personales, incluidos los
+                            datos sensibles que suministre (afiliaciones a seguridad social, fotografía), conforme a la
+                            <a href="/legal/privacidad" target="_blank" rel="noopener">Política de Tratamiento de Datos Personales</a>
+                            y la Ley 1581 de 2012.
+                        </span>
+                    </ion-checkbox>
+                </label>
+
+                <label class="consent-item">
+                    <ion-checkbox formControlName="confirmThirdParty" labelPlacement="end" justify="start" alignment="start">
+                        <span class="consent-text">
+                            Declaro que la información suministrada es veraz y que cuento con la autorización de mis contactos
+                            de emergencia para compartir sus datos con la Compañía.
+                        </span>
+                    </ion-checkbox>
+                </label>
+
+                <p class="consent-note">
+                    Se registrará la fecha, la dirección IP y la versión ({{ legalVersion }}) de los documentos aceptados.
+                    Podrás ejercer tus derechos de conocer, actualizar, rectificar o suprimir tus datos según la Política.
+                </p>
+            </div>
+            }
+
             <!-- Campo trampa anti-bots -->
             <input type="text" formControlName="website" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true" />
 

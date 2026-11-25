@@ -96,6 +96,16 @@ export class Employee {
     @Column({ type: 'varchar', length: 20, default: EmployeeStatus.ACTIVE })
     status: EmployeeStatus;
 
+    /** Aceptación de términos y autorización de datos (registro público) */
+    @Column({ type: 'datetime', nullable: true })
+    termsAcceptedAt: Date | null;
+
+    @Column({ type: 'varchar', length: 20, nullable: true })
+    termsVersion: string | null;
+
+    @Column({ type: 'varchar', length: 45, nullable: true })
+    termsAcceptedIp: string | null;
+
     @OneToOne(() => User, (user) => user.employee, { nullable: true })
     @JoinColumn()
     user: User | null;

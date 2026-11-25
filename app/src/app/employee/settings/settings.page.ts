@@ -182,8 +182,7 @@ export class SettingsPage implements OnInit {
     }
 
     viewTermsOfService() {
-        // Navegar a los términos de servicio
-        console.log('Ver términos de servicio');
+        window.open('/legal/terminos', '_blank', 'noopener');
     }
 
     get appVersion(): string {

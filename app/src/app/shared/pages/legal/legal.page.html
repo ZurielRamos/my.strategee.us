@@ -1,0 +1,46 @@
+<ion-content class="legal-content" [fullscreen]="true">
+    <div class="legal-container">
+        <header class="legal-header">
+            <img src="assets/icono-strategee.png" alt="My Strategee" class="logo" />
+            @if (document) {
+            <h1>{{ document.title }}</h1>
+            <p class="meta">Versión {{ version }} · Última actualización: {{ updated }}</p>
+            } @else {
+            <h1>Documento no encontrado</h1>
+            }
+        </header>
+
+        @if (document) {
+        <nav class="legal-nav">
+            @for (doc of otherDocuments; track doc.slug) {
+            <a [routerLink]="['/legal', doc.slug]" [class.active]="doc.slug === document.slug">{{ doc.title }}</a>
+            }
+        </nav>
+
+        <article class="legal-card">
+            @for (paragraph of document.intro; track $index) {
+            <p>{{ paragraph }}</p>
+            }
+
+            @for (section of document.sections; track section.title) {
+            <section>
+                <h2>{{ section.title }}</h2>
+                @for (paragraph of section.paragraphs ?? []; track $index) {
+                <p>{{ paragraph }}</p>
+                }
+                @if (section.items?.length) {
+                <ul>
+                    @for (item of section.items; track $index) {
+                    <li>{{ item }}</li>
+                    }
+                </ul>
+                }
+                @for (paragraph of section.after ?? []; track $index) {
+                <p>{{ paragraph }}</p>
+                }
+            </section>
+            }
+        </article>
+        }
+    </div>
+</ion-content>

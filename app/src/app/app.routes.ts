@@ -31,6 +31,10 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'legal/:doc',
+    loadComponent: () => import('./shared/pages/legal/legal.page').then(m => m.LegalPage)
+  },
+  {
     path: 'registro/:token',
     loadComponent: () => import('./shared/pages/employee-registration/employee-registration.page').then(m => m.EmployeeRegistrationPage)
   },

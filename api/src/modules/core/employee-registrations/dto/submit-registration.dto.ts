@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+    Equals,
     ArrayMaxSize,
     ArrayMinSize,
     IsArray,
@@ -83,6 +84,19 @@ export class SubmitRegistrationDto {
     @ValidateNested()
     @Type(() => UpsertParafiscalesDto)
     parafiscales: UpsertParafiscalesDto;
+
+    // --- Consentimientos (todos obligatorios)
+    @ApiProperty() @Equals(true, { message: 'Debes aceptar los Términos y Condiciones de Uso' })
+    acceptTerms: boolean;
+
+    @ApiProperty() @Equals(true, { message: 'Debes autorizar el tratamiento de tus datos personales' })
+    acceptDataPolicy: boolean;
+
+    @ApiProperty() @Equals(true, { message: 'Debes confirmar la veracidad de la información y la autorización de tus contactos' })
+    confirmThirdParty: boolean;
+
+    @ApiProperty({ example: '1.0' }) @IsString() @IsNotEmpty() @MaxLength(20)
+    termsVersion: string;
 
     /** Campo trampa anti-bots: debe llegar vacío. */
     @ApiPropertyOptional()

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { EmployeeRegistrationsService } from './employee-registrations.service';
 import { SubmitRegistrationDto } from './dto/submit-registration.dto';
@@ -24,8 +24,8 @@ export class PublicEmployeeRegistrationController {
     @UseGuards(RegistrationRateLimitGuard)
     @HttpCode(HttpStatus.CREATED)
     @ApiOperation({ summary: 'Envía una solicitud de registro (queda pendiente de aprobación)' })
-    submit(@Param('token') token: string, @Body() dto: SubmitRegistrationDto) {
-        return this.service.submit(token, dto);
+    submit(@Param('token') token: string, @Body() dto: SubmitRegistrationDto, @Req() req: any) {
+        return this.service.submit(token, dto, req.ip || req.socket?.remoteAddress || null);
     }
 }
 

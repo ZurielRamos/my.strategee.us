@@ -68,7 +68,7 @@ export class EmployeeRegistrationsService {
         return { companies, positions, departments, contractTypes: Object.values(ContractType) };
     }
 
-    async submit(token: string, dto: SubmitRegistrationDto): Promise<{ success: true }> {
+    async submit(token: string, dto: SubmitRegistrationDto, ip: string | null = null): Promise<{ success: true }> {
         await this.assertValidToken(token);
 
         // Campo trampa: si viene lleno es un bot; se responde igual que un éxito.
@@ -125,6 +125,9 @@ export class EmployeeRegistrationsService {
                 departmentId: dto.departmentId,
                 isActive: false,
                 status: EmployeeStatus.PENDING,
+                termsAcceptedAt: new Date(),
+                termsVersion: dto.termsVersion,
+                termsAcceptedIp: ip ? ip.slice(0, 45) : null,
             });
             const saved = await queryRunner.manager.save(employee);
 

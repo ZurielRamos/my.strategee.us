@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { IonContent, IonButton, IonIcon, IonSpinner } from '@ionic/angular/standalone';
+import { IonContent, IonButton, IonIcon, IonSpinner, IonCheckbox } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
     checkmarkCircleOutline,
@@ -20,6 +20,7 @@ import { TextareaInputComponent } from '../../components/textarea-input/textarea
 import { DateInputComponent } from '../../components/date-input/date-input.component';
 import { PhoneInputComponent } from '../../components/phone-input/phone-input.component';
 import { FormSelectComponent, SelectOption } from '../../components/form-select/form-select.component';
+import { LEGAL_VERSION } from '../../legal/legal-content';
 import { GENDER_OPTIONS } from '../../../admin/employees/helpers/gender.helper';
 
 type PageState = 'loading' | 'invalid' | 'form' | 'success';
@@ -38,6 +39,7 @@ interface NamedOption { id: string; name: string; }
         IonButton,
         IonIcon,
         IonSpinner,
+        IonCheckbox,
         TextInputComponent,
         TextareaInputComponent,
         DateInputComponent,
@@ -46,7 +48,8 @@ interface NamedOption { id: string; name: string; }
     ],
 })
 export class EmployeeRegistrationPage implements OnInit {
-    readonly steps = ['Personal', 'Laboral', 'Emergencia', 'Parafiscales'];
+    readonly steps = ['Personal', 'Laboral', 'Emergencia', 'Parafiscales', 'Términos'];
+    readonly legalVersion = LEGAL_VERSION;
     readonly maxContacts = 3;
 
     state: PageState = 'loading';
@@ -121,6 +124,11 @@ export class EmployeeRegistrationPage implements OnInit {
                 fondoPension: [''],
                 cajaCompensacion: [''],
             }),
+            consent: this.fb.group({
+                acceptTerms: [false, [Validators.requiredTrue]],
+                acceptDataPolicy: [false, [Validators.requiredTrue]],
+                confirmThirdParty: [false, [Validators.requiredTrue]],
+            }),
             // Campo trampa anti-bots (oculto)
             website: [''],
         });
@@ -188,7 +196,8 @@ export class EmployeeRegistrationPage implements OnInit {
             case 0: return this.form.get('personal')!;
             case 1: return this.form.get('work')!;
             case 2: return this.contacts;
-            default: return this.form.get('parafiscales')!;
+            case 3: return this.form.get('parafiscales')!;
+            default: return this.form.get('consent')!;
         }
     }
 
@@ -250,6 +259,8 @@ export class EmployeeRegistrationPage implements OnInit {
                 fondoPension: value.parafiscales.fondoPension || null,
                 cajaCompensacion: value.parafiscales.cajaCompensacion || null,
             },
+            ...value.consent,
+            termsVersion: LEGAL_VERSION,
             website: value.website || undefined,
         };
 
