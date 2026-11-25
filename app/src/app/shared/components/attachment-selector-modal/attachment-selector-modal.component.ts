@@ -18,7 +18,6 @@ import {
     IonSelectOption,
     IonItem,
     IonLabel,
-    IonChip
 } from '@ionic/angular/standalone';
 import { ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -52,7 +51,6 @@ import { MediaUploadModalComponent } from '../../../admin/media/components/media
         IonSelectOption,
         IonItem,
         IonLabel,
-        IonChip
     ]
 })
 export class AttachmentSelectorModalComponent implements OnInit {

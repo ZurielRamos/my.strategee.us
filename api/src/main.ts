@@ -24,6 +24,9 @@ async function bootstrap() {
       "http://localhost:4200",
       "http://localhost:5173",
       "http://localhost:8100",
+      // Orígenes de la app nativa (Capacitor Android / iOS)
+      "https://localhost",
+      "capacitor://localhost",
       process.env.FRONTEND_URL ?? '',
     ].filter(Boolean),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',

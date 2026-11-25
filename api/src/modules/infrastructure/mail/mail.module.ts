@@ -1,4 +1,5 @@
 import { Module, Global } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/adapters/handlebars.adapter';
 import { join } from 'path';
@@ -17,27 +18,30 @@ const templateDir = join(
 @Global() // Hace que MailService esté disponible en toda la aplicación sin necesidad de importarlo
 @Module({
   imports: [
-    MailerModule.forRoot({
-      // ⚠️ CONFIGURACIÓN SMTP
-      transport: {
-        host: 'smtp.gmail.com', // 👈 Reemplaza con tu host SMTP (ej. Gmail, SendGrid, Mailgun)
-        port: 465,
-        secure: true, // true para 465, false para otros puertos (como 587)
-        auth: {
-          user: 'notificaciones@strategee.us', // 👈 Tu usuario SMTP
-          pass: 'xxqu etow bnob sdls',  // 👈 Tu contraseña/API Key
+    MailerModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        transport: {
+          host: config.getOrThrow<string>('SMTP_HOST'),
+          port: Number(config.get<string>('SMTP_PORT', '465')),
+          // true para el puerto 465, false para otros puertos (como 587)
+          secure: config.get<string>('SMTP_SECURE', 'true') === 'true',
+          auth: {
+            user: config.getOrThrow<string>('SMTP_USER'),
+            pass: config.getOrThrow<string>('SMTP_PASSWORD'),
+          },
         },
-      },
-      defaults: {
-        from: '"My Strategee" <notificaciones@strategee.us>', // Correo por defecto
-      },
-      template: {
-        dir: templateDir, // 👈 Ruta a la carpeta de plantillas (mail/templates)
-        adapter: new HandlebarsAdapter(),
-        options: {
-          strict: false,
+        defaults: {
+          from: config.get<string>('MAIL_FROM') ?? config.getOrThrow<string>('SMTP_USER'),
         },
-      },
+        template: {
+          dir: templateDir,
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: false,
+          },
+        },
+      }),
     }),
   ],
   providers: [MailService],

@@ -69,7 +69,6 @@ export class EmployeesService {
         }
 
         return this.http.get<EmployeesResponse>(this.apiUrl, { params }).pipe(
-            tap(response => console.log('Employees loaded:', response)),
             catchError(error => {
                 console.error('Error loading employees:', error);
                 return throwError(() => error);

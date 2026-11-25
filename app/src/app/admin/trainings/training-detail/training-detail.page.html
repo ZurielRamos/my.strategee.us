@@ -117,10 +117,10 @@
 
                         <div class="material-info">
                             <div class="material-title-row">
-                                <ion-icon [name]="getMaterialTypeIcon(material.attachment?.mimeType)"></ion-icon>
+                                <ion-icon [name]="getMaterialTypeIcon(material.attachment.mimeType)"></ion-icon>
                                 <span class="material-title">{{ material.title }}</span>
                                 <ion-badge color="medium" class="type-badge">
-                                    {{ getMaterialTypeLabel(material.attachment?.mimeType) }}
+                                    {{ getMaterialTypeLabel(material.attachment.mimeType) }}
                                 </ion-badge>
                             </div>
                         </div>

@@ -109,7 +109,7 @@
                             <ion-icon name="people-outline" color="primary"></ion-icon>
                             <div class="info-text">
                                 <span class="info-label">Asistentes</span>
-                                <span class="info-value">{{ detail.Assistant?.length || 0 }} participantes</span>
+                                <span class="info-value">{{ detail.Assistant.length || 0 }} participantes</span>
                             </div>
                         </div>
                     </ion-card-content>
@@ -132,7 +132,7 @@
                                     <div class="avatar">{{ getAssistantInitials(assistant) }}</div>
                                     <div class="assistant-info">
                                         <span class="assistant-name">{{ getAssistantName(assistant) }}</span>
-                                        @if (assistant.User?.email) {
+                                        @if (assistant.User.email) {
                                             <span class="assistant-email">{{ assistant.User.email }}</span>
                                         }
                                     </div>

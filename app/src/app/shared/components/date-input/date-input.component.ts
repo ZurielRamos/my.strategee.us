@@ -81,12 +81,6 @@ export class DateInputComponent implements ControlValueAccessor, OnInit, OnChang
     }
 
     private initializeDatePickerConfig() {
-        console.log('DateInput - initializeDatePickerConfig', {
-            mode: this.mode,
-            minDate: this.minDate,
-            maxDate: this.maxDate,
-            disabledDaysOfWeek: this.disabledDaysOfWeek
-        });
         
         this.datePickerConfig = {
             minDate: this.minDate,
@@ -97,11 +91,9 @@ export class DateInputComponent implements ControlValueAccessor, OnInit, OnChang
             customValidator: this.customValidator
         };
         
-        console.log('DateInput - datePickerConfig created:', this.datePickerConfig);
     }
 
     writeValue(value: any): void {
-        console.log('DateInput - writeValue called with:', value, 'type:', typeof value);
         
         // Manejar diferentes tipos de valores
         if (!value) {
@@ -119,8 +111,6 @@ export class DateInputComponent implements ControlValueAccessor, OnInit, OnChang
             this.updateDisplayValue();
         }
         
-        console.log('DateInput - after writeValue, _value:', this._value);
-        console.log('DateInput - after writeValue, displayValue:', this.displayValue);
     }
 
     registerOnChange(fn: (value: DateValue) => void): void {
@@ -138,8 +128,6 @@ export class DateInputComponent implements ControlValueAccessor, OnInit, OnChang
     toggleDatePicker() {
         if (!this.disabled) {
             this.showDatePicker = !this.showDatePicker;
-            console.log('DateInput - toggleDatePicker:', this.showDatePicker);
-            console.log('DateInput - config:', this.datePickerConfig);
             if (this.showDatePicker) {
                 this.onTouched();
             }
@@ -147,7 +135,6 @@ export class DateInputComponent implements ControlValueAccessor, OnInit, OnChang
     }
 
     onDateSelected(date: Date | { start: Date; end: Date }) {
-        console.log('DateInput - onDateSelected:', date);
         
         if (this.mode === 'single' && date instanceof Date) {
             this._value = {
@@ -156,7 +143,6 @@ export class DateInputComponent implements ControlValueAccessor, OnInit, OnChang
             
             // Para compatibilidad con formularios que esperan string
             const dateString = date.toISOString().split('T')[0];
-            console.log('DateInput - emitting string value:', dateString);
             this.onChange(dateString as any);
             
         } else if (this.mode === 'range' && !(date instanceof Date)) {
@@ -169,7 +155,6 @@ export class DateInputComponent implements ControlValueAccessor, OnInit, OnChang
             this.onChange(this._value);
         }
 
-        console.log('DateInput - new internal value:', this._value);
         this.updateDisplayValue();
         this.dateChange.emit(this._value);
         this.showDatePicker = false;

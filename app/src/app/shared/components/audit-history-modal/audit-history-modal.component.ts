@@ -8,9 +8,6 @@ import {
     IonContent,
     IonButton,
     IonIcon,
-    IonList,
-    IonItem,
-    IonLabel,
     IonSpinner,
     ModalController
 } from '@ionic/angular/standalone';
@@ -33,9 +30,6 @@ import { AuditService, AuditLog } from '../../services/audit.service';
         IonContent,
         IonButton,
         IonIcon,
-        IonList,
-        IonItem,
-        IonLabel,
         IonSpinner
     ]
 })

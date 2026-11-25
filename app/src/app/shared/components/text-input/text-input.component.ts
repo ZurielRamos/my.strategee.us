@@ -45,6 +45,10 @@ export class TextInputComponent implements ControlValueAccessor {
     @Input() max?: number;
     @Input() pattern?: string;
     @Input() autocomplete?: string;
+    /** Permite solo dígitos (elimina cualquier otro carácter mientras se escribe). */
+    @Input() digitsOnly = false;
+    /** Selecciona todo el contenido al enfocar el campo. */
+    @Input() selectOnFocus = false;
 
     value = '';
     disabled = false;
@@ -72,10 +76,26 @@ export class TextInputComponent implements ControlValueAccessor {
         this.disabled = isDisabled;
     }
 
+    get inputMode(): 'numeric' | undefined {
+        return this.digitsOnly ? 'numeric' : undefined;
+    }
+
     onValueChange(event: any) {
-        const newValue = event.detail.value || '';
+        let newValue = event.detail.value || '';
+        if (this.digitsOnly) {
+            newValue = newValue.replace(/\D/g, '');
+            // Forzar el valor en el ion-input: si el valor saneado no cambia, el binding no lo actualiza
+            event.target.value = newValue;
+        }
         this.value = newValue;
         this.onChange(newValue);
+    }
+
+    async onFocus(event: any) {
+        if (!this.selectOnFocus || this.readonly) return;
+        const input: HTMLInputElement = await event.target.getInputElement();
+        // Esperar a que el navegador termine de posicionar el cursor antes de seleccionar
+        setTimeout(() => input.select());
     }
 
     onBlur() {

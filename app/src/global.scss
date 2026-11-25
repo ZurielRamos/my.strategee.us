@@ -150,3 +150,25 @@ ion-popover {
 ion-content {
     --padding-bottom: 32px;
 }
+
+/* Loading overlay con el estilo de la app */
+ion-loading.custom-loading {
+    --background: #ffffff;
+    --spinner-color: #1A2F5A;
+    --backdrop-opacity: 0.35;
+    color: #0D1C3F;
+    .loading-wrapper {
+        border-radius: 20px;
+        padding: 20px 28px;
+        box-shadow: 0 12px 32px rgba(13, 28, 63, 0.18);
+        gap: 14px;
+    }
+    .loading-content {
+        font-size: 14px;
+        font-weight: 600;
+        margin-left: 0;
+    }
+    ion-backdrop {
+        background: #0D1C3F;
+    }
+}

@@ -1,4 +1,4 @@
-@import '../../../../theme/admin-standards.scss';
+@use '../../../../theme/admin-standards.scss' as *;
 
 .schedules-content {
     @include admin-page-background;

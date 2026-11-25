@@ -5,7 +5,6 @@ import {
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonIcon
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { briefcaseOutline } from 'ionicons/icons';
@@ -22,7 +21,6 @@ import { Area } from '../../models/area.model';
         IonCardHeader,
         IonCardTitle,
         IonCardContent,
-        IonIcon
     ]
 })
 export class AreaCardComponent {

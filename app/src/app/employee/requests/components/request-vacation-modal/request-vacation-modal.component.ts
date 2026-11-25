@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonIcon, ModalController } from '@ionic/angular/standalone';
+import { ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { informationCircleOutline, alertCircleOutline } from 'ionicons/icons';
 import { RequestsService } from '../../services/requests.service';
@@ -20,7 +20,6 @@ import { ToastService } from '../../../../shared/services/toast.service';
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        IonIcon,
         BaseModalComponent,
         DateInputComponent,
         AlertBoxComponent

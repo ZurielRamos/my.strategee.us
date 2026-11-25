@@ -9,7 +9,6 @@ import {
     IonButton,
     IonChip,
     IonLabel,
-    IonSpinner,
     LoadingController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -37,7 +36,6 @@ import { ToastService } from '../../../shared/services/toast.service';
         IonButton,
         IonChip,
         IonLabel,
-        IonSpinner,
         PageHeaderComponent,
         RichTextEditorComponent,
         FilterAutocompleteComponent,

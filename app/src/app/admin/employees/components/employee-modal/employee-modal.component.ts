@@ -10,6 +10,7 @@ import { FormSelectComponent, SelectOption } from '../../../../shared/components
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
 import { TextareaInputComponent } from '../../../../shared/components/textarea-input/textarea-input.component';
 import { DateInputComponent } from '../../../../shared/components/date-input/date-input.component';
+import { PhoneInputComponent } from '../../../../shared/components/phone-input/phone-input.component';
 import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
@@ -25,7 +26,8 @@ import { ToastService } from '../../../../shared/services/toast.service';
         FormSelectComponent,
         TextInputComponent,
         TextareaInputComponent,
-        DateInputComponent
+        DateInputComponent,
+        PhoneInputComponent
     ]
 })
 export class EmployeeModalComponent implements OnInit {

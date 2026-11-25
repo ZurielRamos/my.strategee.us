@@ -68,11 +68,11 @@
           <div class="assistant-item" *ngFor="let assistant of detail.Assistant">
             <ion-avatar>
               <div class="avatar-placeholder">
-                {{ assistant.User?.firstname?.charAt(0) || '?' }}{{ assistant.User?.lastname?.charAt(0) || '' }}
+                {{ assistant.User.firstname.charAt(0) || '?' }}{{ assistant.User.lastname.charAt(0) || '' }}
               </div>
             </ion-avatar>
             <span class="assistant-name">
-              {{ assistant.User?.firstname }} {{ assistant.User?.lastname }}
+              {{ assistant.User.firstname }} {{ assistant.User.lastname }}
             </span>
           </div>
         </div>

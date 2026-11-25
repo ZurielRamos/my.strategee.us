@@ -1,0 +1,39 @@
+<div class="phone-input-container">
+    <div class="phone-field" [class.disabled]="disabled">
+        <label class="phone-label">
+            {{ label }}
+            @if (required) {
+                <span class="required-indicator"> *</span>
+            }
+        </label>
+        <div class="phone-row">
+            <div class="code-wrapper" #codeAnchor>
+                <input
+                    #codeInput
+                    class="code-input"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="Buscar"
+                    [title]="selectedCountry.name"
+                    [value]="codeDisplay"
+                    [readonly]="isLocked"
+                    [disabled]="disabled"
+                    (focus)="onCodeFocus()"
+                    (input)="onCodeInput($any($event.target).value)"
+                    (keydown)="onCodeKeydown($event)"
+                    (blur)="onCodeBlur()" />
+            </div>
+            <input
+                class="number-input"
+                type="tel"
+                inputmode="numeric"
+                autocomplete="tel-national"
+                [placeholder]="placeholder"
+                [value]="number"
+                [readonly]="readonly"
+                [disabled]="disabled"
+                (input)="onNumberInput($event)"
+                (blur)="onNumberBlur()" />
+        </div>
+    </div>
+</div>

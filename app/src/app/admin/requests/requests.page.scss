@@ -1,5 +1,5 @@
 // Importar estándares de admin
-@import '../../../theme/admin-standards.scss';
+@use '../../../theme/admin-standards.scss' as *;
 
 .admin-page-content {
     @include admin-page-background;

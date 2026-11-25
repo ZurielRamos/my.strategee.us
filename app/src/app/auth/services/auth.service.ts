@@ -5,7 +5,9 @@ import { Preferences } from '@capacitor/preferences';
 import { environment } from 'src/environments/environment';
 import { AuthResponse, AuthUser, RefreshResponse, SignInRequest } from '../models/auth.model';
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut as firebaseSignOut } from 'firebase/auth';
+import { getAuth, signInWithPopup, signInWithCredential, GoogleAuthProvider, signOut as firebaseSignOut } from 'firebase/auth';
+import { Capacitor } from '@capacitor/core';
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
@@ -89,13 +91,30 @@ export class AuthService {
     }
 
     /**
+     * En Android/iOS usa el selector nativo de cuentas de Google y luego
+     * autentica el SDK web de Firebase con ese credential. En web usa popup.
+     */
+    private async getGoogleFirebaseUser() {
+        if (!Capacitor.isNativePlatform()) {
+            const result = await signInWithPopup(this._firebaseAuth, new GoogleAuthProvider());
+            return result.user;
+        }
+        const native = await FirebaseAuthentication.signInWithGoogle({ skipNativeAuth: true });
+        const idToken = native.credential?.idToken;
+        if (!idToken) {
+            throw new Error('No se pudo obtener el token de Google');
+        }
+        const result = await signInWithCredential(this._firebaseAuth, GoogleAuthProvider.credential(idToken));
+        return result.user;
+    }
+
+    /**
      * Inicia sesión con Google usando Firebase Authentication.
      * Solo permite el acceso si el correo está registrado como usuario activo.
      */
     signInWithGoogle(): Observable<AuthResponse> {
-        const provider = new GoogleAuthProvider();
-        return from(signInWithPopup(this._firebaseAuth, provider)).pipe(
-            switchMap((result) => from(result.user.getIdToken()).pipe(
+        return from(this.getGoogleFirebaseUser()).pipe(
+            switchMap((user) => from(user.getIdToken()).pipe(
                 switchMap((idToken) =>
                     this.http.post<AuthResponse>(`${this.apiUrl}/auth/google`, { idToken }).pipe(
                         switchMap((response) =>

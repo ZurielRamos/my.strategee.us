@@ -1,0 +1,9 @@
+**/node_modules
+**/.angular
+**/dist
+api/app
+app/www
+app/android
+.git
+.kiro
+*.md

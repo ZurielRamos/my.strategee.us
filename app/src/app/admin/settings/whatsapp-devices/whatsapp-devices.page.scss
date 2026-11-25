@@ -1,4 +1,4 @@
-@import '../../../../theme/admin-standards.scss';
+@use '../../../../theme/admin-standards.scss' as *;
 
 :host {
     display: block;
@@ -11,7 +11,9 @@
 
 .admin-container {
     @include admin-page-container;
-    padding-top: 40px;
+    & {
+      padding-top: 40px;
+    }
 
     @media (min-width: 768px) {
         padding-top: 48px;

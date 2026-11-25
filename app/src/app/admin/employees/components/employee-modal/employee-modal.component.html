@@ -75,14 +75,13 @@
         <!-- Información de Contacto -->
         <h4 class="section-title">Información de Contacto</h4>
         
-        <app-text-input
+        <app-phone-input
             formControlName="personalPhone"
             label="Teléfono Personal"
-            placeholder="Ej: +51 999 999 999"
-            type="tel"
+            placeholder="Ej: 3001234567"
             [required]="true"
             [readonly]="mode === 'view'">
-        </app-text-input>
+        </app-phone-input>
 
         <app-text-input
             formControlName="personalEmail"
@@ -108,10 +107,10 @@
             formControlName="idoLimit"
             label="Límite de IDO"
             placeholder="Ej: 90"
-            type="number"
+            [digitsOnly]="true"
+            [selectOnFocus]="true"
+            [maxlength]="2"
             [required]="true"
-            [min]="0"
-            [max]="99"
             [readonly]="mode === 'view'">
         </app-text-input>
         <p class="field-hint">Porcentaje mínimo requerido (0–99). Las solicitudes con validación IDO verificarán que el indicador del empleado supere este valor.</p>

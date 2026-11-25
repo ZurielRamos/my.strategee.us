@@ -1,4 +1,4 @@
-@import '../../../theme/admin-standards.scss';
+@use '../../../theme/admin-standards.scss' as *;
 
 .admin-page-content {
   @include admin-page-background;
@@ -19,10 +19,12 @@
 
 .module-card {
   @include admin-card;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  & {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
 
   &:hover {
     transform: translateY(-4px);

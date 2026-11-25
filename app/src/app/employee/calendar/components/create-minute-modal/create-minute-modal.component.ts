@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonIcon, IonSpinner, IonItem, IonLabel, IonChip, ModalController } from '@ionic/angular/standalone';
+import { IonIcon, IonLabel, IonChip, ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { closeCircle, personOutline, addOutline } from 'ionicons/icons';
 import { BaseModalComponent } from '../../../../shared/components/base-modal/base-modal.component';
-import { FormSelectComponent, SelectOption } from '../../../../shared/components/form-select/form-select.component';
+import { SelectOption } from '../../../../shared/components/form-select/form-select.component';
 import { TextareaInputComponent } from '../../../../shared/components/textarea-input/textarea-input.component';
 import { FilterAutocompleteComponent, FilterOption } from '../../../minutes/components/filter-autocomplete/filter-autocomplete.component';
 import { MinutesService } from '../../../minutes/services/minutes.service';
@@ -22,12 +22,9 @@ import { CalendarEvent } from '../../models/calendar-event.model';
         CommonModule,
         ReactiveFormsModule,
         IonIcon,
-        IonSpinner,
-        IonItem,
         IonLabel,
         IonChip,
         BaseModalComponent,
-        FormSelectComponent,
         TextareaInputComponent,
         FilterAutocompleteComponent,
     ]

@@ -1,5 +1,5 @@
 // Importar estándares de admin
-@import '../../../theme/admin-standards.scss';
+@use '../../../theme/admin-standards.scss' as *;
 
 .admin-page-content {
     @include admin-page-background;
@@ -17,11 +17,13 @@
 
 .menu-card {
     @include admin-card;
-    position: relative;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--app-border);
+    & {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--app-border);
+    }
 
     &:hover {
         transform: translateY(-5px);

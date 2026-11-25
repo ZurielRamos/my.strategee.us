@@ -16,9 +16,11 @@
             [max]="max"
             [pattern]="pattern"
             [autocomplete]="autocomplete"
+            [inputmode]="inputMode"
             [readonly]="readonly"
             [disabled]="disabled"
             (ionInput)="onValueChange($event)"
+            (ionFocus)="onFocus($event)"
             (ionBlur)="onBlur()">
         </ion-input>
         

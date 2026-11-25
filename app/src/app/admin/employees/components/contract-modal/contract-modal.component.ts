@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonItem, IonLabel, IonInput, IonNote, IonIcon } from '@ionic/angular/standalone';
+import { IonItem, IonLabel, IonInput, IonNote } from '@ionic/angular/standalone';
 import { ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { informationCircleOutline } from 'ionicons/icons';
@@ -30,7 +30,6 @@ import { ToastService } from '../../../../shared/services/toast.service';
         IonLabel,
         IonInput,
         IonNote,
-        IonIcon,
         BaseModalComponent,
         FormSelectComponent,
         DateInputComponent,

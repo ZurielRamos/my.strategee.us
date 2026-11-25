@@ -3,12 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
     IonContent,
-    IonCard,
-    IonCardContent,
     IonIcon,
     IonButton,
     IonBadge,
-    IonChip,
     ModalController,
     LoadingController,
     ViewWillEnter
@@ -49,12 +46,9 @@ import { MinuteListItem } from '../../minutes/models/minute.model';
         CommonModule,
         RouterLink,
         IonContent,
-        IonCard,
-        IonCardContent,
         IonIcon,
         IonButton,
         IonBadge,
-        IonChip,
         PageHeaderComponent
     ]
 })

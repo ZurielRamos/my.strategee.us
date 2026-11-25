@@ -7,6 +7,8 @@
     "install:all": "npm install --prefix app && npm install --prefix api",
     "build:app": "npm run build --prefix app",
     "build:api": "npm run build --prefix api",
+    "android": "npm run android --prefix app",
+    "android:open": "npm run android:open --prefix app",
     "build": "npm run build:app && npm run build:api",
     "start": "cd api && node dist/main",
     "dev": "concurrently --names \"api,app\" --prefix-colors \"blue,green\" \"npm run start:dev --prefix api\" \"npm run start --prefix app\"",
